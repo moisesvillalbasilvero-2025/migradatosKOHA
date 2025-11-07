@@ -1,0 +1,78 @@
+{
+  "_descripcion": "Mapeo de ubicaciones para Biblioteca de Medicina (MED)",
+  "_uso": "python3 scripts/opac_exportar.py -i MED.csv --codbiblio MED --loc-map config/ejemplos/medicina_loc_map.json",
+  "_fecha": "2025-11-07",
+
+  "comentario": "Este archivo mapea las ubicaciones físicas específicas de la Biblioteca de Medicina",
+
+  "ubicaciones": {
+    "GENERAL": "GEN",
+    "COLECCION_GENERAL": "GEN",
+    "GEN": "GEN",
+
+    "REFERENCIA": "REF",
+    "SALA_REFERENCIA": "REF",
+    "REF": "REF",
+
+    "TESIS": "TES",
+    "SALA_TESIS": "TES",
+    "TRABAJOS_GRADO": "TES",
+
+    "RESERVA": "RES",
+    "SALA_RESERVA": "RES",
+    "RESERVADO": "RES",
+
+    "HEMEROTECA": "HEM",
+    "REVISTAS": "HEM",
+    "PUBLICACIONES_PERIODICAS": "HEM",
+
+    "AUDIOVISUAL": "AV",
+    "MULTIMEDIA": "AV",
+    "VIDEOS": "AV",
+
+    "DIGITAL": "DIG",
+    "RECURSOS_DIGITALES": "DIG",
+
+    "DEPOSITO": "DEP",
+    "ALMACEN": "DEP",
+
+    "ATLAS": "ATL",
+    "MAPAS_MEDICOS": "ATL",
+
+    "HISTORICO": "HIST",
+    "ARCHIVO": "HIST",
+
+    "PEDIATRIA": "PED",
+    "CIRUGIA": "CIR",
+    "ANATOMIA": "ANA",
+    "FARMACOLOGIA": "FAR"
+  },
+
+  "notas": [
+    "GEN: Colección General - Libros de uso común",
+    "REF: Referencia - No se prestan, solo consulta en sala",
+    "TES: Tesis y Trabajos de Grado",
+    "RES: Reserva - Material de uso frecuente en cursos",
+    "HEM: Hemeroteca - Revistas y publicaciones periódicas",
+    "AV: Audiovisual - Videos, DVDs, material multimedia",
+    "DIG: Digital - Recursos electrónicos",
+    "DEP: Depósito - Material de baja circulación",
+    "ATL: Atlas y mapas médicos",
+    "HIST: Material histórico o de archivo",
+    "PED/CIR/ANA/FAR: Secciones especializadas por área médica"
+  ],
+
+  "ejemplo_csv": {
+    "descripcion": "Ejemplo de cómo usar estas ubicaciones en tu CSV",
+    "csv": [
+      "titulo,autor,ubicacion_fisica,signatura",
+      "\"Gray's Anatomy\",\"Gray, Henry\",\"ANATOMIA\",\"611 GRA\"",
+      "\"Farmacología Básica\",\"Katzung\",\"FARMACOLOGIA\",\"615 KAT\"",
+      "\"Atlas de Anatomía Humana\",\"Netter\",\"ATLAS\",\"611 NET\"",
+      "\"Revista Medicina UNA\",\"Varios\",\"HEMEROTECA\",\"PER MED\""
+    ],
+    "resultado_marc": [
+      "El campo 952 $c contendrá: ANA, FAR, ATL, HEM respectivamente"
+    ]
+  }
+}

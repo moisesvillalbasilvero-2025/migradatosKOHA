@@ -1,0 +1,488 @@
+{
+  "_DOCUMENTACION": "Ver config/GUIA_MAPEO.md para explicación detallada de cada campo",
+  "_VERSION": "1.0.0",
+  "_FECHA": "2025-11-07",
+
+  "descripcion": {
+    "sistema": "Configuración de Mapeo CSV → MARCXML para Koha",
+    "proposito": "Define cómo los campos del CSV se mapean a campos MARC21",
+    "uso": "Este archivo es leído por opac_exportar.py para generar MARCXML"
+  },
+
+  "mapeo_columnas_csv": {
+    "_explicacion": "Mapea nombres de columnas CSV (pueden variar) a nombres lógicos internos",
+    "_formato": "nombre_logico: [lista_de_posibles_nombres_en_csv]",
+    "_ejemplo": "Si tu CSV tiene 'Título' o 'title' o 'titulo', todos mapean a 'titulo'",
+
+    "codbiblio": {
+      "nombre_legible": "Código de Biblioteca",
+      "descripcion": "Código que identifica la biblioteca/facultad",
+      "variantes_csv": ["codbiblio", "biblioteca", "branch", "codigo_bib"],
+      "obligatorio": false,
+      "ejemplo": "MED, FACEN, POL, AGRO"
+    },
+
+    "analisis": {
+      "nombre_legible": "Número de Análisis",
+      "descripcion": "Identificador único del registro bibliográfico",
+      "variantes_csv": ["analisis", "id", "identificador", "codigo", "numero_analisis"],
+      "obligatorio": false,
+      "ejemplo": "12345, ANL-001"
+    },
+
+    "titulo": {
+      "nombre_legible": "Título",
+      "descripcion": "Título principal de la obra",
+      "variantes_csv": ["titulo", "título", "tÃ­tulo", "title", "titulo_principal"],
+      "obligatorio": true,
+      "ejemplo": "Cien años de soledad"
+    },
+
+    "sub_titulo": {
+      "nombre_legible": "Subtítulo",
+      "descripcion": "Subtítulo o título complementario",
+      "variantes_csv": ["sub_titulo", "subtitulo", "subtitle", "titulo_complementario"],
+      "obligatorio": false,
+      "ejemplo": "Una historia familiar"
+    },
+
+    "autor": {
+      "nombre_legible": "Autor Personal",
+      "descripcion": "Autor persona física de la obra",
+      "variantes_csv": ["autor", "author", "autor_personal", "creador"],
+      "obligatorio": false,
+      "ejemplo": "García Márquez, Gabriel"
+    },
+
+    "autorinst": {
+      "nombre_legible": "Autor Institucional",
+      "descripcion": "Autor corporativo o institución",
+      "variantes_csv": ["autorinst", "autor_institucional", "corporativo", "autor_corp"],
+      "obligatorio": false,
+      "ejemplo": "Universidad Nacional de Asunción"
+    },
+
+    "mencion": {
+      "nombre_legible": "Mención de Responsabilidad",
+      "descripcion": "Información adicional sobre responsables de la obra",
+      "variantes_csv": ["mencion", "responsabilidad", "mencion_resp"],
+      "obligatorio": false,
+      "ejemplo": "traducido por Juan Pérez"
+    },
+
+    "edicion": {
+      "nombre_legible": "Edición",
+      "descripcion": "Número o descripción de la edición",
+      "variantes_csv": ["edicion", "edición", "ediciÃ³n", "edition", "ed"],
+      "obligatorio": false,
+      "ejemplo": "2a ed., Primera edición"
+    },
+
+    "procedencia": {
+      "nombre_legible": "Lugar de Publicación",
+      "descripcion": "Ciudad o país donde se publicó",
+      "variantes_csv": ["procedencia", "lugar", "place", "lugar_pub", "ciudad"],
+      "obligatorio": false,
+      "ejemplo": "Buenos Aires, Madrid"
+    },
+
+    "publicacion": {
+      "nombre_legible": "Año de Publicación",
+      "descripcion": "Año en que se publicó la obra",
+      "variantes_csv": ["publicacion", "año", "aÃ±o", "anio", "year", "fecha_pub"],
+      "obligatorio": false,
+      "ejemplo": "1967, 2023"
+    },
+
+    "editorial": {
+      "nombre_legible": "Editorial",
+      "descripcion": "Casa editorial que publicó la obra",
+      "variantes_csv": ["editorial", "publisher", "editor"],
+      "obligatorio": false,
+      "ejemplo": "Editorial Sudamericana"
+    },
+
+    "paginas": {
+      "nombre_legible": "Páginas",
+      "descripcion": "Número de páginas del documento",
+      "variantes_csv": ["paginas", "páginas", "pÃ¡ginas", "pages", "pag"],
+      "obligatorio": false,
+      "ejemplo": "320 p., 450"
+    },
+
+    "serie": {
+      "nombre_legible": "Serie o Colección",
+      "descripcion": "Nombre de la serie o colección a la que pertenece",
+      "variantes_csv": ["serie", "coleccion", "colección", "series"],
+      "obligatorio": false,
+      "ejemplo": "Biblioteca Básica"
+    },
+
+    "sintesis": {
+      "nombre_legible": "Resumen",
+      "descripcion": "Resumen o síntesis del contenido",
+      "variantes_csv": ["sintesis", "resumen", "abstract", "descripcion"],
+      "obligatorio": false,
+      "ejemplo": "Narra la historia de la familia Buendía..."
+    },
+
+    "notas": {
+      "nombre_legible": "Notas",
+      "descripcion": "Notas adicionales sobre el documento",
+      "variantes_csv": ["notas", "nota", "notes", "observaciones"],
+      "obligatorio": false,
+      "ejemplo": "Incluye bibliografía"
+    },
+
+    "materia": {
+      "nombre_legible": "Materias/Temas",
+      "descripcion": "Temas o materias de la obra (separados por punto y coma)",
+      "variantes_csv": ["materia", "materias", "subject", "temas", "temas_descrip"],
+      "obligatorio": false,
+      "ejemplo": "Literatura latinoamericana; Narrativa colombiana"
+    },
+
+    "isbn": {
+      "nombre_legible": "ISBN/ISSN",
+      "descripcion": "Número Internacional Normalizado",
+      "variantes_csv": ["isbn", "issn", "isbn_issn", "codigo_isbn"],
+      "obligatorio": false,
+      "ejemplo": "978-0-307-47472-8"
+    },
+
+    "nroacceso": {
+      "nombre_legible": "Código de Barras",
+      "descripcion": "Número de acceso o código de barras del ejemplar",
+      "variantes_csv": ["nroacceso", "barcode", "codigo_barras", "codbarras", "accession"],
+      "obligatorio": false,
+      "ejemplo": "MED-001234"
+    },
+
+    "ubicacion": {
+      "nombre_legible": "Signatura/Cota",
+      "descripcion": "Ubicación física del ejemplar en la biblioteca (call number)",
+      "variantes_csv": ["ubicacion", "signatura", "cota", "callnumber", "clasificacion"],
+      "obligatorio": false,
+      "ejemplo": "860.5 GAR"
+    },
+
+    "loc": {
+      "nombre_legible": "Código de Ubicación",
+      "descripcion": "Código de ubicación física específica (ej: sala, estante)",
+      "variantes_csv": ["loc", "ubic_fisica", "ubicacion_fisica", "location_code", "shelf"],
+      "obligatorio": false,
+      "ejemplo": "GEN, REF, TESIS"
+    },
+
+    "tipomaterial": {
+      "nombre_legible": "Tipo de Material",
+      "descripcion": "Tipo de material bibliográfico",
+      "variantes_csv": ["tipomaterial", "tipomat", "itemtype", "tipo"],
+      "obligatorio": false,
+      "ejemplo": "Monografía, Revista, DVD"
+    },
+
+    "volumen": {
+      "nombre_legible": "Volumen/Tomo",
+      "descripcion": "Número de volumen o tomo",
+      "variantes_csv": ["volumen", "tomo", "vol", "volume"],
+      "obligatorio": false,
+      "ejemplo": "Vol. 1, Tomo II"
+    },
+
+    "fechaadq": {
+      "nombre_legible": "Fecha de Adquisición",
+      "descripcion": "Fecha en que se adquirió el ejemplar",
+      "variantes_csv": ["fechaadq", "fecha_adquisicion", "date_acquired"],
+      "obligatorio": false,
+      "ejemplo": "2023-05-15"
+    },
+
+    "precio": {
+      "nombre_legible": "Precio",
+      "descripcion": "Precio de adquisición del ejemplar",
+      "variantes_csv": ["precio", "price", "costo", "cost"],
+      "obligatorio": false,
+      "ejemplo": "25000, 45.50"
+    }
+  },
+
+  "mapeo_marc21": {
+    "_explicacion": "Define cómo los campos lógicos se mapean a campos MARC21",
+    "_formato": "Cada entrada define: tag MARC, subfields, indicators",
+    "_referencia": "Ver https://www.loc.gov/marc/bibliographic/ para detalles de MARC21",
+
+    "campos_control": {
+      "001": {
+        "nombre": "Número de Control",
+        "fuente": "analisis | nroacceso | generado",
+        "descripcion": "Identificador único del registro",
+        "generacion": "Si existe 'analisis': ANL:{analisis}, si existe 'nroacceso': BC:{nroacceso}, sino: hash generado"
+      },
+      "003": {
+        "nombre": "Identificador de Control",
+        "fuente": "codbiblio",
+        "descripcion": "Código de la biblioteca que creó el registro"
+      },
+      "005": {
+        "nombre": "Fecha de Última Transacción",
+        "fuente": "generado_automaticamente",
+        "descripcion": "Timestamp de creación/modificación (YYYYMMDDhhmmss.f)"
+      },
+      "008": {
+        "nombre": "Datos de Longitud Fija",
+        "fuente": "publicacion + idioma + pais",
+        "descripcion": "Información codificada sobre el documento (40 caracteres)",
+        "formato": "DDMMYY s YYYY país______________ idioma  "
+      }
+    },
+
+    "campos_numericos": {
+      "020": {
+        "nombre": "ISBN",
+        "fuente": "isbn",
+        "subfields": {
+          "a": "Número ISBN"
+        },
+        "ejemplo": "020  $a 978-0-307-47472-8"
+      }
+    },
+
+    "campos_codificados": {
+      "040": {
+        "nombre": "Fuente de Catalogación",
+        "fuente": "codbiblio + idioma",
+        "subfields": {
+          "a": "Agencia catalogadora original",
+          "b": "Idioma de catalogación",
+          "c": "Agencia transcriptora"
+        },
+        "ejemplo": "040  $a MED $b spa $c MED"
+      }
+    },
+
+    "encabezamientos_principales": {
+      "100": {
+        "nombre": "Autor Personal",
+        "fuente": "autor",
+        "subfields": {
+          "a": "Nombre del autor"
+        },
+        "indicadores": {
+          "ind1": "1 (apellido, nombre)",
+          "ind2": " "
+        },
+        "ejemplo": "100 1 $a García Márquez, Gabriel",
+        "condicion": "Solo si existe 'autor' (persona física)"
+      },
+      "110": {
+        "nombre": "Autor Institucional",
+        "fuente": "autorinst",
+        "subfields": {
+          "a": "Nombre de la institución"
+        },
+        "indicadores": {
+          "ind1": "2 (nombre en orden directo)",
+          "ind2": " "
+        },
+        "ejemplo": "110 2 $a Universidad Nacional de Asunción",
+        "condicion": "Solo si existe 'autorinst' y NO existe 'autor'"
+      }
+    },
+
+    "titulo": {
+      "245": {
+        "nombre": "Título",
+        "fuente": "titulo + sub_titulo + mencion",
+        "subfields": {
+          "a": "Título principal",
+          "b": "Subtítulo",
+          "c": "Mención de responsabilidad"
+        },
+        "indicadores": {
+          "ind1": "0 si no hay autor/autorinst, 1 si hay",
+          "ind2": "0 (sin artículos iniciales)"
+        },
+        "ejemplo": "245 10 $a Cien años de soledad $b una historia familiar $c Gabriel García Márquez",
+        "obligatorio": true
+      }
+    },
+
+    "edicion": {
+      "250": {
+        "nombre": "Edición",
+        "fuente": "edicion",
+        "subfields": {
+          "a": "Mención de edición"
+        },
+        "ejemplo": "250  $a 2a ed."
+      }
+    },
+
+    "publicacion": {
+      "264": {
+        "nombre": "Producción, Publicación, Distribución",
+        "fuente": "procedencia + editorial + publicacion",
+        "subfields": {
+          "a": "Lugar de publicación",
+          "b": "Editorial",
+          "c": "Año de publicación"
+        },
+        "indicadores": {
+          "ind1": " ",
+          "ind2": "1 (publicación)"
+        },
+        "ejemplo": "264  1 $a Buenos Aires $b Editorial Sudamericana $c 1967"
+      }
+    },
+
+    "serie": {
+      "490": {
+        "nombre": "Serie",
+        "fuente": "serie",
+        "subfields": {
+          "a": "Nombre de la serie"
+        },
+        "indicadores": {
+          "ind1": "1 (asiento de serie registrado)",
+          "ind2": " "
+        },
+        "ejemplo": "490 1 $a Biblioteca Básica"
+      }
+    },
+
+    "notas": {
+      "520": {
+        "nombre": "Resumen",
+        "fuente": "sintesis",
+        "subfields": {
+          "a": "Texto del resumen"
+        },
+        "ejemplo": "520  $a Narra la historia de la familia Buendía a lo largo de varias generaciones..."
+      }
+    },
+
+    "materias": {
+      "650": {
+        "nombre": "Materia",
+        "fuente": "materia",
+        "subfields": {
+          "a": "Término de materia"
+        },
+        "indicadores": {
+          "ind1": " ",
+          "ind2": "4 (fuente no especificada)"
+        },
+        "ejemplo": "650  4 $a Literatura latinoamericana",
+        "nota": "Se crea un campo 650 por cada tema (separados por ; en CSV)",
+        "multiple": true
+      }
+    },
+
+    "tipo_documento": {
+      "942": {
+        "nombre": "Tipo de Documento (Koha)",
+        "fuente": "tipomaterial (mapeado según tabla)",
+        "subfields": {
+          "c": "Tipo de ítem (Koha itype)"
+        },
+        "ejemplo": "942  $c BK",
+        "valores_posibles": "Ver mapeo_tipos_material"
+      }
+    },
+
+    "ejemplar": {
+      "952": {
+        "nombre": "Datos del Ejemplar (Koha)",
+        "fuente": "Múltiples campos",
+        "descripcion": "Información específica del ejemplar físico",
+        "subfields": {
+          "a": "Biblioteca propietaria (homebranch) - OBLIGATORIO",
+          "b": "Biblioteca actual (holdingbranch)",
+          "c": "Ubicación física (location code)",
+          "o": "Signatura/Call number",
+          "p": "Código de barras - OBLIGATORIO",
+          "y": "Tipo de material (itype)",
+          "h": "Volumen/Tomo",
+          "d": "Fecha de adquisición",
+          "g": "Precio"
+        },
+        "ejemplo": "952  $a MED $b MED $c GEN $o 860.5 GAR $p MED-001234 $y BK",
+        "obligatorio": true,
+        "nota": "Este campo vincula el registro bibliográfico con el ejemplar físico"
+      }
+    }
+  },
+
+  "mapeo_tipos_material": {
+    "_explicacion": "Mapea nombres de tipos de material del CSV a códigos Koha",
+    "_formato": "nombre_en_csv: codigo_koha_itype",
+    "_personalizacion": "Puedes agregar tus propios mapeos aquí",
+
+    "Monografia": "BK",
+    "Monografía": "BK",
+    "Libro": "BK",
+    "Book": "BK",
+
+    "Revista": "MG",
+    "Magazine": "MG",
+    "Periódico": "MG",
+
+    "DVD": "VM",
+    "Video": "VM",
+    "Película": "VM",
+
+    "CD": "MU",
+    "CD-ROM": "MU",
+    "Audio": "MU",
+
+    "Mapa": "MP",
+    "Map": "MP",
+    "Plano": "MP",
+
+    "Tesis": "TES",
+    "Thesis": "TES",
+    "Trabajo de Grado": "TES"
+  },
+
+  "como_agregar_nuevo_campo": {
+    "_titulo": "GUÍA: Cómo Agregar un Nuevo Campo",
+    "_pasos": [
+      "1. Identifica el nombre de la columna en tu CSV",
+      "2. Agrega entrada en 'mapeo_columnas_csv' con las variantes posibles",
+      "3. Determina qué campo MARC21 corresponde (consulta https://www.loc.gov/marc/)",
+      "4. Agrega entrada en 'mapeo_marc21' especificando tag, subfields e indicators",
+      "5. Si necesitas lógica especial, modifica opac_exportar.py",
+      "6. Prueba con un archivo CSV pequeño en modo dry-run"
+    ],
+    "_ejemplo_completo": {
+      "situacion": "Quieres agregar campo 'Idioma Original' de la obra",
+      "paso_1_csv": {
+        "descripcion": "Tu CSV tiene columna 'idioma_orig'",
+        "mapeo_columnas_csv": {
+          "idioma_original": {
+            "nombre_legible": "Idioma Original",
+            "descripcion": "Idioma en que se escribió originalmente la obra",
+            "variantes_csv": ["idioma_orig", "idioma_original", "original_language"],
+            "obligatorio": false,
+            "ejemplo": "español, inglés"
+          }
+        }
+      },
+      "paso_2_marc": {
+        "descripcion": "Campo MARC 041 para idiomas",
+        "mapeo_marc21": {
+          "041": {
+            "nombre": "Código de Idioma",
+            "fuente": "idioma_original",
+            "subfields": {
+              "a": "Código de idioma (3 letras ISO 639-2)"
+            },
+            "ejemplo": "041  $a spa",
+            "nota": "Requiere convertir nombre a código: 'español' → 'spa'"
+          }
+        }
+      }
+    }
+  }
+}

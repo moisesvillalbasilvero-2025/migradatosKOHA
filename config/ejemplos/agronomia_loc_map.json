@@ -1,0 +1,65 @@
+{
+  "_descripcion": "Mapeo de ubicaciones para Facultad de Ciencias Agrarias (AGRO)",
+  "_uso": "python3 scripts/opac_exportar.py -i AGRO.csv --codbiblio AGRO --loc-map config/ejemplos/agronomia_loc_map.json",
+  "_fecha": "2025-11-07",
+
+  "ubicaciones": {
+    "GENERAL": "GEN",
+    "COLECCION_GENERAL": "GEN",
+
+    "REFERENCIA": "REF",
+
+    "TESIS": "TES",
+    "TRABAJOS_GRADO": "TES",
+
+    "LABORATORIO": "LAB",
+    "LAB_SUELOS": "LAB",
+    "LAB_BOTANICA": "LAB",
+    "LABORATORIOS": "LAB",
+
+    "INVESTIGACION": "INV",
+    "PROYECTOS": "INV",
+    "INVESTIGACIONES": "INV",
+
+    "EXTENSION": "EXT",
+    "EXTENSION_RURAL": "EXT",
+
+    "HERBARIO": "HERB",
+    "COLECCION_BOTANICA": "HERB",
+
+    "CAMPO": "CAMP",
+    "CAMPO_EXPERIMENTAL": "CAMP",
+    "ESTACION_EXPERIMENTAL": "CAMP",
+
+    "PRODUCCION": "PROD",
+    "PRODUCCION_ANIMAL": "PROD",
+    "PRODUCCION_VEGETAL": "PROD",
+
+    "POSTGRADO": "PG",
+    "MAESTRIA": "PG",
+    "DOCTORADO": "PG"
+  },
+
+  "notas": [
+    "GEN: Colección General",
+    "REF: Referencia - Consulta en sala",
+    "TES: Tesis y Trabajos de Grado",
+    "LAB: Material de laboratorios",
+    "INV: Material de proyectos de investigación",
+    "EXT: Extensión Rural - Material para productores",
+    "HERB: Herbario y colecciones botánicas",
+    "CAMP: Estación experimental y campo",
+    "PROD: Producción Animal y Vegetal",
+    "PG: Postgrado (Maestría/Doctorado)"
+  ],
+
+  "ejemplo_csv": {
+    "csv": [
+      "titulo,ubicacion_fisica,signatura",
+      "\"Cultivos Tropicales\",\"PRODUCCION\",\"630 CUL\"",
+      "\"Manual de Suelos\",\"LABORATORIO\",\"631.4 MAN\"",
+      "\"Flora del Paraguay\",\"HERBARIO\",\"581.9 FLO\"",
+      "\"Tesis: Mejoramiento Genético\",\"TESIS\",\"TES 2023-015\""
+    ]
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "_descripcion": "Configuración simple y genérica para cualquier biblioteca",
+  "_uso": "python3 scripts/opac_exportar.py -i archivo.csv --codbiblio XXX --map-config config/ejemplos/config_simple.json",
+  "_fecha": "2025-11-07",
+  "_nivel": "principiante",
+
+  "default": {
+    "comentario": "Configuración básica que funciona para la mayoría de las bibliotecas",
+
+    "branch_map": {
+      "_explicacion": "Mapea códigos de biblioteca a códigos Koha",
+      "_ejemplo": "Si tu CSV dice 'BIBLIOTECA_CENTRAL', se convierte a 'CENTRAL'",
+
+      "BIBLIOTECA_CENTRAL": "CENTRAL",
+      "CENTRAL": "CENTRAL",
+      "MAIN": "CENTRAL",
+
+      "SUCURSAL_1": "SUC1",
+      "SUCURSAL_2": "SUC2"
+    },
+
+    "itemtype_map": {
+      "_explicacion": "Tipos de material más comunes",
+      "_nota": "Puedes agregar los tuyos siguiendo el mismo patrón",
+
+      "Libro": "BK",
+      "Monografía": "BK",
+
+      "Revista": "MG",
+      "Periódico": "MG",
+
+      "DVD": "VM",
+      "Video": "VM",
+
+      "CD": "MU",
+      "Audio": "MU",
+
+      "Tesis": "TES"
+    }
+  },
+
+  "ejemplo_uso": {
+    "descripcion": "Caso de uso simple paso a paso",
+
+    "paso_1_preparar_csv": {
+      "descripcion": "Crea tu CSV con estas columnas mínimas",
+      "csv_minimo": [
+        "titulo,autor,editorial,año",
+        "\"Don Quijote\",\"Cervantes\",\"Planeta\",\"1605\""
+      ],
+      "nota": "Con solo estos 4 campos ya puedes importar"
+    },
+
+    "paso_2_ejecutar": {
+      "comando": "python3 scripts/opac_exportar.py -i libros.csv --codbiblio CENTRAL",
+      "explicacion": [
+        "--input libros.csv: Tu archivo CSV",
+        "--codbiblio CENTRAL: Código de tu biblioteca"
+      ]
+    },
+
+    "paso_3_verificar": {
+      "archivo_generado": "CENTRAL_20251107_marcxml.xml",
+      "verificar_con": "cat CENTRAL_*.xml | grep '<datafield tag=\"245\"'",
+      "deberia_mostrar": "<datafield tag=\"245\" ind1=\"1\" ind2=\"0\"><subfield code=\"a\">Don Quijote</subfield>"
+    }
+  },
+
+  "ampliacion_gradual": {
+    "descripcion": "Cómo agregar más información gradualmente",
+
+    "nivel_1_basico": {
+      "columnas": ["titulo", "autor", "editorial", "año"],
+      "resultado": "Registro bibliográfico básico pero funcional"
+    },
+
+    "nivel_2_intermedio": {
+      "columnas_adicionales": ["isbn", "materia", "edicion"],
+      "mejora": "Registro más completo con ISBN y clasificación por materias"
+    },
+
+    "nivel_3_avanzado": {
+      "columnas_adicionales": ["barcode", "signatura", "ubicacion_fisica", "precio"],
+      "mejora": "Registro completo con gestión de ejemplares físicos"
+    }
+  },
+
+  "preguntas_frecuentes": {
+    "como_saber_mi_codigo_biblioteca": {
+      "respuesta": "Consulta con tu administrador de Koha o ve a:",
+      "koha_admin": "Administration > Libraries and Groups",
+      "ejemplo": "Si encuentras 'MED - Biblioteca de Medicina', usa 'MED'"
+    },
+
+    "que_pasa_si_falta_un_campo": {
+      "respuesta": "No hay problema. Los campos opcionales se omiten.",
+      "ejemplo": "Si no tienes ISBN, simplemente no incluyas esa columna"
+    },
+
+    "puedo_usar_mis_propios_nombres_columnas": {
+      "respuesta": "¡Sí! El sistema reconoce variantes comunes.",
+      "ejemplo": "'Título', 'titulo', 'TITULO', 'title' todos funcionan",
+      "personalizacion": "O agrega tu variante en config/mapeo_campos.json"
+    },
+
+    "como_probar_sin_importar_realmente": {
+      "respuesta": "Usa el modo dry-run (simulación)",
+      "comando": "python3 scripts/opac_exportar.py -i test.csv --codbiblio TEST --dry-run",
+      "explicacion": "Genera el XML pero NO importa a Koha"
+    }
+  },
+
+  "plantilla_csv": {
+    "descripcion": "Plantilla CSV lista para usar (copia y pega en Excel/LibreOffice)",
+    "csv": [
+      "titulo,autor,editorial,año,isbn,materia,barcode,signatura,tipo",
+      "\"Título del libro\",\"Apellido, Nombre\",\"Editorial SA\",\"2023\",\"978-xxx\",\"Tema1; Tema2\",\"BIB-001\",\"XXX.X AUT\",\"Libro\""
+    ],
+    "guardar_como": "UTF-8 CSV",
+    "separador": "coma (,)"
+  }
+}

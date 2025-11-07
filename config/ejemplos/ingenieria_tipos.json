@@ -1,0 +1,121 @@
+{
+  "_descripcion": "Mapeo de tipos de material para Facultad Politécnica (POL)",
+  "_uso": "python3 scripts/opac_exportar.py -i POL.csv --codbiblio POL --map-config config/ejemplos/ingenieria_tipos.json",
+  "_fecha": "2025-11-07",
+
+  "default": {
+    "branch_map": {
+      "POL": "POL",
+      "FPUNA": "POL",
+      "POLITECNICA": "POL"
+    },
+
+    "itemtype_map": {
+      "_descripcion": "Tipos de material comunes en bibliotecas de ingeniería",
+
+      "Libro": "BK",
+      "Monografia": "BK",
+      "Monografía": "BK",
+      "Manual": "BK",
+      "Libro Técnico": "BK",
+
+      "Revista": "MG",
+      "Magazine": "MG",
+      "Journal": "MG",
+      "Revista Técnica": "MG",
+      "IEEE": "MG",
+
+      "Norma": "NORM",
+      "Norma Técnica": "NORM",
+      "Standard": "NORM",
+      "ASTM": "NORM",
+      "ISO": "NORM",
+
+      "Plano": "MP",
+      "Planos": "MP",
+      "Dibujo Técnico": "MP",
+      "Blueprint": "MP",
+
+      "Software": "SW",
+      "CD-ROM": "SW",
+      "Programa": "SW",
+      "Licencia Software": "SW",
+
+      "Video Tutorial": "VM",
+      "DVD Instructivo": "VM",
+      "Curso en Video": "VM",
+      "Tutorial": "VM",
+
+      "Tesis": "TES",
+      "Trabajo Final": "TES",
+      "Proyecto de Grado": "TES",
+
+      "Manual de Equipo": "EQ",
+      "Documentación Técnica": "EQ",
+      "Service Manual": "EQ",
+
+      "Catálogo": "CAT",
+      "Catálogo Técnico": "CAT",
+      "Datasheet": "CAT",
+
+      "E-Book": "EBOOK",
+      "Libro Electrónico": "EBOOK",
+      "Digital": "EBOOK"
+    }
+  },
+
+  "notas": [
+    "BK: Books - Libros y monografías",
+    "MG: Magazines - Revistas técnicas y journals",
+    "NORM: Normas técnicas (ASTM, ISO, etc.)",
+    "MP: Maps/Plans - Planos y dibujos técnicos",
+    "SW: Software - Programas y CD-ROMs",
+    "VM: Visual Materials - Videos y tutoriales",
+    "TES: Tesis y trabajos de grado",
+    "EQ: Equipment Manuals - Manuales de equipos",
+    "CAT: Catalogs - Catálogos y datasheets",
+    "EBOOK: Libros electrónicos"
+  ],
+
+  "ejemplo_csv": {
+    "descripcion": "Ejemplos de materiales técnicos",
+    "csv": [
+      "titulo,tipo,año",
+      "\"Resistencia de Materiales\",\"Libro Técnico\",\"2023\"",
+      "\"Norma ASTM D638\",\"Norma\",\"2022\"",
+      "\"Tutorial AutoCAD 2024\",\"Video Tutorial\",\"2024\"",
+      "\"Manual Osciloscopio Tektronix\",\"Manual de Equipo\",\"2023\"",
+      "\"Catálogo Componentes Electrónicos\",\"Catálogo\",\"2024\""
+    ],
+    "resultado_marc": [
+      "942 $c BK    (Libro Técnico → BK)",
+      "942 $c NORM  (Norma → NORM)",
+      "942 $c VM    (Video Tutorial → VM)",
+      "942 $c EQ    (Manual de Equipo → EQ)",
+      "942 $c CAT   (Catálogo → CAT)"
+    ]
+  },
+
+  "personalizacion": {
+    "descripcion": "Cómo agregar nuevos tipos",
+    "pasos": [
+      "1. Identifica el nombre que usa tu CSV (ej: 'Datasheet')",
+      "2. Decide el código Koha apropiado (ej: 'CAT' para catálogos)",
+      "3. Agrega entrada en itemtype_map:",
+      "   \"Datasheet\": \"CAT\"",
+      "4. Asegúrate que el código existe en Koha Administration > Item Types",
+      "5. Prueba con archivo pequeño"
+    ],
+    "ejemplo_agregar": {
+      "situacion": "Tu biblioteca tiene 'Kits de Arduino'",
+      "solucion": {
+        "itemtype_map": {
+          "Kit Arduino": "KIT",
+          "Kit de Desarrollo": "KIT",
+          "Kit Educativo": "KIT"
+        },
+        "nota": "Primero crea el tipo 'KIT' en Koha Admin si no existe"
+      }
+    }
+  }
+}
