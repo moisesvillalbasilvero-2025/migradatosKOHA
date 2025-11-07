@@ -1,0 +1,26 @@
+# ════════════════════════════════════════════════════════════════════════════
+# DEPENDENCIAS - API REST DE IMPORTACIÓN KOHA
+# ════════════════════════════════════════════════════════════════════════════
+#
+# Instalar con: pip install -r requirements.txt
+#
+# Componentes:
+# - FastAPI: Framework web moderno para APIs
+# - Uvicorn: Servidor ASGI de alto rendimiento
+# - Python-multipart: Manejo de uploads de archivos
+# - Requests: Cliente HTTP para el cliente de ejemplo
+# - Httpx: Cliente HTTP async (usado por FastAPI)
+#
+# ════════════════════════════════════════════════════════════════════════════
+
+# Framework Web y Servidor
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+
+# Cliente HTTP
+requests>=2.31.0
+httpx>=0.25.0
+
+# Utilidades
+python-dateutil>=2.8.2
