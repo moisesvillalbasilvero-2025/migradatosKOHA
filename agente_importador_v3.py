@@ -11,12 +11,13 @@ CARACTERÍSTICAS PRINCIPALES:
 ──────────────────────────────────────────────────────────────────────────────
 ✓ Recuperación automática ante interrupciones (cortes de luz, errores, etc.)
 ✓ Importación incremental - continúa desde donde se interrumpió
+✓ Modo dry-run para simulación sin modificar base de datos
 ✓ Validación robusta de datos de entrada
 ✓ Manejo eficiente de memoria para archivos grandes
 ✓ Estadísticas y progreso en tiempo real
 ✓ Reintentos automáticos con backoff exponencial
 ✓ Sistema de cache para recuperación de estado
-✓ Notificaciones opcionales de progreso
+✓ Sistema de notificaciones (email, webhook)
 
 ARQUITECTURA:
 ──────────────────────────────────────────────────────────────────────────────
@@ -40,6 +41,9 @@ USO:
 ──────────────────────────────────────────────────────────────────────────────
     # Importación simple
     ./agente_importador_v3.py archivo.csv
+
+    # Simular importación sin modificar BD (dry-run)
+    ./agente_importador_v3.py archivo.csv --dry-run
 
     # Reanudar importación interrumpida
     ./agente_importador_v3.py archivo.csv --resume
@@ -403,7 +407,7 @@ class ProcesadorCSV:
         estado_file: Archivo donde se guarda el estado
     """
 
-    def __init__(self, archivo: Path, logger: Logger, resume: bool = False):
+    def __init__(self, archivo: Path, logger: Logger, resume: bool = False, dry_run: bool = False):
         """
         Inicializa el procesador de CSV.
 
@@ -411,10 +415,12 @@ class ProcesadorCSV:
             archivo: Ruta al archivo CSV
             logger: Instancia del logger
             resume: Si True, intenta reanudar importación previa
+            dry_run: Si True, simula sin modificar base de datos
         """
         self.archivo = archivo
         self.logger = logger
         self.resume = resume
+        self.dry_run = dry_run
         self.estado: Optional[EstadoImportacion] = None
         self.estadisticas = Estadisticas()
         self.estadisticas.tiempo_inicio = time.time()
@@ -695,7 +701,10 @@ class ProcesadorCSV:
         Returns:
             True si todos se importaron exitosamente, False si hubo errores
         """
-        self.logger.info("→ Importando a Koha...")
+        if self.dry_run:
+            self.logger.warning("→ 🔍 MODO DRY-RUN - Simulando importación...")
+        else:
+            self.logger.info("→ Importando a Koha...")
 
         total_exitosos = 0
         total_fallidos = 0
@@ -708,35 +717,54 @@ class ProcesadorCSV:
                 total_exitosos += 1
                 continue
 
-            self.logger.progreso(idx - 1, total, "Importando")
+            self.logger.progreso(idx - 1, total, "Simulando" if self.dry_run else "Importando")
 
             try:
-                # Comando de importación usando bulkmarcimport.pl de Koha
-                cmd = (
-                    f'sudo koha-shell {Config.INSTANCIA_KOHA} -c '
-                    f'"perl /usr/share/koha/bin/migration_tools/bulkmarcimport.pl '
-                    f'-m MARCXML -file {xml} -commit {Config.COMMIT_SIZE}"'
-                )
+                if self.dry_run:
+                    # MODO DRY-RUN: Solo simular
+                    # Validar que el archivo existe y es válido
+                    if xml.exists() and xml.stat().st_size > 0:
+                        # Contar registros para estadísticas
+                        with open(xml, 'r', encoding='utf-8') as f:
+                            contenido = f.read()
+                            num_records = contenido.count('<record>')
 
-                result = subprocess.run(
-                    cmd,
-                    shell=True,
-                    capture_output=True,
-                    text=True,
-                    timeout=Config.TIMEOUT_IMPORT
-                )
+                        time.sleep(0.1)  # Simular tiempo de procesamiento
+                        total_exitosos += 1
 
-                if result.returncode == 0:
-                    total_exitosos += 1
-
-                    # Guardar progreso para recuperación
-                    if self.estado:
-                        self.estado.archivos_xml_importados.append(str(xml))
-                        self.estado.registros_procesados = idx * Config.MAX_RECORDS_PER_FILE
-                        self.guardar_estado('importacion')
+                        self.logger.info(
+                            f"  [{idx}/{total}] ✓ Validado: {xml.name} ({num_records:,} registros)"
+                        )
+                    else:
+                        total_fallidos += 1
+                        self.logger.error(f"  ✗ Archivo inválido: {xml.name}")
                 else:
-                    total_fallidos += 1
-                    self.logger.error(f"  ✗ Falló: {xml.name}")
+                    # MODO REAL: Importar a Koha
+                    cmd = (
+                        f'sudo koha-shell {Config.INSTANCIA_KOHA} -c '
+                        f'"perl /usr/share/koha/bin/migration_tools/bulkmarcimport.pl '
+                        f'-m MARCXML -file {xml} -commit {Config.COMMIT_SIZE}"'
+                    )
+
+                    result = subprocess.run(
+                        cmd,
+                        shell=True,
+                        capture_output=True,
+                        text=True,
+                        timeout=Config.TIMEOUT_IMPORT
+                    )
+
+                    if result.returncode == 0:
+                        total_exitosos += 1
+
+                        # Guardar progreso para recuperación
+                        if self.estado:
+                            self.estado.archivos_xml_importados.append(str(xml))
+                            self.estado.registros_procesados = idx * Config.MAX_RECORDS_PER_FILE
+                            self.guardar_estado('importacion')
+                    else:
+                        total_fallidos += 1
+                        self.logger.error(f"  ✗ Falló: {xml.name}")
 
             except subprocess.TimeoutExpired:
                 self.logger.error(f"  ⏱ Timeout: {xml.name}")
@@ -746,12 +774,19 @@ class ProcesadorCSV:
                 self.logger.error(f"  ✗ Error: {xml.name} - {e}")
                 total_fallidos += 1
 
-        self.logger.progreso(total, total, "Importando")
+        self.logger.progreso(total, total, "Simulando" if self.dry_run else "Importando")
 
         exito = total_exitosos > 0 and total_fallidos == 0
-        self.logger.info(
-            f"\n📊 Resultado: {total_exitosos} exitosos, {total_fallidos} fallidos"
-        )
+
+        if self.dry_run:
+            self.logger.info(
+                f"\n📊 Resultado (DRY-RUN): {total_exitosos} archivos válidos, "
+                f"{total_fallidos} con problemas"
+            )
+        else:
+            self.logger.info(
+                f"\n📊 Resultado: {total_exitosos} exitosos, {total_fallidos} fallidos"
+            )
 
         return exito
 
@@ -765,6 +800,10 @@ class ProcesadorCSV:
         Returns:
             True si exitoso, False si falló (no crítico)
         """
+        if self.dry_run:
+            self.logger.info("→ ⏭️  Omitiendo reindexación (dry-run)")
+            return True
+
         self.logger.info("→ Reindexando catálogo (optimizado)...")
 
         try:
@@ -836,12 +875,27 @@ class ProcesadorCSV:
         # Banner inicial
         # ═════════════════════════════════════════════════════════════════════
         print("\n" + "═" * 80)
-        self.logger.log(
-            f"📄 PROCESANDO: {self.archivo.name}",
-            Config.BOLD + Config.C,
-            guardar=False
-        )
+        if self.dry_run:
+            self.logger.log(
+                f"🔍 DRY-RUN (SIMULACIÓN): {self.archivo.name}",
+                Config.BOLD + Config.Y,
+                guardar=False
+            )
+        else:
+            self.logger.log(
+                f"📄 PROCESANDO: {self.archivo.name}",
+                Config.BOLD + Config.C,
+                guardar=False
+            )
         print("═" * 80 + "\n")
+
+        if self.dry_run:
+            self.logger.warning(
+                "⚠️  MODO DRY-RUN ACTIVADO - No se modificará la base de datos"
+            )
+            self.logger.info(
+                "   Se validarán los datos y se simularán las operaciones\n"
+            )
 
         # ═════════════════════════════════════════════════════════════════════
         # PASO 1: Detección de código de biblioteca
@@ -953,19 +1007,30 @@ class ProcesadorCSV:
 
         # Banner de éxito
         print("\n" + "═" * 80)
-        self.logger.log(
-            "✓✓✓ IMPORTACIÓN COMPLETADA EXITOSAMENTE ✓✓✓",
-            Config.G + Config.BOLD,
-            guardar=False
-        )
-        print("═" * 80 + "\n")
+        if self.dry_run:
+            self.logger.log(
+                "✓✓✓ SIMULACIÓN COMPLETADA EXITOSAMENTE ✓✓✓",
+                Config.Y + Config.BOLD,
+                guardar=False
+            )
+            print("═" * 80 + "\n")
+            self.logger.success("🔍 Validación completada - Los datos son correctos")
+            self.logger.info("💡 Para importar realmente, ejecuta sin --dry-run")
+        else:
+            self.logger.log(
+                "✓✓✓ IMPORTACIÓN COMPLETADA EXITOSAMENTE ✓✓✓",
+                Config.G + Config.BOLD,
+                guardar=False
+            )
+            print("═" * 80 + "\n")
 
         minutos = int(self.estadisticas.tiempo_total // 60)
         segundos = int(self.estadisticas.tiempo_total % 60)
         self.logger.success(f"⏱ Tiempo total: {minutos}m {segundos}s")
 
-        # Limpiar estado de recuperación
-        self.limpiar_estado()
+        # Limpiar estado de recuperación (solo si no es dry-run)
+        if not self.dry_run:
+            self.limpiar_estado()
 
         return True
 
@@ -1001,6 +1066,11 @@ Universidad Nacional de Asunción - 2025
         'archivos',
         nargs='*',
         help='Archivo(s) CSV a procesar'
+    )
+    parser.add_argument(
+        '--dry-run', '-d',
+        action='store_true',
+        help='Modo dry-run: simula la importación sin modificar la base de datos'
     )
     parser.add_argument(
         '--resume', '-r',
@@ -1050,7 +1120,12 @@ Universidad Nacional de Asunción - 2025
         Config.DIR_LOGS.mkdir(parents=True, exist_ok=True)
 
         logger = Logger(log_file, verbose=verbose)
-        procesador = ProcesadorCSV(archivo, logger, resume=args.resume)
+        procesador = ProcesadorCSV(
+            archivo,
+            logger,
+            resume=args.resume,
+            dry_run=args.dry_run
+        )
 
         try:
             if procesador.procesar():
