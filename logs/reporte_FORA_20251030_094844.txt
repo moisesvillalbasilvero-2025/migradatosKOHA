@@ -1,0 +1,46 @@
+
+════════════════════════════════════════════════════════════════════════════════
+REPORTE DE IMPORTACIÓN AUTOMÁTICA
+════════════════════════════════════════════════════════════════════════════════
+
+INFORMACIÓN GENERAL
+───────────────────
+Fecha y hora:        2025-10-30 09:49:13
+Código biblioteca:   FORA
+Nombre biblioteca:   Biblioteca de la Ing. Forestal
+
+ARCHIVO CSV
+───────────
+Ruta original:       /home/mvillalba/migradatos/importar_aqui/FORA.csv
+Nombre archivo:      FORA.csv
+Total registros:     272
+Duplicados:          0
+Corrección aplicada: No necesaria
+
+GENERACIÓN MARCXML
+──────────────────
+Archivos generados:  1
+Registros en XML:    0
+Validación XML:      Válido
+
+IMPORTACIÓN KOHA
+────────────────
+Items antes:         0
+Items después:       272
+Items importados:    272
+Estado importación:  1 exitosos, 0 fallidos
+
+REINDEXACIÓN
+────────────
+Estado reindex:      Exitoso (optimizado)
+
+RESULTADO FINAL
+───────────────
+Estado:              EXITOSO
+Tiempo total:        29 segundos
+
+VERIFICACIÓN
+────────────
+URL OPAC: http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=FORA
+
+════════════════════════════════════════════════════════════════════════════════

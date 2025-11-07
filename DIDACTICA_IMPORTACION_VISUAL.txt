@@ -1,0 +1,432 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║       🎓 DIDÁCTICA VISUAL: IMPORTACIÓN A KOHA PARA PRINCIPIANTES          ║
+║                                                                            ║
+║                     De CERO a EXPERTO en 5 minutos                        ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 📚 CAPÍTULO 1: ¿QUÉ ES UN LIBRO EN KOHA?                               │
+└─────────────────────────────────────────────────────────────────────────┘
+
+Un libro en Koha tiene 3 partes:
+
+    ┌──────────────────────────────────────────────────────────┐
+    │  1️⃣  BIBLIO (El LIBRO en sí)                            │
+    │     ├─ Título: "Cien años de soledad"                   │
+    │     ├─ Autor: "García Márquez, Gabriel"                 │
+    │     └─ Resumen: "Historia de los Buendía..."            │
+    └──────────────────────────────────────────────────────────┘
+                              ▼
+    ┌──────────────────────────────────────────────────────────┐
+    │  2️⃣  BIBLIOITEM (La EDICIÓN específica)                │
+    │     ├─ ISBN: 978-84-376-0494-7                          │
+    │     ├─ Editorial: "Sudamericana"                        │
+    │     ├─ Año: 1967                                        │
+    │     └─ Páginas: 471                                     │
+    └──────────────────────────────────────────────────────────┘
+                              ▼
+    ┌──────────────────────────────────────────────────────────┐
+    │  3️⃣  ITEM (El EJEMPLAR físico)                         │
+    │     ├─ Código de barras: LIBRO001                       │
+    │     ├─ Biblioteca: ING (Ingeniería)                     │
+    │     ├─ Ubicación: Estantería General                    │
+    │     └─ Signatura: 863 GAR                               │
+    └──────────────────────────────────────────────────────────┘
+
+💡 ANALOGÍA:
+   BIBLIO     = La obra "Don Quijote"
+   BIBLIOITEM = Edición de Planeta, 2005
+   ITEM       = La copia física con código LIBRO002
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 📝 CAPÍTULO 2: EL ARCHIVO CSV - TU LISTA DE LIBROS                     │
+└─────────────────────────────────────────────────────────────────────────┘
+
+El CSV es como una TABLA de Excel:
+
+    ┌────────┬───────┬──────┬───────┬─────────┐
+    │ Título │ Autor │ ISBN │ Tipo  │ Código  │  ← ENCABEZADO
+    ├────────┼───────┼──────┼───────┼─────────┤
+    │ Libro1 │ Autor1│ 123..│  BK   │ LIB001  │  ← LIBRO 1
+    ├────────┼───────┼──────┼───────┼─────────┤
+    │ Libro2 │ Autor2│ 456..│  BK   │ LIB002  │  ← LIBRO 2
+    ├────────┼───────┼──────┼───────┼─────────┤
+    │ Libro3 │ Autor3│ 789..│  BK   │ LIB003  │  ← LIBRO 3
+    └────────┴───────┴──────┴───────┴─────────┘
+
+Cada FILA = Un libro completo
+Cada COLUMNA = Un dato del libro
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 🎯 CAPÍTULO 3: CAMPOS OBLIGATORIOS (Los que NO pueden faltar)          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    ┃  🔴 CRÍTICO - Sin esto NO funciona                     ┃
+    ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+    ✅ title         →  Título del libro
+                        Ejemplo: "Don Quijote"
+
+    ✅ barcode       →  Código ÚNICO del ejemplar
+                        Ejemplo: "LIBRO001"
+
+    ✅ homebranch    →  ¿En qué biblioteca está?
+                        Ejemplo: "ING" o "ODO" o "QUI"
+
+    ✅ itemtype      →  ¿Qué tipo de material es?
+                        Ejemplo: "BK" (libro)
+
+
+    ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    ┃  🟡 IMPORTANTE - Para que se vea bien en OPAC          ┃
+    ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+    ⭐ author         →  Nombre del autor
+                        Ejemplo: "Cervantes, Miguel de"
+
+    ⭐ isbn           →  Código internacional del libro
+                        Ejemplo: "978-84-376-0494-7"
+
+    ⭐ abstract       →  Resumen del contenido
+                        Ejemplo: "Las aventuras de un hidalgo..."
+
+    ⭐ subject        →  De qué trata (materia)
+                        Ejemplo: "Literatura española"
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 🎨 CAPÍTULO 4: CÓDIGOS COMUNES (Valores que puedes usar)               │
+└─────────────────────────────────────────────────────────────────────────┘
+
+╔═══════════════════════════════════════════════════════════════════════╗
+║  ITEMTYPE - ¿Qué tipo de material es?                                ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+    📕 BK     = Libro (Book)
+    💿 DVD    = DVD/Video
+    🎵 CD     = CD de audio
+    📰 MAG    = Revista (Magazine)
+    📄 NEWS   = Periódico
+    🗺️  MAP    = Mapa
+    🎼 SCORE  = Partitura musical
+
+╔═══════════════════════════════════════════════════════════════════════╗
+║  HOMEBRANCH - ¿En qué biblioteca está?                               ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+    🏛️  ING = Facultad de Ingeniería
+    🦷 ODO = Facultad de Odontología
+    ⚗️  QUI = Facultad de Química
+    🏛️  ARQ = Facultad de Arquitectura
+    ⚖️  DER = Facultad de Derecho
+
+╔═══════════════════════════════════════════════════════════════════════╗
+║  CCODE - Colección (tipo de contenido)                               ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+    📖 FIC    = Ficción (novelas)
+    📚 NF     = No ficción (ensayos, biografías)
+    📔 TEXTB  = Libro de texto
+    🎓 TESIS  = Tesis de grado
+    👶 INF    = Infantil
+    🧒 JUV    = Juvenil
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 🚀 CAPÍTULO 5: PASO A PASO - TU PRIMERA IMPORTACIÓN                    │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    ┌──────────────────────────────────────────────────────────┐
+    │  PASO 1: Crear el archivo CSV                           │
+    └──────────────────────────────────────────────────────────┘
+
+    Abre un editor de texto y crea:
+
+    /home/mvillalba/migradatos/importar_aqui/MI_BIBLIOTECA.csv
+
+    Contenido:
+
+title,author,isbn,publisher,publicationyear,copyrightdate,pages,itemtype,dewey,itemcallnumber,barcode,homebranch,holdingbranch,location,price,replacementprice,notforloan,ccode,materials,abstract,subject,notes
+"Don Quijote","Cervantes, Miguel de","978-84-376-0455-8","Planeta","1605","1605","863","BK","863","863 CER","LIBRO001","ING","ING","Estantería","30.00","40.00","0","FIC","Tapa dura","Las aventuras...","Literatura","1ra edición"
+
+
+    ┌──────────────────────────────────────────────────────────┐
+    │  PASO 2: Validar antes de importar (IMPORTANTE)         │
+    └──────────────────────────────────────────────────────────┘
+
+    cd /home/mvillalba/migradatos
+    ./validar_antes_importar.sh importar_aqui/MI_BIBLIOTECA.csv
+
+    Esto te dirá:
+    ✓ Si hay errores
+    ✓ Qué campos faltan
+    ✓ Puntuación de calidad (0-100)
+
+
+    ┌──────────────────────────────────────────────────────────┐
+    │  PASO 3: Decidir método de importación                  │
+    └──────────────────────────────────────────────────────────┘
+
+    ¿Cuántos libros tienes?
+
+    📘 Menos de 500 libros:
+       ./importar_biblioteca.sh MI_BIBLIOTECA
+
+    📚 Entre 500 y 10,000 libros:
+       ./importar_por_lotes.sh importar_aqui/MI_BIBLIOTECA.csv 500
+
+    📚📚 Más de 10,000 libros:
+       ./importar_por_lotes.sh importar_aqui/MI_BIBLIOTECA.csv 1000
+
+
+    ┌──────────────────────────────────────────────────────────┐
+    │  PASO 4: ¡Importar!                                     │
+    └──────────────────────────────────────────────────────────┘
+
+    El script hará TODO automáticamente:
+
+    1. ✓ Leer el CSV
+    2. ✓ Crear registros en la base de datos
+    3. ✓ Indexar para búsqueda
+    4. ✓ Reiniciar servicios
+    5. ✓ Generar reporte
+
+
+    ┌──────────────────────────────────────────────────────────┐
+    │  PASO 5: Verificar resultado                            │
+    └──────────────────────────────────────────────────────────┘
+
+    firefox http://opac.una.edu.py/
+
+    Busca uno de tus libros y ¡listo! 🎉
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 💡 CAPÍTULO 6: EJEMPLO VISUAL COMPLETO                                 │
+└─────────────────────────────────────────────────────────────────────────┘
+
+QUIERO IMPORTAR: "Cien años de soledad" de García Márquez
+
+    ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    ┃  MI CSV                                               ┃
+    ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+title                    → "Cien años de soledad"
+author                   → "García Márquez, Gabriel"
+isbn                     → "978-84-376-0494-7"
+publisher                → "Sudamericana"
+publicationyear          → "1967"
+copyrightdate            → "1967"
+pages                    → "471"
+itemtype                 → "BK"
+dewey                    → "863"
+itemcallnumber           → "863 GAR"
+barcode                  → "LIBRO001"
+homebranch               → "ING"
+holdingbranch            → "ING"
+location                 → "Estantería General"
+price                    → "25.00"
+replacementprice         → "35.00"
+notforloan               → "0"
+ccode                    → "FIC"
+materials                → "Tapa dura"
+abstract                 → "Historia de la familia Buendía..."
+subject                  → "Literatura latinoamericana"
+notes                    → "Primera edición"
+
+    ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    ┃  LO QUE VERÁ EL USUARIO EN EL OPAC                   ┃
+    ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+    ╔════════════════════════════════════════════════════════╗
+    ║  Cien años de soledad                                 ║
+    ║  por García Márquez, Gabriel                          ║
+    ╟────────────────────────────────────────────────────────╢
+    ║  📖 Tipo: Libro                                       ║
+    ║  📅 Año: 1967                                         ║
+    ║  📄 Páginas: 471                                      ║
+    ║  🏢 Editorial: Sudamericana                           ║
+    ║  🔢 ISBN: 978-84-376-0494-7                           ║
+    ╟────────────────────────────────────────────────────────╢
+    ║  📝 Resumen:                                          ║
+    ║  Historia de la familia Buendía a lo largo de         ║
+    ║  siete generaciones en el pueblo ficticio de Macondo. ║
+    ╟────────────────────────────────────────────────────────╢
+    ║  📍 Ubicación:                                        ║
+    ║  ✓ Biblioteca: Ingeniería                            ║
+    ║  ✓ Estantería General                                ║
+    ║  ✓ Signatura: 863 GAR                                ║
+    ║  ✓ Estado: DISPONIBLE                                ║
+    ╚════════════════════════════════════════════════════════╝
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ ⚡ CAPÍTULO 7: TIPS Y TRUCOS PRO                                        │
+└─────────────────────────────────────────────────────────────────────────┘
+
+╔═══════════════════════════════════════════════════════════════════════╗
+║  TIP 1: Formato de Autor                                             ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+    ❌ MAL:   "Gabriel García Márquez"
+    ✅ BIEN:  "García Márquez, Gabriel"
+
+    Siempre: APELLIDO, Nombre
+
+
+╔═══════════════════════════════════════════════════════════════════════╗
+║  TIP 2: Códigos de Barras                                            ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+    ❌ MAL:   Repetir el mismo código
+    ✅ BIEN:  Cada libro tiene código ÚNICO
+
+    Ejemplos:
+    - LIBRO001, LIBRO002, LIBRO003...
+    - ING001, ING002, ING003...
+    - 2025-ING-001, 2025-ING-002...
+
+
+╔═══════════════════════════════════════════════════════════════════════╗
+║  TIP 3: Campos con Comas                                             ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+    Si un campo tiene comas, usar comillas:
+
+    ❌ MAL:   Historia, crónica y novela
+    ✅ BIEN:  "Historia, crónica y novela"
+
+
+╔═══════════════════════════════════════════════════════════════════════╗
+║  TIP 4: Resúmenes Atractivos                                         ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+    ❌ MAL:   "Libro sobre historia"
+    ✅ BIEN:  "Fascinante recorrido por los eventos más
+               importantes del siglo XX, narrado con maestría
+               y respaldado por investigación exhaustiva."
+
+    Un buen resumen = Más usuarios interesados
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 🎓 CAPÍTULO 8: ERRORES COMUNES Y CÓMO EVITARLOS                        │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃  ERROR 1: "Código de barras duplicado"                               ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Causa:    Usaste el mismo barcode dos veces
+Solución: Cada libro DEBE tener código único
+
+    Buscar duplicados en tu CSV:
+    cut -d',' -f11 archivo.csv | sort | uniq -d
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃  ERROR 2: "Biblioteca no existe"                                     ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Causa:    Pusiste un código de biblioteca inválido
+Solución: Usa solo códigos que existan en Koha
+
+    Ver bibliotecas válidas:
+    koha-mysql koha-cnc -e "SELECT branchcode FROM branches"
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃  ERROR 3: "CSV malformado"                                           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Causa:    Faltan columnas o hay líneas vacías
+Solución: Validar con el script antes de importar
+
+    ./validar_antes_importar.sh tu_archivo.csv
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 🏆 CAPÍTULO 9: NIVELES DE CALIDAD (Sube de nivel)                      │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    ⭐ NIVEL 1: BÁSICO (Principiante)
+    ────────────────────────────────────
+    Campos: title, barcode, homebranch, itemtype
+    Resultado: Funciona, pero poco atractivo
+
+    ⭐⭐ NIVEL 2: ESTÁNDAR (Intermedio)
+    ────────────────────────────────────
+    + author, isbn, itemcallnumber
+    Resultado: Búsqueda avanzada funciona
+
+    ⭐⭐⭐ NIVEL 3: COMPLETO (Avanzado)
+    ────────────────────────────────────
+    + abstract, subject, dewey
+    Resultado: Experiencia profesional
+
+    ⭐⭐⭐⭐ NIVEL 4: PREMIUM (Experto)
+    ────────────────────────────────────
+    + portadas, tabla contenidos, URLs
+    Resultado: Comparable a Amazon
+
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 📚 CAPÍTULO 10: RECURSOS Y AYUDA                                       │
+└─────────────────────────────────────────────────────────────────────────┘
+
+╔═══════════════════════════════════════════════════════════════════════╗
+║  DOCUMENTACIÓN COMPLETA                                               ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+📖 Estructura CSV y SQL:
+   /home/mvillalba/migradatos/docs/GUIA_ESTRUCTURA_CSV_Y_SQL.md
+
+📖 Importación por Lotes:
+   /home/mvillalba/migradatos/docs/GUIA_IMPORTACION_LOTES.md
+
+📖 Mejora Continua:
+   /home/mvillalba/migradatos/docs/MEJORA_CONTINUA_CATALOGO.md
+
+╔═══════════════════════════════════════════════════════════════════════╗
+║  ARCHIVOS DE EJEMPLO                                                  ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+📝 CSV de ejemplo (15 libros):
+   /home/mvillalba/migradatos/docs/ejemplo-catalogo-completo.csv
+
+📝 SQL didáctico:
+   /home/mvillalba/migradatos/docs/estructura-catalogo-didactica.sql
+
+╔═══════════════════════════════════════════════════════════════════════╗
+║  SCRIPTS DISPONIBLES                                                  ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+🔧 Validador:
+   ./validar_antes_importar.sh
+
+🔧 Importador normal:
+   ./importar_biblioteca.sh
+
+🔧 Importador por lotes:
+   ./importar_por_lotes.sh
+
+
+╔════════════════════════════════════════════════════════════════════════╗
+║                                                                        ║
+║  ✨ ¡FELICIDADES! Ahora eres un experto en importación a Koha         ║
+║                                                                        ║
+║  Recuerda:                                                            ║
+║  • Siempre validar antes de importar                                  ║
+║  • Usar lotes para archivos grandes                                   ║
+║  • Mejorar la calidad día a día                                       ║
+║  • Consultar la documentación cuando tengas dudas                     ║
+║                                                                        ║
+║  🚀 ¡Ahora ve y crea un catálogo increíble!                           ║
+║                                                                        ║
+╚════════════════════════════════════════════════════════════════════════╝

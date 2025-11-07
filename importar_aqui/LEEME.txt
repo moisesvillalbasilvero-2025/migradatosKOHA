@@ -1,0 +1,109 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║                 📂 CARPETA DE IMPORTACIÓN AUTOMÁTICA                 ║
+║                                                                      ║
+║              Coloca tus archivos CSV aquí para importar              ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+🎯 INSTRUCCIONES SIMPLES
+═════════════════════════
+
+1️⃣  COLOCA tu archivo CSV aquí
+
+    Ejemplo:
+    cp /ruta/origen/MED.csv  /home/mvillalba/migradatos/importar_aqui/
+
+
+2️⃣  INICIA el auto-importador (desde carpeta migradatos):
+
+    cd /home/mvillalba/migradatos
+    ./auto_importar.py
+
+
+3️⃣  ¡LISTO! Se procesa automáticamente
+
+
+📝 REQUISITOS DEL NOMBRE
+════════════════════════
+
+El nombre del archivo DEBE contener el código de la biblioteca:
+
+✅ MED.csv                    → Detecta biblioteca "MED"
+✅ VET_2025.csv               → Detecta biblioteca "VET"
+✅ ING_octubre.csv            → Detecta biblioteca "ING"
+✅ FACAGR_completo.csv        → Detecta biblioteca "FACAGR"
+✅ POL.csv                    → Detecta biblioteca "POL"
+
+❌ datos_biblioteca.csv       → NO detecta código
+❌ nueva_importacion.csv      → NO detecta código
+
+
+🔄 ¿QUÉ PASA DESPUÉS?
+══════════════════════
+
+El sistema automáticamente:
+
+✓ Detecta el código de biblioteca del nombre
+✓ Verifica que existe en Koha
+✓ Analiza el formato del CSV
+✓ Corrige duplicados si es necesario
+✓ Genera MARCXML
+✓ Importa a Koha
+✓ Reindexa el catálogo
+✓ Mueve el archivo a procesados/ o errores/
+
+
+📂 DESPUÉS DEL PROCESO
+═══════════════════════
+
+Si TODO está bien:
+  → Archivo se mueve a: ../procesados/MED_OK_20251022_143025.csv
+
+Si hay algún error:
+  → Archivo se mueve a: ../errores/MED_ERROR_20251022_143025.csv
+
+
+🚀 INICIO RÁPIDO
+════════════════
+
+Desde terminal:
+
+# Opción 1: Modo vigilancia (deja corriendo)
+cd /home/mvillalba/migradatos
+./auto_importar.py
+
+# Luego en otra terminal:
+cp /tmp/MED.csv /home/mvillalba/migradatos/importar_aqui/
+
+# Se procesa automáticamente
+
+
+# Opción 2: Procesar archivo directamente
+cd /home/mvillalba/migradatos
+./auto_importar.py importar_aqui/MED.csv
+
+
+💡 CONSEJOS
+═══════════
+
+• Puedes colocar múltiples archivos CSV aquí
+• Cada uno se procesa en orden
+• No coloques archivos demasiado grandes (>100MB)
+• Renombra tus archivos para incluir el código: MED.csv, VET.csv, etc.
+
+
+⚠️  IMPORTANTE
+═══════════════
+
+La biblioteca DEBE existir en Koha antes de importar.
+
+Si no existe, créala en:
+  Staff Interface → Administración → Bibliotecas → Nueva biblioteca
+
+
+═══════════════════════════════════════════════════════════════════
+
+Universidad Nacional de Asunción
+Sistema de Importación Automatizada

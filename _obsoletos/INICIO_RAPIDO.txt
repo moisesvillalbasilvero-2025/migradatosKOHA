@@ -1,0 +1,202 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║              🚀 INICIO RÁPIDO - AUTO IMPORTADOR                      ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+📌 EMPEZAR EN 3 PASOS
+═════════════════════
+
+1️⃣  VERIFICAR que todo está listo:
+
+    ./test_sistema.sh
+
+
+2️⃣  PROCESAR un archivo:
+
+    ./auto_importar.py MED.csv
+
+
+3️⃣  ¡LISTO! Ver resultado en OPAC
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+🎯 USO MÁS SIMPLE
+═════════════════
+
+┌────────────────────────────────────────────────────────────────┐
+│  Tienes un CSV llamado "MED.csv" que quieres importar         │
+└────────────────────────────────────────────────────────────────┘
+
+  cd /home/mvillalba/migradatos
+  ./auto_importar.py MED.csv
+
+  → El sistema detecta que es biblioteca "MED"
+  → Verifica que existe en Koha
+  → Analiza y corrige el CSV
+  → Importa a Koha
+  → Reindexa
+  → ¡LISTO!
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+🔄 MODO AUTOMÁTICO (Recomendado)
+═════════════════════════════════
+
+Si tienes muchos archivos para importar:
+
+1. ACTIVAR vigilancia:
+
+   cd /home/mvillalba/migradatos
+   ./auto_importar.py
+
+   (Deja corriendo en esta terminal)
+
+
+2. COLOCAR archivos en otra terminal:
+
+   cp /tmp/MED.csv /home/mvillalba/migradatos/importar_aqui/
+   cp /tmp/VET.csv /home/mvillalba/migradatos/importar_aqui/
+
+   → Se procesan automáticamente!
+
+
+3. VER progreso en la primera terminal
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+📋 ARCHIVOS DISPONIBLES AHORA
+═════════════════════════════
+
+Según el test, tienes estos archivos listos:
+
+  • MED.csv (5.5 MB)
+  • VET.csv (11 MB)
+  • POL.csv (11 MB)
+  • ING.csv (17 MB)
+  • ARQ.csv (8.5 MB)
+
+Puedes procesarlos con:
+
+  ./auto_importar.py MED.csv VET.csv POL.csv
+
+
+O uno por uno:
+
+  ./auto_importar.py MED.csv
+  ./auto_importar.py VET.csv
+  ./auto_importar.py POL.csv
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+⚡ COMANDOS RÁPIDOS
+══════════════════
+
+Verificar sistema:
+  ./test_sistema.sh
+
+Procesar un archivo:
+  ./auto_importar.py NOMBRE.csv
+
+Modo vigilancia:
+  ./auto_importar.py
+
+Ver archivos procesados:
+  ls -lh procesados/
+
+Ver archivos con error:
+  ls -lh errores/
+
+Ver bibliotecas en Koha:
+  sudo koha-mysql koha-cnc -e "SELECT branchcode, branchname FROM branches"
+
+Ver items importados:
+  sudo koha-mysql koha-cnc -e "
+  SELECT homebranch, COUNT(*) as total
+  FROM items
+  GROUP BY homebranch
+  ORDER BY total DESC"
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+✅ LISTA DE VERIFICACIÓN
+════════════════════════
+
+Antes de importar, verifica:
+
+☐ El nombre del archivo contiene el código: MED.csv, VET.csv, etc.
+☐ La biblioteca existe en Koha
+☐ El CSV tiene campos: titulo, nroacceso
+☐ Tienes backup del CSV original
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+🔍 DESPUÉS DE IMPORTAR
+══════════════════════
+
+1. Verificar en MySQL:
+
+   sudo koha-mysql koha-cnc -e "
+   SELECT COUNT(*) as items
+   FROM items
+   WHERE homebranch = 'MED'"
+
+
+2. Verificar en OPAC:
+
+   http://tu-servidor:8080/cgi-bin/koha/opac-search.pl?branch=MED
+
+
+3. Revisar archivo movido:
+
+   ls procesados/MED_OK_*
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+📖 MÁS INFORMACIÓN
+══════════════════
+
+Guía completa:          cat COMO_USAR_AUTO_IMPORTAR.txt
+Resumen del sistema:    cat RESUMEN_AUTO_IMPORTADOR.txt
+Carpeta de importación: ls importar_aqui/
+Ver logs:               ls logs/
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+❓ PROBLEMAS COMUNES
+════════════════════
+
+"Biblioteca no existe"
+→ Créala en: Staff Interface → Administración → Bibliotecas
+
+
+"No se detecta código"
+→ Renombra: datos.csv → MED_datos.csv
+
+
+"Formato inválido"
+→ Verifica que tiene: titulo, nroacceso
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+Universidad Nacional de Asunción
+Sistema de Importación Automatizada

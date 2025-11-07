@@ -1,0 +1,1 @@
+scripts/importar_con_tmux.sh

@@ -1,0 +1,1 @@
+scripts/reindexar_optimizado.sh

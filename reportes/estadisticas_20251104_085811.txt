@@ -1,0 +1,222 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║  📊 REPORTE ESTADÍSTICO - SISTEMA KOHA UNA                                ║
+║     Universidad Nacional de Asunción                                      ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Fecha de generación: 2025-11-04 08:58:11
+Instancia Koha:      koha-cnc
+
+[0;36mℹ Obteniendo estadísticas generales...[0m
+═══════════════════════════════════════════════════════════════════════════
+📈 RESUMEN GENERAL DEL SISTEMA
+═══════════════════════════════════════════════════════════════════════════
+
+Bibliotecas:
+  • Total de bibliotecas:          42
+  • Bibliotecas con ítems:          17
+  • Bibliotecas sin ítems:          25
+
+Catálogo:
+  • Total de títulos únicos:        191.542
+  • Total de ejemplares:            157.208
+  • Promedio ejemplares/título:     .82
+
+Usuarios:
+  • Total de usuarios registrados:  4
+
+[0;36mℹ Generando tabla de bibliotecas...[0m
+═══════════════════════════════════════════════════════════════════════════
+📚 DETALLE POR BIBLIOTECA
+═══════════════════════════════════════════════════════════════════════════
+
+┌─────────┬──────────────────────────────────┬───────────┬────────────┐
+│ Código  │ Nombre                           │ Títulos   │ Ejemplares │
+├─────────┼──────────────────────────────────┼───────────┼────────────┤
+│ AGRO    │ Biblioteca de la Facultad de Cie │    37.226 │     37.226 │
+│         │ [0;32m████████████████████████████████████████░[0m │           │            │
+│ BCT     │ Biblioteca Central. Trabajos de  │    19.298 │     19.298 │
+│         │ [0;32m████████████████████░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ BC      │ Biblioteca Central de la Univers │    15.997 │     15.997 │
+│         │ [0;32m█████████████████░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ ING     │ Biblioteca de la Facultad de Ing │    14.893 │     14.997 │
+│         │ [0;32m████████████████░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ POL     │ Centro de Información y Cultura │    12.467 │     12.467 │
+│         │ [0;32m█████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ FIL     │ Biblioteca "Abraham Lincoln" de  │    10.350 │     10.377 │
+│         │ [0;32m███████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ ECO     │ Biblioteca de la Facultad de Cie │     9.687 │      9.687 │
+│         │ [0;32m██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ VET     │ Biblioteca y Centro de Documenta │     9.085 │      9.085 │
+│         │ [0;32m█████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ FACEN   │ Biblioteca e Internet (BIFACEN)  │     7.054 │      7.090 │
+│         │ [0;32m███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ QUI     │ Biblioteca de la Facultad de Cie │     6.349 │      6.364 │
+│         │ [0;32m██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ MED     │ Biblioteca de la Facultad de Cie │     4.767 │      4.767 │
+│         │ [0;32m█████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ IAB     │ Biblioteca de la Facultad de Enf │     4.400 │      4.400 │
+│         │ [0;32m████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ ARQ     │ Biblioteca de la Facultad de Arq │     3.609 │      3.944 │
+│         │ [0;32m████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ ODO     │ Biblioteca de la Facultad de Odo │     1.086 │      1.212 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ FORA    │ Biblioteca de la Ing. Forestal   │       272 │        272 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DER     │ Biblioteca de la Facultad de Der │         2 │         17 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ ISL     │ Biblioteca Instituto Superior de │         1 │          8 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ VETSE   │ Biblioteca de la Facultad de Cie │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ ISA     │ Biblioteca del Instituto Superio │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ QGY     │ Biblioteca de la Facultad de Cie │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ IICS    │ Biblioteca del Instituto de Inve │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ REC     │ Biblioteca Postgrado Asunción   │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ AGRC    │ Biblioteca de la Facultad de Cie │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DGICT   │ Archivo de Investigación de la  │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DCSBA   │ Biblioteca de la Facultad de Der │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ BFIA    │ Biblioteca de la Facultad de Ing │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ CAAZP   │ Biblioteca de la  Facultad de Ci │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ CAPJC   │ Biblioteca de la Facultad de Cie │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ CASPY   │ Biblioteca de la Facultad de Cie │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ CASR    │ Biblioteca de la Facultad de Cie │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ CVCA    │ Biblioteca de la Facultad de Cie │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ CVCON   │ Biblioteca Facultad de Ciencias  │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ CVSJB   │ Biblioteca de la  Facultad de Ci │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DESCP   │ Biblioteca de la Escuela de Cien │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DCSC    │ Biblioteca de la Facultad de Der │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DCSCA   │ Biblioteca de la Facultad de Der │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DCSCO   │ Biblioteca de la Facultad de Der │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DCSPJ   │ Biblioteca de la Facultad de Der │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DCSQ    │ Biblioteca de la Facultad de Der │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DCSSE   │ Biblioteca de la Facultad de Der │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DCSSJ   │ Biblioteca de la Facultad de Der │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+│ DCSSP   │ Biblioteca de la Facultad de Der │         0 │          0 │
+│         │ [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m │           │            │
+├─────────┴──────────────────────────────────┴───────────┴────────────┤
+│ \033[1mTOTALES:                                    156.543      157.208\033[0m │
+└────────────────────────────────────────────────────────────────────┘
+
+[0;36mℹ Generando ranking de bibliotecas...[0m
+═══════════════════════════════════════════════════════════════════════════
+🏆 TOP 10 BIBLIOTECAS POR CANTIDAD DE EJEMPLARES
+═══════════════════════════════════════════════════════════════════════════
+
+🥇 #1   AGRO      Biblioteca de la Facultad de Ciencias Agrarias
+        Títulos: 37.226 | Ejemplares: 37.226
+        [0;36m████████████████████████████████████████████████████████████░[0m
+
+🥈 #2   BCT       Biblioteca Central. Trabajos de Fin de Grado y Tesis de Postgrado
+        Títulos: 19.298 | Ejemplares: 19.298
+        [0;36m███████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m
+
+🥉 #3   BC        Biblioteca Central de la Universidad Nacional de Asunción
+        Títulos: 15.997 | Ejemplares: 15.997
+        [0;36m█████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m
+
+   #4   ING       Biblioteca de la Facultad de Ingeniería
+        Títulos: 14.893 | Ejemplares: 14.997
+        [0;36m████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m
+
+   #5   POL       Centro de Información y Cultura de la Facultad Politécnica
+        Títulos: 12.467 | Ejemplares: 12.467
+        [0;36m████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m
+
+   #6   FIL       Biblioteca "Abraham Lincoln" de la Facultad de Filosofía
+        Títulos: 10.350 | Ejemplares: 10.377
+        [0;36m████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m
+
+   #7   ECO       Biblioteca de la Facultad de Ciencias Económicas
+        Títulos: 9.687 | Ejemplares: 9.687
+        [0;36m███████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m
+
+   #8   VET       Biblioteca y Centro de Documentación de la Facultad de Ciencias Veterinarias
+        Títulos: 9.085 | Ejemplares: 9.085
+        [0;36m██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m
+
+   #9   FACEN     Biblioteca e Internet (BIFACEN)
+        Títulos: 7.054 | Ejemplares: 7.090
+        [0;36m███████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m
+
+   #10  QUI       Biblioteca de la Facultad de Ciencias Químicas
+        Títulos: 6.349 | Ejemplares: 6.364
+        [0;36m██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m
+
+[0;36mℹ Analizando actividad reciente...[0m
+═══════════════════════════════════════════════════════════════════════════
+📅 ACTIVIDAD RECIENTE (Nuevos Registros)
+═══════════════════════════════════════════════════════════════════════════
+
+Últimas 24 horas:
+  • Títulos agregados:    0
+  • Ejemplares agregados:  0
+
+Últimos 7 días:
+  • Títulos agregados:    24.707
+  • Ejemplares agregados:  24.707
+
+Últimos 30 días:
+  • Títulos agregados:    155.448
+  • Ejemplares agregados:  155.448
+
+[0;36mℹ Generando gráfico de distribución...[0m
+═══════════════════════════════════════════════════════════════════════════
+📊 DISTRIBUCIÓN DE COLECCIONES (Top 15)
+═══════════════════════════════════════════════════════════════════════════
+
+AGRO   [0;32m██████████████████████████████████████████████████░[0m 37.226
+BCT    [0;32m█████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░[0m 19.298
+BC     [0;32m█████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 15.997
+ING    [0;32m████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 14.997
+POL    [0;32m████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 12.467
+FIL    [0;32m█████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 10.377
+ECO    [0;32m█████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 9.687
+VET    [0;32m████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 9.085
+FACEN  [0;32m█████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 7.090
+QUI    [0;32m████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 6.364
+MED    [0;32m██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 4.767
+IAB    [0;32m█████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 4.400
+ARQ    [0;32m█████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 3.944
+ODO    [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 1.212
+FORA   [0;32m█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░[0m 272
+
+═══════════════════════════════════════════════════════════════════════════
+📝 NOTAS
+═══════════════════════════════════════════════════════════════════════════
+
+• Este reporte fue generado automáticamente
+• Los datos reflejan el estado actual de la base de datos
+• Para reportes personalizados, usa las opciones disponibles
+
+Reportes generados:
+  • Texto:  /home/mvillalba/migradatos/reportes/estadisticas_20251104_085811.txt
+
+Universidad Nacional de Asunción - Sistema de Bibliotecas
+Generado: 2025-11-04 08:58:11
+
+═══════════════════════════════════════════════════════════════════════════

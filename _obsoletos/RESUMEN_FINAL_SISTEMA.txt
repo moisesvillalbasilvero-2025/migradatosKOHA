@@ -1,0 +1,608 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║         ✅ SISTEMA DE IMPORTACIÓN AUTOMÁTICA COMPLETADO              ║
+║         Universidad Nacional de Asunción                             ║
+║         24 de Octubre 2025                                           ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════
+📦 COMPONENTES INSTALADOS Y CONFIGURADOS
+═══════════════════════════════════════════════════════════════════════
+
+✅ agente_importador_v2.py          33 KB  [Agente Python inteligente]
+✅ importar_automatico.sh            17 KB  [Orquestador Bash]
+✅ subir_csv.sh                      3 KB   [Helper para subir archivos]
+
+✅ GUIA_AGENTE_AUTOMATICO.md         20 KB  [Documentación completa]
+✅ INICIO_RAPIDO_AGENTE.txt          13 KB  [Guía rápida]
+✅ COMO_SUBIR_ARCHIVOS.txt           8 KB   [Cómo subir CSVs]
+✅ RESUMEN_SISTEMA_AGENTE.txt        14 KB  [Resumen ejecutivo]
+✅ RESUMEN_FINAL_SISTEMA.txt         Este archivo
+
+
+═══════════════════════════════════════════════════════════════════════
+✨ CARACTERÍSTICAS IMPLEMENTADAS
+═══════════════════════════════════════════════════════════════════════
+
+🤖 DETECCIÓN AUTOMÁTICA DE BIBLIOTECA
+   - Extrae código del nombre del archivo
+   - Ejemplos: BC.csv→BC, BCT.csv→BCT, FACEN.csv→FACEN
+   - No requiere configuración manual
+
+🛡️ CONTROL DE DUPLICADOS (2 NIVELES)
+
+   Nivel 1: Dentro del CSV
+   • Detecta códigos de acceso repetidos
+   • Corrige automáticamente si > 50 duplicados
+   • Genera archivo *_corregido.csv
+
+   Nivel 2: Base de datos Koha
+   • Consulta items existentes: SELECT COUNT(*) FROM items WHERE homebranch='XXX'
+   • Informa cantidad y solicita confirmación
+   • NO duplica registros en la importación
+   • Solo agrega registros nuevos
+
+🔍 FILTRADO POR BIBLIOTECA
+   - Procesar solo biblioteca específica: --biblioteca CODIGO
+   - Útil cuando tienes múltiples CSVs mezclados
+
+📊 LOGS Y REPORTES DETALLADOS
+   - Log completo: logs/importacion_CODIGO_FECHA.log
+   - Reporte ejecutivo: logs/reporte_CODIGO_FECHA.txt
+   - Trazabilidad 100% del proceso
+
+⚡ MODO VIGILANCIA CONTINUA
+   - ./importar_automatico.sh --watch
+   - Monitorea carpeta cada 10 segundos
+   - Procesamiento automático sin supervisión
+
+📁 GESTIÓN AUTOMÁTICA DE ARCHIVOS
+   - Exitosos → procesados/CODIGO_OK_FECHA.csv
+   - Con errores → errores/CODIGO_ERROR_FECHA.csv
+   - Sin pérdida de datos
+
+🔧 VALIDACIONES COMPLETAS
+   - Verifica biblioteca existe en Koha
+   - Valida estructura CSV (campos obligatorios)
+   - Valida sintaxis XML generado
+   - Verifica importación exitosa
+
+
+═══════════════════════════════════════════════════════════════════════
+🚀 3 FORMAS DE USAR EL SISTEMA
+═══════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ FORMA 1: PROCESAMIENTO SIMPLE (Recomendado)                        │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. Subir CSV:
+   ./subir_csv.sh archivo.csv CODIGO
+
+2. Procesar:
+   ./importar_automatico.sh
+
+3. ¡Listo!
+
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ FORMA 2: PROCESAMIENTO DIRECTO                                      │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. Copiar manualmente:
+   cp archivo.csv importar_aqui/CODIGO.csv
+
+2. Procesar directamente:
+   ./agente_importador_v2.py importar_aqui/CODIGO.csv
+
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ FORMA 3: MODO AUTOMÁTICO (Sin supervisión)                          │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. Activar vigilancia (una sola vez):
+   nohup ./importar_automatico.sh --watch > vigilancia.log 2>&1 &
+
+2. Subir archivos cuando estén listos:
+   cp archivo.csv importar_aqui/CODIGO.csv
+
+3. Se procesan automáticamente cada 10 segundos
+   (sin intervención manual)
+
+
+═══════════════════════════════════════════════════════════════════════
+📂 ESTRUCTURA DE DIRECTORIOS
+═══════════════════════════════════════════════════════════════════════
+
+/home/mvillalba/migradatos/
+│
+├── 🤖 SCRIPTS PRINCIPALES
+│   ├── agente_importador_v2.py         [Procesador principal]
+│   ├── importar_automatico.sh          [Orquestador]
+│   └── subir_csv.sh                    [Helper subida]
+│
+├── 📥 ENTRADA (Tus archivos CSV)
+│   └── importar_aqui/
+│       ├── BC.csv         ← Actualmente procesando
+│       ├── BCT.csv        ← En cola
+│       └── FACEN.csv      ← En cola
+│
+├── ✅ PROCESADOS (Exitosos)
+│   └── procesados/
+│       └── CODIGO_OK_YYYYMMDD_HHMMSS.csv
+│
+├── ❌ ERRORES (Con problemas)
+│   └── errores/
+│       └── CODIGO_ERROR_TIPO_YYYYMMDD_HHMMSS.csv
+│
+├── 📤 EXPORTS (MARCXML generados)
+│   └── exports/
+│       └── CODIGO_YYYYMMDD_marcxml.xml
+│
+├── 📋 LOGS (Trazabilidad completa)
+│   └── logs/
+│       ├── importacion_CODIGO_YYYYMMDD_HHMMSS.log
+│       └── reporte_CODIGO_YYYYMMDD_HHMMSS.txt
+│
+└── 📚 DOCUMENTACIÓN
+    ├── GUIA_AGENTE_AUTOMATICO.md
+    ├── INICIO_RAPIDO_AGENTE.txt
+    ├── COMO_SUBIR_ARCHIVOS.txt
+    └── RESUMEN_FINAL_SISTEMA.txt
+
+
+═══════════════════════════════════════════════════════════════════════
+✅ PERMISOS CONFIGURADOS
+═══════════════════════════════════════════════════════════════════════
+
+Usuario:   mvillalba
+Grupo:     mvillalba
+Permisos:  775 (rwxrwxr-x)
+
+Carpetas con acceso completo:
+✓ importar_aqui/
+✓ procesados/
+✓ errores/
+✓ logs/
+✓ exports/
+
+Scripts ejecutables:
+✓ agente_importador_v2.py
+✓ importar_automatico.sh
+✓ subir_csv.sh
+
+
+═══════════════════════════════════════════════════════════════════════
+📊 IMPORTACIONES EN PROGRESO
+═══════════════════════════════════════════════════════════════════════
+
+Actualmente el sistema está procesando:
+
+1. QUI.csv      (6,500 registros)  - En progreso
+2. BC.csv       (14 MB)            - En cola
+3. BCT.csv      (31 MB)            - En cola
+4. FACEN.csv    (5.6 MB)           - En cola
+
+
+═══════════════════════════════════════════════════════════════════════
+🎯 FLUJO DE TRABAJO AUTOMÁTICO
+═══════════════════════════════════════════════════════════════════════
+
+CSV sin procesar
+        ↓
+  [Subir a importar_aqui/]
+        ↓
+importar_aqui/CODIGO.csv
+        ↓
+[./importar_automatico.sh]
+        ↓
+┌───────────────────────────┐
+│  AGENTE PROCESA:          │
+│                           │
+│  1. ✓ Detecta código     │
+│  2. ✓ Verifica Koha      │
+│  3. ✓ Analiza CSV        │
+│  4. ✓ Cuenta duplicados  │
+│  5. ✓ Corrige si nec.    │
+│  6. ✓ Genera MARCXML     │
+│  7. ✓ Valida XML         │
+│  8. ✓ Importa Koha       │
+│  9. ✓ Reindexa           │
+│ 10. ✓ Genera reporte     │
+└───────────────────────────┘
+        ↓
+  ┌─────────┬─────────┐
+  │         │         │
+  ✅ OK     ❌ Error
+  │         │         │
+procesados/ errores/
+  │         │
+  ✓         └── Ver log para detalles
+
+
+═══════════════════════════════════════════════════════════════════════
+💡 CÓMO FUNCIONA EL CONTROL DE DUPLICADOS
+═══════════════════════════════════════════════════════════════════════
+
+ESCENARIO: Biblioteca BC ya tiene 100 items en Koha.
+           Quieres importar CSV con 500 registros nuevos.
+
+PASO A PASO:
+
+1. Sistema detecta "BC" del nombre archivo: BC.csv
+
+2. Consulta Koha:
+   SELECT COUNT(*) FROM items WHERE homebranch='BC'
+   Resultado: 100 items
+
+3. Informa al usuario:
+   ⚠ Ya existen 100 items de esta biblioteca
+   Se agregarán NUEVOS registros (no se duplicarán existentes)
+   ¿Desea continuar? (SI/no):
+
+4. Si usuario responde SI:
+   • Los 500 nuevos se importan
+   • Total después: 600 items
+   • Los 100 anteriores NO se duplican
+
+5. Koha maneja unicidad por:
+   • Código de barras (barcode) único
+   • biblionumber autogenerado
+
+RESULTADO: Sin duplicados, solo agregados nuevos.
+
+
+═══════════════════════════════════════════════════════════════════════
+📋 COMANDOS ESENCIALES
+═══════════════════════════════════════════════════════════════════════
+
+# Subir archivo
+./subir_csv.sh archivo.csv CODIGO
+
+# Procesar todos los archivos en importar_aqui/
+./importar_automatico.sh
+
+# Procesar archivo específico
+./agente_importador_v2.py importar_aqui/CODIGO.csv
+
+# Procesar solo una biblioteca
+./importar_automatico.sh --biblioteca BC
+
+# Modo vigilancia (automático continuo)
+./importar_automatico.sh --watch
+
+# Ver estadísticas del catálogo
+./importar_automatico.sh --stats
+
+# Ver archivos pendientes
+ls -lh importar_aqui/
+
+# Ver procesados exitosos
+ls -lht procesados/ | head
+
+# Ver archivos con errores
+ls -lht errores/ | head
+
+# Ver últimos logs
+ls -lht logs/ | head
+
+# Ver log específico
+cat logs/importacion_CODIGO_FECHA.log
+
+# Ver reporte específico
+cat logs/reporte_CODIGO_FECHA.txt
+
+# Buscar errores en logs
+grep ERROR logs/*.log
+
+# Ver items en Koha por biblioteca
+sudo koha-mysql koha-cnc -e "
+SELECT homebranch, COUNT(*) as items
+FROM items
+GROUP BY homebranch
+ORDER BY items DESC"
+
+
+═══════════════════════════════════════════════════════════════════════
+🔍 VERIFICACIÓN POST-IMPORTACIÓN
+═══════════════════════════════════════════════════════════════════════
+
+Después de cada importación, verifica:
+
+1. ARCHIVO MOVIDO A PROCESADOS
+   ls -lht procesados/ | head -1
+
+2. REPORTE GENERADO
+   cat logs/reporte_CODIGO_*.txt
+
+3. ITEMS EN KOHA
+   sudo koha-mysql koha-cnc -e \
+     "SELECT COUNT(*) FROM items WHERE homebranch='CODIGO'"
+
+4. VERIFICAR EN OPAC
+   http://servidor:8080/cgi-bin/koha/opac-search.pl?branch=CODIGO
+
+5. VER LOG SI HAY DUDAS
+   cat logs/importacion_CODIGO_*.log
+
+
+═══════════════════════════════════════════════════════════════════════
+⚠️ SOLUCIÓN DE PROBLEMAS COMUNES
+═══════════════════════════════════════════════════════════════════════
+
+PROBLEMA: "Permission denied" al subir archivo
+SOLUCIÓN:
+  sudo chown mvillalba:mvillalba importar_aqui/
+  sudo chmod 775 importar_aqui/
+
+PROBLEMA: "No se detectó código de biblioteca"
+SOLUCIÓN:
+  Renombrar archivo para incluir código (3-6 letras)
+  Ejemplo: mv datos.csv BC.csv
+
+PROBLEMA: "La biblioteca 'XXX' NO existe en Koha"
+SOLUCIÓN:
+  Crear en Staff Interface:
+  Administración → Bibliotecas → Nueva Biblioteca
+
+PROBLEMA: "Formato CSV inválido"
+SOLUCIÓN:
+  Verificar campos obligatorios: titulo, nroacceso
+  head -1 archivo.csv
+
+PROBLEMA: "Error generando MARCXML"
+SOLUCIÓN:
+  Revisar log: cat logs/importacion_*.log
+  Verificar encoding: file archivo.csv
+  Debe ser UTF-8
+
+PROBLEMA: Importación muy lenta
+SOLUCIÓN:
+  Normal para archivos grandes (>10MB)
+  Esperar o dividir archivo en partes más pequeñas
+
+
+═══════════════════════════════════════════════════════════════════════
+📊 EJEMPLO DE REPORTE GENERADO
+═══════════════════════════════════════════════════════════════════════
+
+Después de cada importación se genera un reporte como este:
+
+═══════════════════════════════════════════════════════════════════
+REPORTE DE IMPORTACIÓN AUTOMÁTICA
+═══════════════════════════════════════════════════════════════════
+
+INFORMACIÓN GENERAL
+───────────────────
+Fecha y hora:        2025-10-24 14:35:12
+Código biblioteca:   BC
+Nombre biblioteca:   Biblioteca Central
+
+ARCHIVO CSV
+───────────
+Ruta original:       /home/mvillalba/migradatos/importar_aqui/BC.csv
+Total registros:     5432
+Duplicados:          23
+Corrección aplicada: Sí
+
+GENERACIÓN MARCXML
+──────────────────
+Archivos generados:  2
+Registros en XML:    5432
+Validación XML:      Válido
+
+IMPORTACIÓN KOHA
+────────────────
+Items antes:         100
+Items después:       5532
+Items importados:    5432
+Estado importación:  2 exitosos, 0 fallidos
+
+RESULTADO FINAL
+───────────────
+Estado:              EXITOSO
+Tiempo total:        387 segundos
+
+VERIFICACIÓN
+────────────
+URL OPAC: http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=BC
+═══════════════════════════════════════════════════════════════════
+
+
+═══════════════════════════════════════════════════════════════════════
+🎓 CASOS DE USO REALES
+═══════════════════════════════════════════════════════════════════════
+
+CASO 1: Primera importación de una biblioteca
+───────────────────────────────────────────────
+
+1. Crear biblioteca en Koha (si no existe)
+   Staff → Administración → Bibliotecas → Código: BC
+
+2. Subir archivo
+   ./subir_csv.sh bc_inicial.csv BC
+
+3. Procesar
+   ./importar_automatico.sh
+
+4. Verificar
+   ./importar_automatico.sh --stats
+
+
+CASO 2: Agregar más registros a biblioteca existente
+──────────────────────────────────────────────────────
+
+1. Preparar CSV con solo registros NUEVOS
+
+2. Subir
+   cp bc_adicionales.csv importar_aqui/BC_nuevos.csv
+
+3. Procesar
+   ./importar_automatico.sh
+
+4. El sistema:
+   - Detecta 100 items existentes
+   - Pregunta si continuar
+   - Agrega solo los nuevos (NO duplica los 100)
+
+
+CASO 3: Importar múltiples bibliotecas simultáneamente
+───────────────────────────────────────────────────────
+
+1. Colocar todos los CSV:
+   cp bc.csv importar_aqui/BC.csv
+   cp bct.csv importar_aqui/BCT.csv
+   cp facen.csv importar_aqui/FACEN.csv
+
+2. Procesar todas
+   ./importar_automatico.sh
+
+3. El sistema procesa cada una secuencialmente
+   con validaciones individuales
+
+
+CASO 4: Procesamiento automático continuo
+──────────────────────────────────────────
+
+1. Activar vigilancia (al inicio del día)
+   nohup ./importar_automatico.sh --watch > vigilancia.log 2>&1 &
+
+2. Durante el día, subir archivos cuando estén listos
+   cp nuevo.csv importar_aqui/CODIGO.csv
+
+3. Se procesan automáticamente cada 10 segundos
+
+4. Al final del día, detener
+   pkill -f importar_automatico.sh
+
+
+═══════════════════════════════════════════════════════════════════════
+🎯 BEST PRACTICES (Mejores Prácticas)
+═══════════════════════════════════════════════════════════════════════
+
+✅ ANTES DE IMPORTAR:
+   • Verificar biblioteca existe en Koha
+   • Revisar CSV tiene: titulo, nroacceso
+   • Nombrar archivo con código claro: BC.csv, not biblioteca1.csv
+   • Hacer backup del CSV original
+
+✅ DURANTE LA IMPORTACIÓN:
+   • No interrumpir proceso (esperar mensaje final)
+   • Monitorear logs si archivo es grande
+   • Responder confirmaciones cuando se soliciten
+
+✅ DESPUÉS DE IMPORTAR:
+   • Verificar reporte generado
+   • Revisar items en Koha
+   • Verificar en OPAC que registros son visibles
+   • Guardar logs importantes
+
+✅ MANTENIMIENTO:
+   • Limpiar logs antiguos (>30 días)
+   • Limpiar archivos procesados (>60 días)
+   • Hacer backup de reportes importantes
+   • Revisar errores periódicamente
+
+
+═══════════════════════════════════════════════════════════════════════
+📞 AYUDA Y SOPORTE
+═══════════════════════════════════════════════════════════════════════
+
+Documentación disponible:
+
+  📖 GUIA_AGENTE_AUTOMATICO.md      - Guía completa (20 KB)
+  📖 INICIO_RAPIDO_AGENTE.txt       - Inicio rápido (13 KB)
+  📖 COMO_SUBIR_ARCHIVOS.txt        - Cómo subir CSVs (8 KB)
+  📖 RESUMEN_SISTEMA_AGENTE.txt     - Resumen ejecutivo (14 KB)
+  📖 RESUMEN_FINAL_SISTEMA.txt      - Este archivo
+
+Ver ayuda en línea:
+
+  ./agente_importador_v2.py --help
+  ./importar_automatico.sh --help
+  ./subir_csv.sh --help
+
+Verificar versión:
+
+  ./agente_importador_v2.py --version
+
+
+═══════════════════════════════════════════════════════════════════════
+✅ ESTADO ACTUAL DEL SISTEMA
+═══════════════════════════════════════════════════════════════════════
+
+SISTEMA:              ✅ Instalado y configurado
+PERMISOS:             ✅ Configurados (mvillalba)
+SCRIPTS:              ✅ Ejecutables
+DOCUMENTACIÓN:        ✅ Completa
+CARPETAS:             ✅ Creadas con permisos
+IMPORTACIONES:        🔄 En progreso (QUI, BC, BCT, FACEN)
+
+ARCHIVOS PROCESÁNDOSE:
+  • QUI.csv      6,500 registros    [En progreso]
+  • BC.csv       14 MB              [En cola]
+  • BCT.csv      31 MB              [En cola]
+  • FACEN.csv    5.6 MB             [En cola]
+
+
+═══════════════════════════════════════════════════════════════════════
+🚀 PRÓXIMOS PASOS
+═══════════════════════════════════════════════════════════════════════
+
+1. ✅ Esperar que terminen las importaciones actuales
+   Ver progreso: tail -f logs/importacion_*.log
+
+2. ✅ Verificar resultados en OPAC
+
+3. ✅ Para futuras importaciones:
+   ./subir_csv.sh archivo.csv CODIGO
+   ./importar_automatico.sh
+
+4. ✅ Considerar activar modo vigilancia para trabajo diario:
+   ./importar_automatico.sh --watch
+
+
+═══════════════════════════════════════════════════════════════════════
+✨ RESUMEN EJECUTIVO
+═══════════════════════════════════════════════════════════════════════
+
+Has implementado exitosamente un sistema COMPLETO de importación
+automática con las siguientes ventajas:
+
+✅ AUTOMATIZACIÓN TOTAL
+   - Detección automática de biblioteca
+   - Procesamiento sin supervisión
+   - Gestión automática de archivos
+
+✅ SEGURIDAD Y CONFIABILIDAD
+   - Control de duplicados multinivel
+   - Validaciones en cada paso
+   - Sin pérdida de datos
+
+✅ TRAZABILIDAD COMPLETA
+   - Logs detallados de cada operación
+   - Reportes ejecutivos generados
+   - Historial completo
+
+✅ FLEXIBILIDAD
+   - Modo manual, automático o vigilancia
+   - Filtrado por biblioteca
+   - Procesamiento individual o masivo
+
+✅ FACILIDAD DE USO
+   - 3 comandos principales
+   - Documentación completa
+   - Helpers para tareas comunes
+
+
+EL SISTEMA ESTÁ LISTO Y FUNCIONANDO 🎉
+
+═══════════════════════════════════════════════════════════════════════
+
+Universidad Nacional de Asunción
+Sistema de Importación Automática v2.0
+24 de Octubre 2025
+
+═══════════════════════════════════════════════════════════════════════

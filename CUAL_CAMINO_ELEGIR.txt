@@ -1,0 +1,478 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║              🎯 ¿CUÁL CAMINO ELEGIR PARA APRENDER? 🎯                 ║
+║                                                                      ║
+║              Recomendación Personalizada Según Tu Perfil             ║
+║              Universidad Nacional de Asunción - Koha OPAC            ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════
+  🤔 ¿QUÉ TIPO DE USUARIO ERES?
+═══════════════════════════════════════════════════════════════════════
+
+Marca con X tu perfil:
+
+[ ] A. Primera vez usando el sistema (NUEVO)
+[ ] B. Ya he importado antes pero quiero entender mejor
+[ ] C. Tengo experiencia, solo necesito referencia rápida
+[ ] D. Soy administrador del sistema
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎯 CAMINO A: PRIMERA VEZ (NUEVO) ⭐ RECOMENDADO
+═══════════════════════════════════════════════════════════════════════
+
+PERFIL:
+  • Primera vez que vas a importar archivos
+  • No conoces tmux
+  • Quieres entender cada paso
+  • Prefieres ejemplos claros y detallados
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  RUTA DE APRENDIZAJE PASO A PASO (60 minutos)                       │
+└──────────────────────────────────────────────────────────────────────┘
+
+PASO 1: Lee la Guía Didáctica Completa (20 min)
+────────────────────────────────────────────────
+
+  cat GUIA_PASO_A_PASO.txt
+
+  Esta guía te explica:
+  ✓ Qué verás en cada paso
+  ✓ Qué comandos ejecutar
+  ✓ Qué significa cada cosa
+  ✓ Qué hacer si algo sale mal
+
+  Léela completa aunque parezca larga.
+  Te ahorrará tiempo después.
+
+
+PASO 2: Ten el Cheatsheet a Mano (5 min)
+─────────────────────────────────────────
+
+  cat CHEATSHEET_IMPORTACION.txt > ~/cheatsheet.txt
+
+  Imprime o ten abierto en otra ventana.
+  Contiene los comandos que necesitarás.
+
+
+PASO 3: Practica con Archivo de Prueba (20 min)
+────────────────────────────────────────────────
+
+  # Usa FACEN.csv que ya está en importar_aqui/
+  # Es pequeño (37 items) - perfecto para practicar
+
+  # 1. Validar
+  ./validador_csv.py importar_aqui/FACEN.csv
+
+  # 2. Ver qué dice
+  # Si está OK, continúa
+
+  # 3. Importar con tmux (¡SIN subir, ya está!)
+  ./importar_con_tmux.sh
+
+  # 4. Practica desconectar:
+  #    Ctrl+b luego d
+
+  # 5. Practica reconectar:
+  ./importar_con_tmux.sh --attach
+
+  # 6. Cuando termine, verifica:
+  ./verificar_duplicados.sh --biblioteca FACEN
+
+
+PASO 4: Monitoreo en Tiempo Real (5 min)
+─────────────────────────────────────────
+
+  # Abre OTRA terminal SSH
+  cd /home/mvillalba/migradatos
+  ./monitor_importacion.sh --watch
+
+  # Deja esto corriendo para ver el progreso
+
+
+PASO 5: Importar Tu Archivo Real (10 min)
+──────────────────────────────────────────
+
+  Ahora sí, con tu archivo real:
+
+  ./validador_csv.py tu_archivo.csv
+  ./subir_csv.sh tu_archivo.csv CODIGO
+  ./importar_con_tmux.sh
+
+  # Desconectar y dejar correr
+  Ctrl+b d
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  VENTAJAS DE ESTE CAMINO:                                            │
+└──────────────────────────────────────────────────────────────────────┘
+
+  ✓ Entenderás TODO el proceso
+  ✓ Sabrás qué hacer si algo falla
+  ✓ Aprenderás tmux (muy útil)
+  ✓ Más confianza para importaciones futuras
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ⏰ TIEMPO TOTAL: 60 minutos                                         │
+│  🎓 NIVEL: Principiante                                              │
+│  ⭐ RECOMENDACIÓN: SI ERES NUEVO, USA ESTE CAMINO                    │
+└──────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════
+  🚀 CAMINO B: YA CONOZCO EL SISTEMA
+═══════════════════════════════════════════════════════════════════════
+
+PERFIL:
+  • Ya has importado archivos antes
+  • Conoces lo básico de SSH
+  • Quieres mejorar tu workflow
+  • Necesitas recordar los comandos
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  RUTA RÁPIDA DE ACTUALIZACIÓN (20 minutos)                          │
+└──────────────────────────────────────────────────────────────────────┘
+
+PASO 1: Lee Novedades (5 min)
+──────────────────────────────
+
+  cat INICIO_RAPIDO.txt
+
+  Enfócate en:
+  • Sección "IMPORTAR CON PERSISTENCIA"
+  • Comandos tmux (Ctrl+b d)
+  • ./monitor_importacion.sh
+
+
+PASO 2: Aprende tmux Básico (5 min)
+────────────────────────────────────
+
+  # Iniciar importación
+  ./importar_con_tmux.sh
+
+  # Desconectar (CLAVE)
+  Ctrl+b d
+
+  # Reconectar
+  ./importar_con_tmux.sh --attach
+
+  # Ver sesiones
+  tmux ls
+
+  ¡Eso es todo! Ya no perderás trabajo.
+
+
+PASO 3: Usa los Nuevos Comandos (5 min)
+────────────────────────────────────────
+
+  # Validar antes de importar
+  ./validador_csv.py archivo.csv
+
+  # Monitorear progreso
+  ./monitor_importacion.sh --watch
+
+  # Verificar duplicados
+  ./verificar_duplicados.sh
+
+
+PASO 4: Importa Como Siempre pero Mejor (5 min)
+────────────────────────────────────────────────
+
+  ./validador_csv.py archivo.csv
+  ./subir_csv.sh archivo.csv CODIGO
+  ./importar_con_tmux.sh    ← Usa tmux ahora
+  Ctrl+b d                  ← Desconecta tranquilo
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  VENTAJAS DE ESTE CAMINO:                                            │
+└──────────────────────────────────────────────────────────────────────┘
+
+  ✓ Rápido de aprender
+  ✓ Mejora tu workflow actual
+  ✓ No pierdes trabajo en SSH
+  ✓ Nuevas herramientas útiles
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ⏰ TIEMPO TOTAL: 20 minutos                                         │
+│  🎓 NIVEL: Intermedio                                                │
+│  ⭐ RECOMENDACIÓN: YA HAS USADO EL SISTEMA ANTES                     │
+└──────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════
+  ⚡ CAMINO C: SOLO NECESITO COMANDOS
+═══════════════════════════════════════════════════════════════════════
+
+PERFIL:
+  • Experiencia con Linux/SSH
+  • Conoces tmux o herramientas similares
+  • Solo necesitas los comandos
+  • Prefieres explorar por tu cuenta
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  COMANDOS ESENCIALES (5 minutos)                                     │
+└──────────────────────────────────────────────────────────────────────┘
+
+  # Leer esto
+  cat CHEATSHEET_IMPORTACION.txt
+
+  # Comandos principales
+  ./validador_csv.py archivo.csv
+  ./subir_csv.sh archivo.csv CODIGO
+  ./importar_con_tmux.sh
+  Ctrl+b d
+
+  # Extras útiles
+  ./monitor_importacion.sh --watch
+  ./verificar_duplicados.sh
+
+  ¡Listo! Ya sabes todo lo necesario.
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ⏰ TIEMPO TOTAL: 5 minutos                                          │
+│  🎓 NIVEL: Avanzado                                                  │
+│  ⭐ RECOMENDACIÓN: TIENES EXPERIENCIA CON SISTEMAS SIMILARES         │
+└──────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════
+  👨‍💼 CAMINO D: SOY ADMINISTRADOR DEL SISTEMA
+═══════════════════════════════════════════════════════════════════════
+
+PERFIL:
+  • Administras el servidor Koha
+  • Necesitas entender todo técnicamente
+  • Quieres documentación completa
+  • Planificas mantenimiento
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  DOCUMENTACIÓN TÉCNICA COMPLETA (45 minutos)                        │
+└──────────────────────────────────────────────────────────────────────┘
+
+PASO 1: Análisis Técnico
+─────────────────────────
+
+  less docs/ANALISIS_OPTIMIZACION_IMPORTACION.md
+
+  Contiene:
+  • Arquitectura del sistema
+  • Flujo de datos completo
+  • Puntos de fallo identificados
+  • Optimizaciones implementadas
+
+
+PASO 2: Prevención de Duplicados
+─────────────────────────────────
+
+  less docs/GUIA_DUPLICADOS_Y_LIMPIEZA.md
+
+  Incluye:
+  • Protección multi-nivel
+  • Comandos SQL de verificación
+  • Procedimientos de backup
+  • Limpieza de duplicados
+
+
+PASO 3: Estado del Sistema
+───────────────────────────
+
+  cat VERIFICACION_DUPLICADOS.txt
+  cat RESUMEN_OPTIMIZACION.txt
+
+  Estadísticas actuales del sistema
+
+
+PASO 4: Herramientas Nuevas
+────────────────────────────
+
+  ./verificar_duplicados.sh --help
+  ./monitor_importacion.sh --help
+  ./validador_csv.py --help
+
+  Explorar capacidades
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ⏰ TIEMPO TOTAL: 45 minutos                                         │
+│  🎓 NIVEL: Administrador                                             │
+│  ⭐ RECOMENDACIÓN: NECESITAS VISIÓN COMPLETA DEL SISTEMA             │
+└──────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎯 MI RECOMENDACIÓN PERSONAL
+═══════════════════════════════════════════════════════════════════════
+
+BASÁNDOME EN TU PREGUNTA "¿de cuál manera recomiendas?", asumo que:
+  • Quieres aprender de forma estructurada
+  • Prefieres entender qué estás haciendo
+  • No tienes prisa extrema
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ⭐⭐⭐ TE RECOMIENDO: CAMINO A (PRIMERA VEZ) ⭐⭐⭐                     │
+└──────────────────────────────────────────────────────────────────────┘
+
+RAZONES:
+
+1. APRENDERÁS TODO CORRECTAMENTE
+   → No tendrás dudas después
+   → Sabrás resolver problemas
+
+2. SOLO TOMA 60 MINUTOS
+   → 20 min leyendo
+   → 20 min practicando
+   → 20 min importación real
+
+3. TENDRÁS CONFIANZA
+   → Podrás importar solo después
+   → Entenderás tmux (muy útil)
+   → Sabrás monitorear el progreso
+
+4. VALE LA PENA LA INVERSIÓN
+   → Una vez aprendido, lo usarás siempre
+   → Ahorrarás tiempo en futuras importaciones
+   → No cometerás errores costosos
+
+
+═══════════════════════════════════════════════════════════════════════
+  📖 PLAN DE ACCIÓN RECOMENDADO (AHORA MISMO)
+═══════════════════════════════════════════════════════════════════════
+
+AHORA (5 minutos):
+──────────────────
+
+  1. Lee este archivo completo
+  2. Decide tu camino (recomiendo A)
+
+
+HOY (60 minutos):
+─────────────────
+
+  1. cat GUIA_PASO_A_PASO.txt          (20 min)
+  2. Practica con FACEN.csv             (20 min)
+  3. Importa tu archivo real            (20 min)
+
+
+FUTURAS IMPORTACIONES (5 minutos cada una):
+────────────────────────────────────────────
+
+  # Ya conoces el sistema
+  cat CHEATSHEET_IMPORTACION.txt
+  ./validador_csv.py archivo.csv
+  ./importar_con_tmux.sh
+  Ctrl+b d
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎓 CONSEJO DE APRENDIZAJE
+═══════════════════════════════════════════════════════════════════════
+
+NO INTENTES:
+  ❌ Leer todo de una vez
+  ❌ Memorizar todos los comandos
+  ❌ Usar todas las herramientas el primer día
+
+SÍ DEBERÍAS:
+  ✅ Leer la guía paso a paso completa
+  ✅ Practicar con archivo pequeño primero
+  ✅ Tener el cheatsheet a mano
+  ✅ Aprender tmux básico (Ctrl+b d)
+
+
+═══════════════════════════════════════════════════════════════════════
+  📚 MAPA DE DOCUMENTACIÓN POR NECESIDAD
+═══════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────┬─────────────────────────────────────┐
+│ Necesito...                 │ Lee esto...                         │
+├─────────────────────────────┼─────────────────────────────────────┤
+│ Aprender desde cero         │ GUIA_PASO_A_PASO.txt ⭐             │
+│ Comandos rápidos            │ CHEATSHEET_IMPORTACION.txt          │
+│ Inicio rápido               │ INICIO_RAPIDO.txt                   │
+│ Índice general              │ LEEME_PRIMERO.txt                   │
+│ ¿Qué camino elegir?         │ CUAL_CAMINO_ELEGIR.txt (este)       │
+│ Estado de duplicados        │ VERIFICACION_DUPLICADOS.txt         │
+│ Análisis técnico            │ docs/ANALISIS_OPTIMIZACION_*.md     │
+│ Guía de duplicados          │ docs/GUIA_DUPLICADOS_Y_LIMPIEZA.md  │
+│ Resumen de mejoras          │ RESUMEN_OPTIMIZACION.txt            │
+│ Resumen completo            │ RESUMEN_FINAL_COMPLETO.txt          │
+└─────────────────────────────┴─────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════
+  ❓ PREGUNTAS FRECUENTES
+═══════════════════════════════════════════════════════════════════════
+
+P: ¿Es difícil de aprender?
+R: No. Con la guía paso a paso lo aprenderás en 1 hora.
+
+P: ¿Qué pasa si me equivoco?
+R: El sistema tiene validaciones. No podrás importar algo incorrecto.
+
+P: ¿Puedo practicar sin dañar nada?
+R: Sí. Usa FACEN.csv (pequeño) para practicar.
+
+P: ¿Necesito saber programación?
+R: No. Solo copiar y pegar comandos.
+
+P: ¿Qué es tmux y por qué es importante?
+R: Es una herramienta que evita que pierdas el trabajo si se corta SSH.
+
+P: ¿Cuánto tiempo toma importar un archivo?
+R: Depende del tamaño. FACEN (37 items) = 2 min. MED (4700) = 10-15 min.
+
+
+═══════════════════════════════════════════════════════════════════════
+  ✅ CHECKLIST ANTES DE EMPEZAR
+═══════════════════════════════════════════════════════════════════════
+
+PREPARACIÓN:
+  [ ] Estoy en: /home/mvillalba/migradatos
+  [ ] Tengo archivo CSV preparado
+  [ ] Sé el código de mi biblioteca (MED, VET, etc.)
+  [ ] Tengo 60 minutos disponibles
+
+LECTURA:
+  [ ] Leí CUAL_CAMINO_ELEGIR.txt (este archivo)
+  [ ] Elegí mi camino (recomendado: A)
+  [ ] Tengo abierta la documentación correspondiente
+
+PRÁCTICA:
+  [ ] Practiqué con FACEN.csv primero
+  [ ] Aprendí Ctrl+b d (desconectar tmux)
+  [ ] Sé reconectar con ./importar_con_tmux.sh --attach
+
+¡AHORA SÍ ESTOY LISTO PARA IMPORTAR! ✅
+
+
+═══════════════════════════════════════════════════════════════════════
+  🚀 COMIENZA AQUÍ
+═══════════════════════════════════════════════════════════════════════
+
+  CAMINO A (RECOMENDADO):
+    cat GUIA_PASO_A_PASO.txt
+
+  CAMINO B (YA CONOZCO):
+    cat INICIO_RAPIDO.txt
+
+  CAMINO C (SOLO COMANDOS):
+    cat CHEATSHEET_IMPORTACION.txt
+
+  CAMINO D (ADMINISTRADOR):
+    less docs/ANALISIS_OPTIMIZACION_IMPORTACION.md
+
+
+═══════════════════════════════════════════════════════════════════════
+
+Universidad Nacional de Asunción
+Sistema Koha OPAC
+Guía de Selección de Camino - 2025-10-24
+
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║         ⭐ RECOMENDACIÓN: EMPIEZA CON CAMINO A (60 min) ⭐            ║
+║              cat GUIA_PASO_A_PASO.txt                                ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝

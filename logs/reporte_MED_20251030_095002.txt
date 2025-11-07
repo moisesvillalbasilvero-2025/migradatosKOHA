@@ -1,0 +1,46 @@
+
+════════════════════════════════════════════════════════════════════════════════
+REPORTE DE IMPORTACIÓN AUTOMÁTICA
+════════════════════════════════════════════════════════════════════════════════
+
+INFORMACIÓN GENERAL
+───────────────────
+Fecha y hora:        2025-10-30 09:53:06
+Código biblioteca:   MED
+Nombre biblioteca:   Biblioteca de la Facultad de Ciencias Médicas
+
+ARCHIVO CSV
+───────────
+Ruta original:       /home/mvillalba/migradatos/importar_aqui/MED.csv
+Nombre archivo:      MED.csv
+Total registros:     4767
+Duplicados:          0
+Corrección aplicada: No necesaria
+
+GENERACIÓN MARCXML
+──────────────────
+Archivos generados:  1
+Registros en XML:    0
+Validación XML:      Válido
+
+IMPORTACIÓN KOHA
+────────────────
+Items antes:         4767
+Items después:       4767
+Items importados:    0
+Estado importación:  1 exitosos, 0 fallidos
+
+REINDEXACIÓN
+────────────
+Estado reindex:      Exitoso (optimizado)
+
+RESULTADO FINAL
+───────────────
+Estado:              EXITOSO
+Tiempo total:        183 segundos
+
+VERIFICACIÓN
+────────────
+URL OPAC: http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=MED
+
+════════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,319 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║              🤖 AGENTE DE IMPORTACIÓN AUTOMÁTICA v2.0                ║
+║              Universidad Nacional de Asunción                        ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+🚀 INICIO RÁPIDO - 3 PASOS
+══════════════════════════════════════════════════════════════════════
+
+1️⃣  PREPARAR TU CSV
+
+    El nombre debe contener el código de biblioteca:
+
+    ✅ Correcto:
+       MED.csv
+       VET_2025.csv
+       ING_octubre.csv
+       FACAGR_completo.csv
+
+    ❌ Incorrecto:
+       datos.csv
+       biblioteca.csv
+
+
+2️⃣  COLOCAR EN CARPETA DE IMPORTACIÓN
+
+    cp tu_archivo.csv /home/mvillalba/migradatos/importar_aqui/
+
+
+3️⃣  EJECUTAR IMPORTADOR
+
+    cd /home/mvillalba/migradatos
+    ./importar_automatico.sh
+
+    ¡Listo! El sistema procesa automáticamente.
+
+
+═══════════════════════════════════════════════════════════════════════
+OPCIONES DE USO
+═══════════════════════════════════════════════════════════════════════
+
+📌 PROCESAR UN ARCHIVO DIRECTAMENTE
+
+   ./agente_importador_v2.py /ruta/al/archivo.csv
+
+   Ejemplo:
+   ./agente_importador_v2.py importar_aqui/MED.csv
+
+
+📌 PROCESAR MÚLTIPLES ARCHIVOS
+
+   ./agente_importador_v2.py archivo1.csv archivo2.csv archivo3.csv
+
+   Ejemplo:
+   ./agente_importador_v2.py importar_aqui/*.csv
+
+
+📌 BUSCAR Y PROCESAR AUTOMÁTICAMENTE
+
+   ./importar_automatico.sh
+
+   - Busca todos los CSV en importar_aqui/
+   - Detecta código de biblioteca automáticamente
+   - Procesa cada uno secuencialmente
+
+
+📌 PROCESAR SOLO UNA BIBLIOTECA
+
+   ./importar_automatico.sh --biblioteca MED
+
+   Solo procesa archivos de la biblioteca MED
+
+
+📌 BUSCAR EN DIRECTORIO ESPECÍFICO
+
+   ./importar_automatico.sh --dir /ruta/personalizada
+
+
+📌 MODO VIGILANCIA (AUTOMÁTICO CONTINUO)
+
+   ./importar_automatico.sh --watch
+
+   - Monitorea carpeta importar_aqui/
+   - Procesa automáticamente archivos nuevos
+   - Queda corriendo hasta que presiones Ctrl+C
+
+
+═══════════════════════════════════════════════════════════════════════
+CARACTERÍSTICAS PRINCIPALES
+═══════════════════════════════════════════════════════════════════════
+
+✅ Detección automática de código de biblioteca
+✅ Verificación de biblioteca en Koha
+✅ Control de duplicados en CSV
+✅ Control de duplicados en base de datos
+✅ Corrección automática de errores
+✅ Generación y validación de MARCXML
+✅ Importación sin supervisión
+✅ Reindexación automática
+✅ Logs detallados
+✅ Reportes completos
+
+
+═══════════════════════════════════════════════════════════════════════
+CONTROL DE DUPLICADOS
+═══════════════════════════════════════════════════════════════════════
+
+El sistema verifica duplicados en DOS niveles:
+
+1. DENTRO DEL CSV
+   - Detecta códigos de acceso repetidos
+   - Corrige automáticamente si > 50 duplicados
+
+2. EN BASE DE DATOS KOHA
+   - Consulta items existentes para la biblioteca
+   - Informa cantidad y solicita confirmación
+   - NO duplica registros al importar
+
+
+═══════════════════════════════════════════════════════════════════════
+REQUISITOS DEL CSV
+═══════════════════════════════════════════════════════════════════════
+
+Campos OBLIGATORIOS:
+  • titulo
+  • nroacceso
+
+Campos opcionales:
+  • autor
+  • editorial
+  • anio
+  • isbn
+  • materia
+  • notas
+  • etc.
+
+Formato:
+  • Separador: , (coma) o ; (punto y coma)
+  • Codificación: UTF-8
+  • Primera fila: nombres de columnas
+
+
+═══════════════════════════════════════════════════════════════════════
+DIRECTORIOS
+═══════════════════════════════════════════════════════════════════════
+
+importar_aqui/       ← Coloca tus CSV aquí
+procesados/          ← Archivos procesados exitosamente
+errores/             ← Archivos con errores
+exports/             ← MARCXML generados
+logs/                ← Logs y reportes detallados
+
+
+═══════════════════════════════════════════════════════════════════════
+VERIFICACIÓN
+═══════════════════════════════════════════════════════════════════════
+
+Ver estadísticas del catálogo:
+
+    ./importar_automatico.sh --stats
+
+Ver items de una biblioteca en Koha:
+
+    sudo koha-mysql koha-cnc -e "
+    SELECT COUNT(*) FROM items WHERE homebranch = 'MED'"
+
+Ver en OPAC:
+
+    http://servidor:8080/cgi-bin/koha/opac-search.pl?branch=MED
+
+
+═══════════════════════════════════════════════════════════════════════
+EJEMPLO COMPLETO
+═══════════════════════════════════════════════════════════════════════
+
+# Situación: Importar registros de Facultad de Medicina
+
+# Paso 1: Preparar CSV
+cp /datos_origen/medicina_2025.csv importar_aqui/MED.csv
+
+# Paso 2: Verificar que biblioteca existe en Koha
+sudo koha-mysql koha-cnc -e \
+  "SELECT * FROM branches WHERE branchcode='MED'"
+
+# Si no existe, crearla en:
+# Staff Interface → Administración → Bibliotecas → Nueva
+
+# Paso 3: Importar
+cd /home/mvillalba/migradatos
+./importar_automatico.sh
+
+# El sistema preguntará:
+# ¿Procesar estos archivos? (SI/no): SI
+
+# Si ya existen items:
+# ¿Desea continuar de todas formas? (escriba SI): SI
+
+# Paso 4: Verificar
+./importar_automatico.sh --stats
+
+
+═══════════════════════════════════════════════════════════════════════
+WORKFLOW RECOMENDADO
+═══════════════════════════════════════════════════════════════════════
+
+OPCIÓN A: Manual (Cuando tengas archivos listos)
+─────────────────────────────────────────────────
+
+1. Colocar CSV en importar_aqui/ con nombre correcto
+2. Ejecutar: ./importar_automatico.sh
+3. Revisar logs en: logs/
+
+
+OPCIÓN B: Automático (Procesamiento continuo)
+──────────────────────────────────────────────
+
+1. Iniciar vigilancia:
+   nohup ./importar_automatico.sh --watch > vigilancia.log 2>&1 &
+
+2. Colocar archivos cuando estén listos en importar_aqui/
+
+3. Se procesan automáticamente
+
+4. Ver progreso:
+   tail -f vigilancia.log
+
+
+═══════════════════════════════════════════════════════════════════════
+SOLUCIÓN DE PROBLEMAS
+═══════════════════════════════════════════════════════════════════════
+
+❌ "No se detectó código de biblioteca"
+   → Renombrar: mv datos.csv MED_datos.csv
+
+❌ "La biblioteca 'XYZ' NO existe en Koha"
+   → Crear en: Staff → Administración → Bibliotecas
+
+❌ "Faltan campos: titulo, nroacceso"
+   → Verificar CSV tiene esos campos
+
+❌ "Error de permisos"
+   → Verificar permisos: chmod +x agente_importador_v2.py
+
+
+═══════════════════════════════════════════════════════════════════════
+LOGS Y REPORTES
+═══════════════════════════════════════════════════════════════════════
+
+Cada importación genera:
+
+1. Log de proceso:
+   logs/importacion_CODIGO_FECHA.log
+
+2. Reporte completo:
+   logs/reporte_CODIGO_FECHA.txt
+
+Ver último log:
+   ls -lht logs/ | head
+   cat logs/importacion_*.log | tail -100
+
+Buscar errores:
+   grep ERROR logs/*.log
+
+
+═══════════════════════════════════════════════════════════════════════
+AYUDA
+═══════════════════════════════════════════════════════════════════════
+
+Ver ayuda del agente:
+    ./agente_importador_v2.py --help
+
+Ver ayuda del script:
+    ./importar_automatico.sh --help
+
+Ver documentación completa:
+    cat GUIA_AGENTE_AUTOMATICO.md
+
+
+═══════════════════════════════════════════════════════════════════════
+COMANDOS ÚTILES
+═══════════════════════════════════════════════════════════════════════
+
+# Ver archivos pendientes
+ls -lh importar_aqui/
+
+# Ver procesados
+ls -lht procesados/ | head
+
+# Ver errores
+ls -lht errores/ | head
+
+# Ver estadísticas
+./importar_automatico.sh --stats
+
+# Ver bibliotecas en Koha
+sudo koha-mysql koha-cnc -e \
+  "SELECT branchcode, branchname FROM branches"
+
+# Contar items por biblioteca
+sudo koha-mysql koha-cnc -e \
+  "SELECT homebranch, COUNT(*) FROM items GROUP BY homebranch"
+
+
+═══════════════════════════════════════════════════════════════════════
+
+🎯 ¡LISTO PARA USAR!
+
+El sistema está completamente configurado y listo para importar
+tus bibliotecas al catálogo Koha de forma automática.
+
+Documentación completa: GUIA_AGENTE_AUTOMATICO.md
+
+Universidad Nacional de Asunción
+Sistema de Importación Automática v2.0
+Octubre 2025
+
+═══════════════════════════════════════════════════════════════════════

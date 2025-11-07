@@ -1,0 +1,251 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║                    AUTO-IMPORTADOR SIMPLE                            ║
+║                  Universidad Nacional de Asunción                    ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+📌 CONCEPTO
+===========
+Colocas un CSV → Se analiza → Si es correcto → Se importa automáticamente
+
+
+🚀 FORMAS DE USO
+================
+
+1️⃣  PROCESAR UN ARCHIVO DIRECTAMENTE
+
+   ./auto_importar.py MED.csv
+
+   o
+
+   python3 auto_importar.py MED.csv
+
+
+2️⃣  MODO VIGILANCIA (Carpeta Automática)
+
+   ./auto_importar.py
+
+   Esto activa la vigilancia de la carpeta: importar_aqui/
+
+   Luego solo coloca tus CSV allí:
+
+   cp MED.csv importar_aqui/
+   cp VET.csv importar_aqui/
+
+   ¡Y se procesan automáticamente!
+
+
+📋 REQUISITOS
+=============
+
+✓ Nombre del archivo debe contener el código de biblioteca:
+
+  ✅ MED.csv          → Biblioteca MED
+  ✅ VET_2025.csv     → Biblioteca VET
+  ✅ ING_datos.csv    → Biblioteca ING
+  ✅ FACAGR.csv       → Biblioteca FACAGR
+
+  ❌ datos.csv        → No se detecta código
+  ❌ biblioteca.csv   → No se detecta código
+
+
+✓ La biblioteca debe existir en Koha
+  (Créala en: Staff Interface → Administración → Bibliotecas)
+
+
+✓ El CSV debe tener campos obligatorios:
+  - titulo
+  - nroacceso
+
+
+🔄 PROCESO AUTOMÁTICO
+======================
+
+El agente hace TODO esto automáticamente:
+
+1. Detecta código de biblioteca del nombre
+2. Verifica que existe en Koha
+3. Analiza formato del CSV
+4. Detecta duplicados
+5. Corrige duplicados si es necesario
+6. Genera MARCXML
+7. Importa a Koha
+8. Reindexa
+9. ✓✓✓ LISTO
+
+
+📂 ESTRUCTURA DE CARPETAS
+==========================
+
+migradatos/
+├── auto_importar.py          ← El script
+│
+├── importar_aqui/             ← Coloca CSVs aquí (modo vigilancia)
+│   ├── MED.csv
+│   └── VET.csv
+│
+├── procesados/                ← Archivos procesados exitosamente
+│   ├── MED_OK_20251022_143025.csv
+│   └── VET_OK_20251022_144301.csv
+│
+├── errores/                   ← Archivos con errores
+│   └── DATOS_SIN_CODIGO_20251022_150000.csv
+│
+├── exports/                   ← MARCXML generados
+│   ├── MED_20251022_marcxml.xml
+│   └── VET_20251022_marcxml.xml
+│
+└── logs/                      ← Logs (si los necesitas)
+
+
+📊 EJEMPLO DE USO REAL
+=======================
+
+Terminal:
+---------
+
+$ ./auto_importar.py MED.csv
+
+======================================================================
+📄 ARCHIVO: MED.csv
+======================================================================
+
+1. DETECTAR BIBLIOTECA
+✓ Código detectado: MED
+
+2. VERIFICAR EN KOHA
+✓ Biblioteca: Facultad de Ciencias Médicas
+
+3. ANALIZAR FORMATO
+✓ Registros: 3847
+⚠ Duplicados: 127
+
+4. CORREGIR DUPLICADOS
+→ Corrigiendo duplicados...
+✓ Corregido: MED_corregido.csv
+
+5. GENERAR MARCXML
+→ Generando MARCXML...
+✓ MARCXML: MED_20251022_143025_marcxml.xml (3847 registros)
+
+6. IMPORTAR A KOHA
+→ Importando a Koha...
+  3847 biblios imported
+  3847 items imported
+✓ Importación completada
+
+7. REINDEXAR
+→ Reindexando...
+✓ Reindexación completada
+
+======================================================================
+✓✓✓ IMPORTACIÓN COMPLETADA EXITOSAMENTE ✓✓✓
+======================================================================
+
+→ Movido a: MED_OK_20251022_143025.csv
+
+
+⚠️  ERRORES COMUNES Y SOLUCIONES
+=================================
+
+ERROR: "Biblioteca 'XYZ' NO existe en Koha"
+SOLUCIÓN: Crear la biblioteca primero en Koha
+          Staff → Administración → Bibliotecas → Nueva
+
+
+ERROR: "No se detectó código de biblioteca"
+SOLUCIÓN: Renombrar archivo para incluir código
+          Ejemplo: datos.csv → MED_datos.csv
+
+
+ERROR: "Formato CSV inválido"
+SOLUCIÓN: Verificar que tiene campos: titulo, nroacceso
+
+
+ERROR: "Faltan campos: titulo, nroacceso"
+SOLUCIÓN: Agregar esos campos al CSV
+
+
+🎯 VENTAJAS
+===========
+
+✅ SIMPLE: Solo colocas el CSV
+✅ AUTOMÁTICO: Todo el proceso se hace solo
+✅ INTELIGENTE: Detecta código y corrige errores
+✅ SEGURO: Archivos se mueven a procesados/errores
+✅ RÁPIDO: Procesa miles de registros
+✅ ROBUSTO: Maneja errores sin perder datos
+
+
+💡 TIPS
+=======
+
+• Usa nombres claros: MED.csv, VET.csv, ING.csv
+
+• Si tienes muchos archivos, usa modo vigilancia:
+
+  ./auto_importar.py
+
+  Y coloca archivos en: importar_aqui/
+
+• Los archivos procesados se mueven automáticamente
+  No se procesan dos veces
+
+• Revisa carpeta errores/ si algo falla
+
+
+🔍 VERIFICAR IMPORTACIÓN
+=========================
+
+En MySQL:
+---------
+
+sudo koha-mysql koha-cnc -e "
+SELECT homebranch, COUNT(*) as items
+FROM items
+GROUP BY homebranch"
+
+
+En OPAC:
+--------
+
+http://tu-servidor:8080/cgi-bin/koha/opac-search.pl?branch=MED
+
+
+📞 WORKFLOW DIARIO
+==================
+
+Cada vez que tengas un CSV nuevo de una biblioteca:
+
+1. Verificar nombre: MED.csv ✓
+
+2. Ejecutar:
+   ./auto_importar.py MED.csv
+
+3. Esperar mensaje:
+   ✓✓✓ IMPORTACIÓN COMPLETADA ✓✓✓
+
+4. Verificar en OPAC
+
+5. ¡LISTO!
+
+
+O si prefieres modo automático:
+
+1. Activar una vez:
+   ./auto_importar.py
+
+2. Cuando llegue un CSV nuevo:
+   cp /tmp/nueva_biblioteca.csv importar_aqui/MED.csv
+
+3. Se procesa automáticamente
+
+4. ¡LISTO!
+
+
+═══════════════════════════════════════════════════════════════════
+
+Universidad Nacional de Asunción
+Sistema de Migración Bibliográfica
+Versión 3.0 - Octubre 2025

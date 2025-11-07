@@ -1,0 +1,470 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║         ✅ SISTEMA DE IMPORTACIÓN AUTOMÁTICA INSTALADO               ║
+║         Universidad Nacional de Asunción                             ║
+║         Versión 2.0 - 24 de Octubre 2025                             ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════
+📦 COMPONENTES INSTALADOS
+═══════════════════════════════════════════════════════════════════════
+
+✅ agente_importador_v2.py          33 KB  [EJECUTABLE]
+   → Agente Python inteligente con toda la lógica de importación
+   → Detección automática de biblioteca
+   → Control de duplicados multinivel
+   → Generación y validación MARCXML
+   → Logs y reportes detallados
+
+✅ importar_automatico.sh            17 KB  [EJECUTABLE]
+   → Script bash orquestador
+   → Búsqueda automática de CSV
+   → Filtrado por biblioteca
+   → Modo vigilancia continua
+   → Gestión de archivos procesados
+
+✅ GUIA_AGENTE_AUTOMATICO.md         20 KB  [DOCUMENTACIÓN]
+   → Guía completa del sistema
+   → Todas las opciones explicadas
+   → Ejemplos prácticos
+   → Solución de problemas
+
+✅ INICIO_RAPIDO_AGENTE.txt          13 KB  [GUÍA RÁPIDA]
+   → Inicio en 3 pasos
+   → Comandos más usados
+   → Troubleshooting rápido
+
+
+═══════════════════════════════════════════════════════════════════════
+🎯 CARACTERÍSTICAS PRINCIPALES
+═══════════════════════════════════════════════════════════════════════
+
+🤖 DETECCIÓN AUTOMÁTICA
+   - Extrae código de biblioteca del nombre del archivo
+   - Ejemplos: MED.csv → MED, VET_2025.csv → VET
+   - No requiere especificar manualmente el código
+
+🛡️ CONTROL DE DUPLICADOS (2 NIVELES)
+   Nivel 1: Dentro del CSV
+     • Detecta códigos de acceso repetidos
+     • Corrige automáticamente si > 50 duplicados
+
+   Nivel 2: Base de datos Koha
+     • Consulta items existentes por biblioteca
+     • Informa y solicita confirmación
+     • NO duplica registros en la importación
+
+🔍 FILTRADO POR BIBLIOTECA
+   - Procesar solo una biblioteca específica
+   - Útil cuando tienes múltiples CSVs mezclados
+
+📊 LOGS Y REPORTES COMPLETOS
+   - Log detallado de cada paso
+   - Reporte ejecutivo con estadísticas
+   - Trazabilidad completa del proceso
+
+⚡ MODO VIGILANCIA
+   - Monitoreo continuo de carpeta
+   - Procesamiento automático de archivos nuevos
+   - Sin intervención manual
+
+
+═══════════════════════════════════════════════════════════════════════
+🚀 USO RÁPIDO
+═══════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ OPCIÓN 1: PROCESAMIENTO SIMPLE (Recomendado para empezar)          │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. Renombrar tu CSV para incluir código:
+   mv datos_medicina.csv MED.csv
+
+2. Colocar en carpeta de importación:
+   cp MED.csv /home/mvillalba/migradatos/importar_aqui/
+
+3. Ejecutar:
+   cd /home/mvillalba/migradatos
+   ./importar_automatico.sh
+
+4. ¡Listo!
+
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ OPCIÓN 2: PROCESAMIENTO DIRECTO                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+./agente_importador_v2.py /ruta/al/archivo.csv
+
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ OPCIÓN 3: MODO AUTOMÁTICO CONTINUO                                  │
+└─────────────────────────────────────────────────────────────────────┘
+
+./importar_automatico.sh --watch
+
+Luego solo colocar archivos en importar_aqui/
+Se procesan automáticamente cada 10 segundos
+
+
+═══════════════════════════════════════════════════════════════════════
+📂 ESTRUCTURA DE DIRECTORIOS
+═══════════════════════════════════════════════════════════════════════
+
+/home/mvillalba/migradatos/
+│
+├── 🤖 AGENTE (Scripts principales)
+│   ├── agente_importador_v2.py         ← Procesador Python
+│   ├── importar_automatico.sh          ← Orquestador Bash
+│   └── opac_exportar.py                ← Conversor CSV→MARCXML
+│
+├── 📥 ENTRADA (Coloca tus CSV aquí)
+│   └── importar_aqui/
+│       ├── MED.csv                     ← A procesar
+│       ├── VET.csv                     ← A procesar
+│       └── ING.csv                     ← A procesar
+│
+├── ✅ PROCESADOS (Exitosos)
+│   └── procesados/
+│       └── MED_OK_20251024_143025.csv
+│
+├── ❌ ERRORES (Con problemas)
+│   └── errores/
+│       └── DATOS_SIN_CODIGO_20251024.csv
+│
+├── 📤 EXPORTS (MARCXML generados)
+│   └── exports/
+│       ├── MED_20251024_marcxml.xml
+│       └── VET_20251024_marcxml.xml
+│
+├── 📋 LOGS (Logs y reportes)
+│   └── logs/
+│       ├── importacion_MED_20251024_143025.log
+│       └── reporte_MED_20251024_143025.txt
+│
+└── 📚 DOCUMENTACIÓN
+    ├── GUIA_AGENTE_AUTOMATICO.md       ← Guía completa
+    ├── INICIO_RAPIDO_AGENTE.txt        ← Inicio rápido
+    └── RESUMEN_SISTEMA_AGENTE.txt      ← Este archivo
+
+
+═══════════════════════════════════════════════════════════════════════
+✨ FLUJO DE TRABAJO
+═══════════════════════════════════════════════════════════════════════
+
+CSV sin procesar (tu directorio)
+        ↓
+   [Renombrar: CODIGO.csv]
+        ↓
+   importar_aqui/CODIGO.csv
+        ↓
+   [Ejecutar importador]
+        ↓
+   ┌─────────────────────┐
+   │  AGENTE PROCESA:    │
+   │  1. Detecta código  │
+   │  2. Verifica Koha   │
+   │  3. Analiza CSV     │
+   │  4. Verifica dupl.  │
+   │  5. Corrige si nec. │
+   │  6. Genera MARCXML  │
+   │  7. Valida XML      │
+   │  8. Importa Koha    │
+   │  9. Reindexa        │
+   │ 10. Genera reporte  │
+   └─────────────────────┘
+        ↓
+   ┌─────────┬─────────┐
+   │         │         │
+   ✅ OK     ❌ Error
+   │         │         │
+procesados/ errores/
+        ↓
+   📋 Log + 📊 Reporte
+
+
+═══════════════════════════════════════════════════════════════════════
+🔒 CONTROL DE DUPLICADOS EXPLICADO
+═══════════════════════════════════════════════════════════════════════
+
+SITUACIÓN: Biblioteca MED ya tiene 3000 items en Koha
+ACCIÓN: Quieres importar CSV con 500 registros nuevos
+
+¿QUÉ PASA?
+
+1. Sistema detecta código MED del nombre archivo
+2. Consulta Koha: "SELECT COUNT(*) FROM items WHERE homebranch='MED'"
+3. Encuentra 3000 items existentes
+4. Te informa:
+   ⚠ Ya existen 3000 items de esta biblioteca
+   Se agregarán NUEVOS registros (no se duplicarán existentes)
+   ¿Desea continuar? (SI/no):
+
+5. Si respondes SI:
+   - Los 500 nuevos se importan
+   - Total después: 3500 items
+   - NO se duplican los 3000 anteriores
+
+6. Koha internamente maneja duplicados por:
+   - Número de código de barras único
+   - biblionumber automático
+
+
+═══════════════════════════════════════════════════════════════════════
+📋 REQUISITOS DEL CSV
+═══════════════════════════════════════════════════════════════════════
+
+✅ OBLIGATORIO:
+
+   Nombre del archivo:
+   - Debe contener código de biblioteca (3-6 letras mayúsculas)
+   - Ejemplos: MED.csv, VET_2025.csv, ING_octubre.csv
+
+   Campos del CSV:
+   - titulo      → Título del libro/recurso
+   - nroacceso   → Código de acceso/barcode
+
+   Formato:
+   - Separador: , o ;
+   - Codificación: UTF-8
+   - Primera fila: nombres de columnas
+
+
+🔧 OPCIONAL (pero recomendado):
+
+   - autor
+   - editorial
+   - anio
+   - isbn
+   - materia
+   - notas
+   - ubicacion
+   - etc.
+
+
+═══════════════════════════════════════════════════════════════════════
+🎓 EJEMPLO COMPLETO PASO A PASO
+═══════════════════════════════════════════════════════════════════════
+
+SITUACIÓN: Importar 3847 registros de Facultad de Medicina
+
+# PASO 1: Verificar que biblioteca existe en Koha
+sudo koha-mysql koha-cnc -e \
+  "SELECT branchcode, branchname FROM branches WHERE branchcode='MED'"
+
+# Si no existe, crear en Staff Interface:
+# Administración → Bibliotecas → Nueva Biblioteca
+# Código: MED
+# Nombre: Facultad de Ciencias Médicas
+
+# PASO 2: Preparar CSV
+cd /home/mvillalba/migradatos
+cp /datos_origen/medicina_2025_octubre.csv importar_aqui/MED.csv
+
+# PASO 3: Verificar contenido
+head -2 importar_aqui/MED.csv
+# Debe mostrar:
+# nroacceso,titulo,autor,...
+# MED001,Anatomía Humana,García López,...
+
+# PASO 4: Ejecutar importación
+./importar_automatico.sh
+
+# El sistema mostrará:
+# ╔═══════════════════════════════════════════════════════════════╗
+# ║         IMPORTADOR AUTOMÁTICO DE BIBLIOTECAS                  ║
+# ╚═══════════════════════════════════════════════════════════════╝
+#
+# Buscando archivos CSV en: /home/.../importar_aqui
+# ✓ Archivos encontrados: 1
+#
+#   1. MED.csv [MED]
+#
+# ¿Procesar estos archivos? (SI/no): SI
+#
+# Código detectado: MED
+# ✓ Biblioteca verificada: Facultad de Ciencias Médicas
+# Items existentes en Koha para MED: 0
+# ✓ Total de registros: 3847
+# ⚠ Duplicados: 127
+# → Corrigiendo duplicados...
+# ✓ Archivo corregido: MED_corregido.csv
+# → Generando MARCXML...
+# ✓ Generados 1 archivo(s) XML con 3847 registros
+# → Validando archivos XML...
+# ✓ MED_20251024_marcxml.xml - Válido
+# → Importando a Koha...
+#   3847 biblios imported
+#   3847 items imported
+# ✓ Importación completada
+# → Reindexando catálogo...
+# ✓ Reindexación completada
+#
+# ═══════════════════════════════════════════════════════════════
+# ✓✓✓ IMPORTACIÓN COMPLETADA EXITOSAMENTE ✓✓✓
+# ═══════════════════════════════════════════════════════════════
+#
+# Items antes:   0
+# Items después: 3847
+# Items nuevos:  3847
+# Tiempo total: 245 segundos
+
+# PASO 5: Verificar en Koha
+sudo koha-mysql koha-cnc -e \
+  "SELECT COUNT(*) FROM items WHERE homebranch='MED'"
+# Resultado: 3847
+
+# PASO 6: Ver en OPAC
+# http://servidor:8080/cgi-bin/koha/opac-search.pl?branch=MED
+
+# PASO 7: Revisar logs
+cat logs/reporte_MED_20251024_143025.txt
+
+
+═══════════════════════════════════════════════════════════════════════
+🔧 COMANDOS ÚTILES
+═══════════════════════════════════════════════════════════════════════
+
+# Ver ayuda completa
+./importar_automatico.sh --help
+./agente_importador_v2.py --help
+
+# Ver estadísticas del catálogo
+./importar_automatico.sh --stats
+
+# Procesar solo una biblioteca
+./importar_automatico.sh --biblioteca MED
+
+# Buscar en directorio específico
+./importar_automatico.sh --dir /datos/entrada
+
+# Modo vigilancia
+./importar_automatico.sh --watch
+
+# Ver archivos pendientes
+ls -lh importar_aqui/
+
+# Ver últimos procesados
+ls -lht procesados/ | head
+
+# Ver últimos logs
+ls -lht logs/ | head
+
+# Ver log en tiempo real
+tail -f logs/importacion_*.log
+
+# Buscar errores en logs
+grep ERROR logs/*.log
+
+# Ver bibliotecas en Koha
+sudo koha-mysql koha-cnc -e \
+  "SELECT branchcode, branchname FROM branches"
+
+# Contar items por biblioteca
+sudo koha-mysql koha-cnc -e \
+  "SELECT homebranch, COUNT(*) as total
+   FROM items GROUP BY homebranch ORDER BY total DESC"
+
+
+═══════════════════════════════════════════════════════════════════════
+❓ PREGUNTAS FRECUENTES
+═══════════════════════════════════════════════════════════════════════
+
+Q: ¿Cómo nombro mi archivo CSV?
+A: Debe contener el código de biblioteca de 3-6 letras mayúsculas.
+   Ejemplos: MED.csv, VET_2025.csv, FACAGR_octubre.csv
+
+Q: ¿Se van a duplicar los registros si ya existen?
+A: NO. El sistema verifica items existentes y NO duplica.
+   Solo agrega registros nuevos.
+
+Q: ¿Qué pasa si mi CSV tiene duplicados internos?
+A: El sistema los detecta y corrige automáticamente si son > 50.
+
+Q: ¿Puedo procesar varias bibliotecas a la vez?
+A: Sí. Coloca todos los CSV en importar_aqui/ y ejecuta el script.
+
+Q: ¿Cómo sé si la importación fue exitosa?
+A: Revisa:
+   1. Mensaje final: "✓✓✓ IMPORTACIÓN COMPLETADA EXITOSAMENTE"
+   2. Archivo movido a: procesados/
+   3. Reporte en: logs/reporte_*.txt
+
+Q: ¿Qué hago si da error?
+A: 1. Ver log en logs/importacion_*.log
+   2. Archivo movido a: errores/
+   3. Leer mensaje de error y corregir
+   4. Ver sección "Solución de Problemas" en la guía
+
+Q: ¿Puedo usar el sistema sin supervisión?
+A: Sí. Usa modo vigilancia:
+   ./importar_automatico.sh --watch
+   Coloca archivos cuando estén listos y se procesan solos.
+
+Q: ¿Dónde están los logs?
+A: En logs/
+   - importacion_*.log → Log detallado
+   - reporte_*.txt → Reporte ejecutivo
+
+
+═══════════════════════════════════════════════════════════════════════
+📞 SOPORTE
+═══════════════════════════════════════════════════════════════════════
+
+Documentación:
+   - GUIA_AGENTE_AUTOMATICO.md    → Guía completa
+   - INICIO_RAPIDO_AGENTE.txt     → Inicio rápido
+   - RESUMEN_SISTEMA_AGENTE.txt   → Este archivo
+
+Verificar instalación:
+   ls -lh agente_importador_v2.py importar_automatico.sh
+   ./agente_importador_v2.py --version
+   ./importar_automatico.sh --help
+
+Probar sistema:
+   # Crear CSV de prueba
+   echo "titulo,nroacceso" > test_MED.csv
+   echo "Libro Prueba,TEST001" >> test_MED.csv
+
+   # Procesar
+   ./agente_importador_v2.py test_MED.csv
+
+
+═══════════════════════════════════════════════════════════════════════
+✅ SISTEMA LISTO
+═══════════════════════════════════════════════════════════════════════
+
+El sistema de importación automática está completamente instalado,
+configurado y listo para usar.
+
+Características implementadas:
+✅ Detección automática de código de biblioteca
+✅ Control de duplicados multinivel
+✅ Filtrado por biblioteca específica
+✅ Búsqueda automática de CSV en directorio
+✅ Modo vigilancia para procesamiento continuo
+✅ Validaciones completas en cada paso
+✅ Generación automática de MARCXML
+✅ Importación sin supervisión
+✅ Reindexación automática
+✅ Logs detallados y reportes completos
+✅ Manejo robusto de errores
+✅ Respaldo automático de archivos procesados
+
+PRÓXIMOS PASOS:
+1. Preparar tu primer CSV con nombre correcto (ej: MED.csv)
+2. Colocar en importar_aqui/
+3. Ejecutar ./importar_automatico.sh
+4. Verificar resultado en OPAC
+
+¡Todo listo para comenzar! 🚀
+
+═══════════════════════════════════════════════════════════════════════
+
+Universidad Nacional de Asunción
+Sistema de Importación Automática v2.0
+24 de Octubre 2025
+
+═══════════════════════════════════════════════════════════════════════

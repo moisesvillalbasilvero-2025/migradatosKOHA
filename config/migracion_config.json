@@ -1,0 +1,80 @@
+{
+  "_descripcion": "Configuración del sistema automatizado de migración",
+  "_version": "1.0",
+  "koha": {
+    "instancia": "koha-cnc",
+    "usuario_shell": "root",
+    "commit_size": 1000,
+    "rebuild_indices": true,
+    "motor_busqueda": "zebra"
+  },
+  "rutas": {
+    "trabajo": "/home/mvillalba/migradatos",
+    "exports": "/home/mvillalba/migradatos/exports",
+    "logs": "/home/mvillalba/migradatos/logs",
+    "backups": "/home/mvillalba/migradatos/backups"
+  },
+  "automatizacion": {
+    "validar_antes_importar": true,
+    "crear_backup_antes": true,
+    "notificar_email": true,
+    "pausar_entre_bibliotecas": 5,
+    "reintentos_en_error": 2
+  },
+  "email": {
+    "activado": false,
+    "smtp_server": "smtp.una.py",
+    "smtp_port": 587,
+    "usuario": "biblioteca@una.py",
+    "password": "",
+    "destinatarios": [
+      "admin@una.py"
+    ]
+  },
+  "bibliotecas": {
+    "POL": {
+      "nombre": "Biblioteca Politécnica",
+      "tipo_fuente": "csv",
+      "archivo_csv": "POL.csv",
+      "codigo_koha": "POL",
+      "loc_default": "SALA",
+      "activa": true,
+      "prioridad": 1
+    },
+    "ARQ": {
+      "nombre": "Arquitectura",
+      "tipo_fuente": "csv",
+      "archivo_csv": "ARQ.csv",
+      "codigo_koha": "ARQ",
+      "loc_default": "SALA",
+      "activa": true,
+      "prioridad": 2
+    },
+    "ING": {
+      "nombre": "Facultad de Ingeniería",
+      "tipo_fuente": "csv",
+      "archivo_csv": "ING_corregido.csv",
+      "codigo_koha": "ING",
+      "loc_default": "SALA",
+      "activa": false,
+      "prioridad": 3,
+      "importada": true,
+      "fecha_ultima_importacion": "2025-10-21"
+    },
+    "FACAGR": {
+      "nombre": "Facultad de Ciencias Agrarias",
+      "tipo_fuente": "firebird_remoto",
+      "firebird": {
+        "host": "192.168.1.10",
+        "port": 3050,
+        "database": "/datos/biblio.fdb",
+        "user": "SYSDBA",
+        "password": "masterkey"
+      },
+      "codigo_koha": "FACAGR",
+      "loc_default": "SALA",
+      "activa": false,
+      "prioridad": 3
+    }
+  }
+}

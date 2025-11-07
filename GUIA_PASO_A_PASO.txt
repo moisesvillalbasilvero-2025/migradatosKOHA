@@ -1,0 +1,686 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║              📚 GUÍA PASO A PASO: PROCESAR ARCHIVOS CSV 📚            ║
+║                                                                      ║
+║              Universidad Nacional de Asunción - Koha OPAC            ║
+║              Tutorial Didáctico y Completo                           ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎯 OBJETIVO
+═══════════════════════════════════════════════════════════════════════
+
+Importar un archivo CSV con datos bibliográficos al catálogo Koha OPAC
+de forma SEGURA, sin perder trabajo y sin duplicar registros.
+
+
+═══════════════════════════════════════════════════════════════════════
+  📋 ANTES DE EMPEZAR - REQUISITOS
+═══════════════════════════════════════════════════════════════════════
+
+1. Tienes un archivo CSV con tus datos bibliográficos
+2. Conoces el código de tu biblioteca (ej: MED, VET, ING)
+3. Estás conectado por SSH al servidor
+4. Estás en el directorio: /home/mvillalba/migradatos
+
+Verificar que estás en el lugar correcto:
+  pwd
+
+Debe mostrar: /home/mvillalba/migradatos
+
+Si no estás ahí:
+  cd /home/mvillalba/migradatos
+
+
+═══════════════════════════════════════════════════════════════════════
+  📝 PASO 1: PREPARAR TU ARCHIVO CSV
+═══════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ¿Qué debe contener tu CSV?                                          │
+└──────────────────────────────────────────────────────────────────────┘
+
+COLUMNAS OBLIGATORIAS:
+  ✓ titulo        - Título del libro
+  ✓ nroacceso     - Código de barras o número de acceso
+
+COLUMNAS RECOMENDADAS:
+  • autor         - Autor del libro
+  • editorial     - Editorial
+  • publicacion   - Año de publicación
+  • materia       - Temas o materias
+  • isbn          - ISBN del libro
+  • ubicacion     - Signatura o cota
+
+FORMATO DEL NOMBRE:
+  El archivo debe tener el código de la biblioteca en el nombre:
+
+  ✅ CORRECTO:
+     MED.csv
+     VET_2025.csv
+     ING_octubre.csv
+     FACEN_completo.csv
+
+  ❌ INCORRECTO:
+     datos.csv
+     biblioteca.csv
+     libros.csv
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  Ejemplo de CSV correcto:                                            │
+└──────────────────────────────────────────────────────────────────────┘
+
+  titulo;autor;nroacceso;editorial;publicacion
+  Cien años de soledad;García Márquez, Gabriel;MED-001;Sudamericana;1967
+  Don Quijote;Cervantes, Miguel de;MED-002;Cátedra;1605
+  ...
+
+
+═══════════════════════════════════════════════════════════════════════
+  🔍 PASO 2: VALIDAR EL ARCHIVO
+═══════════════════════════════════════════════════════════════════════
+
+Antes de importar, SIEMPRE valida el archivo para detectar problemas.
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  COMANDO:                                                            │
+└──────────────────────────────────────────────────────────────────────┘
+
+  ./validador_csv.py ruta/a/tu/archivo.csv
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  EJEMPLO PRÁCTICO:                                                   │
+└──────────────────────────────────────────────────────────────────────┘
+
+  # Si tu archivo está en el escritorio:
+  ./validador_csv.py /home/mvillalba/Escritorio/MED.csv
+
+  # Si está en descargas:
+  ./validador_csv.py /home/mvillalba/Descargas/VET.csv
+
+  # Si está en la carpeta actual:
+  ./validador_csv.py MED.csv
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ¿QUÉ VERÁS?                                                         │
+└──────────────────────────────────────────────────────────────────────┘
+
+El validador te mostrará:
+
+  ✓ Tamaño del archivo
+  ✓ Encoding detectado (UTF-8, CP1252, etc.)
+  ✓ Delimitador usado (;  ,  |)
+  ✓ Columnas encontradas
+  ✓ Columnas obligatorias presentes
+  ✓ Duplicados en códigos de acceso
+  ✓ Líneas con problemas
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  RESULTADO ESPERADO:                                                 │
+└──────────────────────────────────────────────────────────────────────┘
+
+  Si todo está bien:
+  ════════════════════════════════════════════════════
+  ✓✓✓ ARCHIVO VÁLIDO PARA IMPORTACIÓN ✓✓✓
+  ════════════════════════════════════════════════════
+
+  Si hay errores:
+  ════════════════════════════════════════════════════
+  ✗✗✗ ARCHIVO NO VÁLIDO - CORREGIR ERRORES ✗✗✗
+  ════════════════════════════════════════════════════
+
+  → Corrige los errores antes de continuar
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ⚠️  ERRORES COMUNES Y SOLUCIONES:                                   │
+└──────────────────────────────────────────────────────────────────────┘
+
+ERROR: "Falta columna obligatoria: titulo"
+  → Agregar columna 'titulo' a tu CSV
+
+ERROR: "Falta columna obligatoria: nroacceso"
+  → Agregar columna 'nroacceso' con códigos de barras
+
+ADVERTENCIA: "Códigos de acceso duplicados: 50"
+  → Revisa tu CSV, algunos códigos se repiten
+  → El sistema los corregirá automáticamente
+
+
+═══════════════════════════════════════════════════════════════════════
+  📤 PASO 3: SUBIR EL ARCHIVO
+═══════════════════════════════════════════════════════════════════════
+
+Una vez validado, subimos el archivo a la carpeta de importación.
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  COMANDO:                                                            │
+└──────────────────────────────────────────────────────────────────────┘
+
+  ./subir_csv.sh ruta/a/tu/archivo.csv CODIGO
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  EJEMPLOS PRÁCTICOS:                                                 │
+└──────────────────────────────────────────────────────────────────────┘
+
+  # Biblioteca de Medicina
+  ./subir_csv.sh /home/mvillalba/Escritorio/medicina.csv MED
+
+  # Biblioteca de Veterinaria
+  ./subir_csv.sh /home/mvillalba/Descargas/veterinaria.csv VET
+
+  # Biblioteca de Ingeniería
+  ./subir_csv.sh datos_ingenieria.csv ING
+
+  # Facultad de Ciencias Exactas
+  ./subir_csv.sh facen.csv FACEN
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ¿QUÉ HACE ESTE COMANDO?                                             │
+└──────────────────────────────────────────────────────────────────────┘
+
+  1. Copia tu archivo a: importar_aqui/CODIGO.csv
+  2. Te muestra información:
+     - Tamaño del archivo
+     - Número de líneas
+     - Código detectado
+  3. Te sugiere el siguiente paso
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  SALIDA ESPERADA:                                                    │
+└──────────────────────────────────────────────────────────────────────┘
+
+  Copiando archivo...
+    Origen:  /home/mvillalba/Escritorio/MED.csv
+    Destino: /home/mvillalba/migradatos/importar_aqui/MED.csv
+
+  ✓ Archivo copiado exitosamente
+
+  INFORMACIÓN:
+    Archivo: MED.csv
+    Tamaño:  5.2 MB
+    Líneas:  4850
+    Código:  MED
+
+  ¿Procesar ahora?
+    Opción 1: ./importar_automatico.sh
+    Opción 2: ./agente_importador_v2.py importar_aqui/MED.csv
+
+
+═══════════════════════════════════════════════════════════════════════
+  🚀 PASO 4: IMPORTAR CON PERSISTENCIA (¡IMPORTANTE!)
+═══════════════════════════════════════════════════════════════════════
+
+Ahora viene la parte más importante: importar CON PERSISTENCIA.
+
+¿Por qué con persistencia?
+  • Las importaciones pueden tardar 20-30 minutos
+  • Si se corta la conexión SSH, perderías todo el trabajo
+  • Con tmux, la importación continúa aunque te desconectes
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  COMANDO PRINCIPAL: ⭐⭐⭐                                              │
+└──────────────────────────────────────────────────────────────────────┘
+
+  ./importar_con_tmux.sh
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ¿QUÉ PASARÁ?                                                        │
+└──────────────────────────────────────────────────────────────────────┘
+
+  1. El script buscará archivos CSV en importar_aqui/
+
+  2. Te mostrará los archivos encontrados:
+
+     Archivos encontrados: 1
+
+       1. MED.csv [MED]
+
+     ¿Procesar estos archivos? (SI/no):
+
+  3. Escribe: SI  (o simplemente presiona Enter)
+
+  4. Te preguntará si quieres continuar aunque ya existan items:
+
+     Items existentes en Koha para MED: 4767
+     ⚠ Ya existen 4767 items. Se agregarán NUEVOS registros
+     ¿Desea continuar? (SI/no):
+
+  5. Escribe: SI
+
+  6. ¡El proceso empezará dentro de tmux!
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  AHORA ESTÁS DENTRO DE TMUX                                          │
+└──────────────────────────────────────────────────────────────────────┘
+
+Verás algo como:
+
+  ═══════════════════════════════════════════════════════
+  📄 PROCESANDO: MED.csv
+  ═══════════════════════════════════════════════════════
+
+  1. DETECCIÓN DE BIBLIOTECA
+  ───────────────────────────
+  ✓ Código detectado: MED
+
+  2. VERIFICACIÓN EN KOHA
+  ───────────────────────
+  ✓ Biblioteca: Biblioteca de Medicina
+
+  3. ANÁLISIS DEL CSV
+  ──────────────────
+  ✓ Total de registros: 4850
+  ✓ Columnas detectadas: 15
+
+  4. VERIFICACIÓN DE ITEMS EXISTENTES
+  ──────────────────────────────────
+  Items actuales en Koha para MED: 4767
+
+  5. GENERACIÓN DE MARCXML
+  ────────────────────────
+  → Generando MARCXML...
+
+  ... (el proceso continúa)
+
+
+═══════════════════════════════════════════════════════════════════════
+  ⌨️  PASO 5: DESCONECTARSE SIN DETENER (¡CLAVE!)
+═══════════════════════════════════════════════════════════════════════
+
+Aquí está la MAGIA de tmux:
+
+Puedes desconectarte de la sesión y la importación SEGUIRÁ CORRIENDO.
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  PARA DESCONECTARTE:                                                 │
+└──────────────────────────────────────────────────────────────────────┘
+
+  1. Presiona: Ctrl + b
+  2. Suelta ambas teclas
+  3. Presiona: d
+
+¡Eso es todo! Verás:
+
+  [detached (from session importacion-koha)]
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  AHORA PUEDES:                                                       │
+└──────────────────────────────────────────────────────────────────────┘
+
+  ✓ Cerrar la terminal SSH
+  ✓ Apagar tu computadora
+  ✓ Irte a casa
+  ✓ Hacer otras cosas
+
+  La importación SIGUE CORRIENDO en el servidor ⭐
+
+
+═══════════════════════════════════════════════════════════════════════
+  👀 PASO 6: MONITOREAR EL PROGRESO
+═══════════════════════════════════════════════════════════════════════
+
+Mientras la importación corre, puedes ver el progreso.
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  OPCIÓN A: Monitor en Tiempo Real                                   │
+└──────────────────────────────────────────────────────────────────────┘
+
+  Abre una NUEVA terminal SSH y ejecuta:
+
+  cd /home/mvillalba/migradatos
+  ./monitor_importacion.sh --watch
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ¿QUÉ VERÁS EN EL MONITOR?                                           │
+└──────────────────────────────────────────────────────────────────────┘
+
+  ═══ SESIONES TMUX ACTIVAS ═══
+  ✓ Sesiones de importación activas:
+    → importacion-koha: 1 windows (created Thu Oct 24 15:30:00 2025)
+
+  ═══ PROCESOS DE IMPORTACIÓN ACTIVOS ═══
+  ✓ Conversión CSV→XML: 0 proceso(s)
+  ✓ Importación a Koha: 1 proceso(s)
+
+  ═══ ESTADÍSTICAS DE BIBLIOTECAS EN KOHA ═══
+  Código | Nombre                      | Items | Última Importación
+  -------+-----------------------------+-------+-------------------
+  AGRO   | Agronomía                   | 37226 | 2025-10-15
+  BCT    | Biblioteca Central Tesis    | 19298 | 2025-10-24
+  ING    | Ingeniería                  | 14997 | 2025-10-20
+  MED    | Medicina                    |  4767 | 2025-10-21  ← Importando...
+
+  Actualizando cada 5s... (Ctrl+C para salir)
+
+Para salir del monitor:
+  Presiona: Ctrl + C
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  OPCIÓN B: Ver los Logs                                              │
+└──────────────────────────────────────────────────────────────────────┘
+
+  # Ver el log en tiempo real
+  tail -f logs/importacion_MED_*.log
+
+  # Ver últimas líneas
+  tail -50 logs/importacion_MED_*.log
+
+  # Ver todo el log
+  less logs/importacion_MED_*.log
+
+Para salir de tail -f:
+  Presiona: Ctrl + C
+
+
+═══════════════════════════════════════════════════════════════════════
+  🔄 PASO 7: RECONECTAR A LA SESIÓN
+═══════════════════════════════════════════════════════════════════════
+
+Si quieres volver a ver la importación en vivo:
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  COMANDO:                                                            │
+└──────────────────────────────────────────────────────────────────────┘
+
+  ./importar_con_tmux.sh --attach
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  O DIRECTAMENTE:                                                     │
+└──────────────────────────────────────────────────────────────────────┘
+
+  tmux attach -t importacion-koha
+
+Volverás a ver exactamente dónde estaba el proceso.
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  PARA DESCONECTAR NUEVAMENTE:                                        │
+└──────────────────────────────────────────────────────────────────────┘
+
+  Ctrl + b, luego d
+
+
+═══════════════════════════════════════════════════════════════════════
+  ✅ PASO 8: VERIFICAR QUE TODO ESTÁ BIEN
+═══════════════════════════════════════════════════════════════════════
+
+Cuando la importación termine, verás:
+
+  ═══════════════════════════════════════════════════════
+  ✓✓✓ IMPORTACIÓN COMPLETADA EXITOSAMENTE ✓✓✓
+  ═══════════════════════════════════════════════════════
+
+  ✓ Tiempo total: 1645 segundos
+  ✓ URL verificación: http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=MED
+
+  → Archivo movido a: procesados/MED_OK_20251024_153045.csv
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  VERIFICACIONES POST-IMPORTACIÓN:                                    │
+└──────────────────────────────────────────────────────────────────────┘
+
+1. Verificar que NO hay duplicados:
+
+   ./verificar_duplicados.sh --biblioteca MED
+
+   Debe mostrar: "✓ No se encontraron duplicados de barcode"
+
+2. Ver estadísticas:
+
+   ./monitor_importacion.sh
+
+   Verás los nuevos items en MED
+
+3. Verificar en Koha OPAC:
+
+   Abre navegador → Buscar por biblioteca MED
+   Deberías ver tus nuevos registros
+
+4. Ver el reporte completo:
+
+   less logs/reporte_MED_*.txt
+
+
+═══════════════════════════════════════════════════════════════════════
+  📁 PASO 9: ¿DÓNDE QUEDARON LOS ARCHIVOS?
+═══════════════════════════════════════════════════════════════════════
+
+Después de procesar:
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ARCHIVO CSV ORIGINAL:                                               │
+└──────────────────────────────────────────────────────────────────────┘
+
+  Movido a:
+    procesados/MED_OK_20251024_153045.csv
+
+  Ver archivos procesados:
+    ls -lht procesados/
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ARCHIVOS MARCXML GENERADOS:                                         │
+└──────────────────────────────────────────────────────────────────────┘
+
+  Están en:
+    exports/MED_20251024_marcxml_01.xml
+    exports/MED_20251024_marcxml_02.xml
+    ...
+
+  Ver archivos XML:
+    ls -lh exports/MED_*.xml
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  LOGS Y REPORTES:                                                    │
+└──────────────────────────────────────────────────────────────────────┘
+
+  Log de importación:
+    logs/importacion_MED_20251024_153045.log
+
+  Reporte detallado:
+    logs/reporte_MED_20251024_153045.txt
+
+  Ver logs:
+    ls -lht logs/
+
+
+═══════════════════════════════════════════════════════════════════════
+  🔄 PASO 10: PROCESAR MÁS ARCHIVOS
+═══════════════════════════════════════════════════════════════════════
+
+¿Tienes más archivos para importar? ¡Repite el proceso!
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  MÉTODO A: Uno por Uno                                               │
+└──────────────────────────────────────────────────────────────────────┘
+
+  1. Validar:      ./validador_csv.py VET.csv
+  2. Subir:        ./subir_csv.sh VET.csv VET
+  3. Importar:     ./importar_con_tmux.sh
+  4. Desconectar:  Ctrl+b, d
+  5. Esperar...
+  6. Repetir con siguiente archivo
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  MÉTODO B: Modo Vigilancia (Automático)                              │
+└──────────────────────────────────────────────────────────────────────┘
+
+  1. Iniciar vigilancia:
+     ./importar_con_tmux.sh --watch
+
+  2. Desconectar:
+     Ctrl+b, d
+
+  3. Colocar archivos:
+     ./subir_csv.sh VET.csv VET
+     ./subir_csv.sh ING.csv ING
+     ./subir_csv.sh FACEN.csv FACEN
+
+  4. ¡Se procesarán automáticamente!
+
+  5. Monitorear:
+     ./monitor_importacion.sh --watch
+
+
+═══════════════════════════════════════════════════════════════════════
+  ⚠️  PROBLEMAS COMUNES Y SOLUCIONES
+═══════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  PROBLEMA 1: "No se detectó código de biblioteca"                   │
+└──────────────────────────────────────────────────────────────────────┘
+
+CAUSA: El nombre del archivo no contiene el código
+
+SOLUCIÓN:
+  Renombra el archivo:
+    mv datos.csv MED.csv
+
+  O especifica el código al subir:
+    ./subir_csv.sh datos.csv MED
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  PROBLEMA 2: "La biblioteca 'XXX' NO existe en Koha"                │
+└──────────────────────────────────────────────────────────────────────┘
+
+CAUSA: El código de biblioteca no está registrado en Koha
+
+SOLUCIÓN:
+  1. Verificar código correcto en Koha
+  2. O crear la biblioteca en:
+     Staff Interface → Administración → Bibliotecas
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  PROBLEMA 3: "Me desconecté y no sé si sigue corriendo"             │
+└──────────────────────────────────────────────────────────────────────┘
+
+SOLUCIÓN:
+  1. Verificar sesiones tmux:
+     tmux ls
+
+  2. Ver procesos activos:
+     ./monitor_importacion.sh
+
+  3. Reconectar:
+     ./importar_con_tmux.sh --attach
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  PROBLEMA 4: "Quiero detener la importación"                        │
+└──────────────────────────────────────────────────────────────────────┘
+
+SOLUCIÓN:
+  1. Conectar a la sesión:
+     ./importar_con_tmux.sh --attach
+
+  2. Presionar: Ctrl + C
+
+  3. O matar la sesión:
+     ./importar_con_tmux.sh --kill
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  PROBLEMA 5: "¿Se importaron duplicados?"                           │
+└──────────────────────────────────────────────────────────────────────┘
+
+SOLUCIÓN:
+  Verificar:
+    ./verificar_duplicados.sh --biblioteca MED
+
+  Si hay duplicados (no debería):
+    ./verificar_duplicados.sh --auto-fix
+
+
+═══════════════════════════════════════════════════════════════════════
+  📚 COMANDOS RÁPIDOS DE REFERENCIA
+═══════════════════════════════════════════════════════════════════════
+
+VALIDAR:
+  ./validador_csv.py archivo.csv
+
+SUBIR:
+  ./subir_csv.sh archivo.csv CODIGO
+
+IMPORTAR (con persistencia):
+  ./importar_con_tmux.sh
+
+DESCONECTAR (sin detener):
+  Ctrl+b, luego d
+
+MONITOREAR:
+  ./monitor_importacion.sh --watch
+
+RECONECTAR:
+  ./importar_con_tmux.sh --attach
+
+VERIFICAR DUPLICADOS:
+  ./verificar_duplicados.sh
+
+VER LOGS:
+  tail -f logs/importacion_*.log
+
+VER PROCESADOS:
+  ls -lht procesados/
+
+
+═══════════════════════════════════════════════════════════════════════
+  ✅ CHECKLIST DE IMPORTACIÓN
+═══════════════════════════════════════════════════════════════════════
+
+Antes de importar:
+  [ ] Archivo CSV preparado con columnas correctas
+  [ ] Nombre de archivo contiene código de biblioteca
+  [ ] Archivo validado con ./validador_csv.py
+  [ ] No hay errores críticos en validación
+
+Durante la importación:
+  [ ] Usar ./importar_con_tmux.sh (CON persistencia)
+  [ ] Desconectar con Ctrl+b d (no cerrar terminal)
+  [ ] Monitorear progreso si es necesario
+
+Después de importar:
+  [ ] Verificar mensaje de éxito
+  [ ] Archivo movido a procesados/
+  [ ] Ejecutar ./verificar_duplicados.sh
+  [ ] Verificar registros en Koha OPAC
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎓 CONSEJOS FINALES
+═══════════════════════════════════════════════════════════════════════
+
+1. SIEMPRE valida antes de importar
+2. USA tmux para no perder trabajo
+3. NO cierres la terminal, mejor desconéctate (Ctrl+b d)
+4. Monitorea el progreso con otra terminal
+5. Verifica duplicados después de importar
+6. Guarda los logs para referencia
+7. Si dudas, pregunta antes de continuar
+
+
+═══════════════════════════════════════════════════════════════════════
+  📞 ¿NECESITAS AYUDA?
+═══════════════════════════════════════════════════════════════════════
+
+Ver ayuda de comandos:
+  ./importar_con_tmux.sh --help
+  ./monitor_importacion.sh --help
+  ./validador_csv.py --help
+  ./verificar_duplicados.sh --help
+
+Ver documentación completa:
+  cat INICIO_RAPIDO.txt
+  cat LEEME_PRIMERO.txt
+  less GUIA_RAPIDA_OPTIMIZACION.md
+
+Ver estado del sistema:
+  ./monitor_importacion.sh
+
+
+═══════════════════════════════════════════════════════════════════════
+
+Universidad Nacional de Asunción
+Sistema Koha OPAC
+Guía Didáctica - 2025-10-24
+
+╔══════════════════════════════════════════════════════════════════════╗
+║              ¡AHORA ESTÁS LISTO PARA IMPORTAR! 🚀                     ║
+╚══════════════════════════════════════════════════════════════════════╝

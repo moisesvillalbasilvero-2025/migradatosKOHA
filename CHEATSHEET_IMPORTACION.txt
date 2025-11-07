@@ -1,0 +1,179 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║              📋 CHEATSHEET: IMPORTAR ARCHIVOS CSV 📋                  ║
+║              Referencia Rápida - Universidad Nacional de Asunción    ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════
+  ⚡ COMANDO RÁPIDO (TODO EN UNO)
+═══════════════════════════════════════════════════════════════════════
+
+  # Validar, subir e importar en 3 pasos:
+  ./validador_csv.py MED.csv && \
+  ./subir_csv.sh MED.csv MED && \
+  ./importar_con_tmux.sh
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎯 FLUJO BÁSICO (4 PASOS)
+═══════════════════════════════════════════════════════════════════════
+
+  1. VALIDAR
+     ./validador_csv.py archivo.csv
+
+  2. SUBIR
+     ./subir_csv.sh archivo.csv CODIGO
+
+  3. IMPORTAR (con persistencia SSH)
+     ./importar_con_tmux.sh
+
+  4. DESCONECTAR (sigue corriendo)
+     Ctrl+b d
+
+
+═══════════════════════════════════════════════════════════════════════
+  🔑 COMANDOS ESENCIALES
+═══════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────┬──────────────────────────────────────────┐
+│ Acción                  │ Comando                                  │
+├─────────────────────────┼──────────────────────────────────────────┤
+│ Validar CSV             │ ./validador_csv.py archivo.csv           │
+│ Subir archivo           │ ./subir_csv.sh archivo.csv CODIGO        │
+│ Importar (persistente)  │ ./importar_con_tmux.sh                   │
+│ Desconectar tmux        │ Ctrl+b d                                 │
+│ Reconectar tmux         │ ./importar_con_tmux.sh --attach          │
+│ Ver sesiones            │ tmux ls                                  │
+│ Monitor tiempo real     │ ./monitor_importacion.sh --watch         │
+│ Ver logs en vivo        │ tail -f logs/importacion_*.log           │
+│ Verificar duplicados    │ ./verificar_duplicados.sh                │
+│ Ver procesados          │ ls -lht procesados/                      │
+│ Detener importación     │ ./importar_con_tmux.sh --kill            │
+└─────────────────────────┴──────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════
+  ⌨️  ATAJOS DE TMUX
+═══════════════════════════════════════════════════════════════════════
+
+  Ctrl+b d       Desconectar (sigue corriendo) ⭐
+  Ctrl+b [       Modo scroll/ver historial
+  q              Salir del modo scroll
+  Ctrl+b ?       Mostrar todos los atajos
+
+
+═══════════════════════════════════════════════════════════════════════
+  📊 VERIFICACIONES RÁPIDAS
+═══════════════════════════════════════════════════════════════════════
+
+  # Estado general
+  ./monitor_importacion.sh
+
+  # ¿Hay duplicados?
+  ./verificar_duplicados.sh
+
+  # ¿Sesión activa?
+  tmux ls
+
+  # ¿Proceso corriendo?
+  ps aux | grep bulkmarcimport
+
+  # Items por biblioteca
+  sudo koha-mysql koha-cnc -e "
+  SELECT homebranch, COUNT(*) as items
+  FROM items GROUP BY homebranch"
+
+
+═══════════════════════════════════════════════════════════════════════
+  🗂️  UBICACIONES DE ARCHIVOS
+═══════════════════════════════════════════════════════════════════════
+
+  Pendientes:     importar_aqui/
+  Procesados:     procesados/
+  Con errores:    errores/
+  XML generados:  exports/
+  Logs:           logs/
+
+
+═══════════════════════════════════════════════════════════════════════
+  🚨 SOLUCIONES RÁPIDAS
+═══════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────┬──────────────────────────────────┐
+│ Problema                         │ Solución                         │
+├──────────────────────────────────┼──────────────────────────────────┤
+│ Me desconecté de SSH             │ ./importar_con_tmux.sh --attach  │
+│ No sé si sigue corriendo         │ tmux ls  o  ps aux | grep import │
+│ Quiero ver el progreso           │ ./monitor_importacion.sh --watch │
+│ Quiero detener                   │ Ctrl+C dentro de tmux            │
+│ Error "biblioteca no existe"     │ Verificar código en Koha         │
+│ Archivo sin código               │ Renombrar: mv datos.csv MED.csv  │
+│ ¿Hay duplicados?                 │ ./verificar_duplicados.sh        │
+│ Ver últimos logs                 │ tail -50 logs/importacion_*.log  │
+└──────────────────────────────────┴──────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════
+  📝 EJEMPLOS COMPLETOS
+═══════════════════════════════════════════════════════════════════════
+
+EJEMPLO 1: Importar Medicina
+──────────────────────────────
+  ./validador_csv.py MED.csv
+  ./subir_csv.sh MED.csv MED
+  ./importar_con_tmux.sh
+  # Desconectar: Ctrl+b d
+
+EJEMPLO 2: Importar Veterinaria desde Descargas
+────────────────────────────────────────────────
+  ./validador_csv.py ~/Descargas/veterinaria.csv
+  ./subir_csv.sh ~/Descargas/veterinaria.csv VET
+  ./importar_con_tmux.sh
+  # Desconectar: Ctrl+b d
+
+EJEMPLO 3: Modo Vigilancia (Múltiples Archivos)
+────────────────────────────────────────────────
+  ./importar_con_tmux.sh --watch
+  # Desconectar: Ctrl+b d
+  # Luego subir archivos:
+  ./subir_csv.sh MED.csv MED
+  ./subir_csv.sh VET.csv VET
+  # Se procesarán automáticamente
+
+
+═══════════════════════════════════════════════════════════════════════
+  ✅ CHECKLIST PRE-IMPORTACIÓN
+═══════════════════════════════════════════════════════════════════════
+
+  [ ] Archivo CSV tiene columnas: titulo, nroacceso
+  [ ] Nombre incluye código: MED.csv, VET.csv, etc.
+  [ ] Validado con ./validador_csv.py
+  [ ] Sin errores críticos
+  [ ] Biblioteca existe en Koha
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎓 MEJORES PRÁCTICAS
+═══════════════════════════════════════════════════════════════════════
+
+  ✓ Validar ANTES de importar
+  ✓ Usar tmux para persistencia
+  ✓ Desconectar con Ctrl+b d (no cerrar terminal)
+  ✓ Monitorear en otra terminal
+  ✓ Verificar duplicados después
+  ✓ No re-importar archivos de procesados/
+
+
+═══════════════════════════════════════════════════════════════════════
+  📚 MÁS INFORMACIÓN
+═══════════════════════════════════════════════════════════════════════
+
+  Tutorial completo:         cat GUIA_PASO_A_PASO.txt
+  Inicio rápido:             cat INICIO_RAPIDO.txt
+  Índice principal:          cat LEEME_PRIMERO.txt
+  Verificación duplicados:   cat VERIFICACION_DUPLICADOS.txt
+
+
+Universidad Nacional de Asunción - Sistema Koha OPAC - 2025

@@ -1,0 +1,46 @@
+
+════════════════════════════════════════════════════════════════════════════════
+REPORTE DE IMPORTACIÓN AUTOMÁTICA
+════════════════════════════════════════════════════════════════════════════════
+
+INFORMACIÓN GENERAL
+───────────────────
+Fecha y hora:        2025-10-24 16:51:58
+Código biblioteca:   FACEN
+Nombre biblioteca:   Biblioteca e Internet (BIFACEN)
+
+ARCHIVO CSV
+───────────
+Ruta original:       importar_aqui/FACEN.csv
+Nombre archivo:      FACEN.csv
+Total registros:     7116
+Duplicados:          15
+Corrección aplicada: No necesaria
+
+GENERACIÓN MARCXML
+──────────────────
+Archivos generados:  0
+Registros en XML:    0
+Validación XML:      N/A
+
+IMPORTACIÓN KOHA
+────────────────
+Items antes:         37
+Items después:       0
+Items importados:    0
+Estado importación:  N/A
+
+REINDEXACIÓN
+────────────
+Estado reindex:      N/A
+
+RESULTADO FINAL
+───────────────
+Estado:              ERROR: Generación MARCXML
+Tiempo total:        N/A segundos
+
+VERIFICACIÓN
+────────────
+URL OPAC: http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=FACEN
+
+════════════════════════════════════════════════════════════════════════════════

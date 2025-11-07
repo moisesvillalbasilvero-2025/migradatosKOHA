@@ -1,0 +1,49 @@
+╔════════════════════════════════════════════════════════════════════╗
+║              RESUMEN DE EJECUCIÓN - IMPORTADOR OPTIMIZADO          ║
+╚════════════════════════════════════════════════════════════════════╝
+
+Fecha y hora inicio:    2025-11-04 11:12:57
+Fecha y hora fin:       2025-11-04 11:12:59
+Duración total:         2 segundos (0 minutos)
+
+═══════════════════════════════════════════════════════════════════
+
+ESTADÍSTICAS:
+
+  Archivos procesados:    1
+  Importaciones exitosas: 0
+  Importaciones fallidas: 1
+  Archivos validados:     1
+  Archivos inválidos:     0
+
+═══════════════════════════════════════════════════════════════════
+
+ESTADO DEL SISTEMA KOHA:
+
++---------+-------------------------------------------------------------------------------+----------+------------+
+| Código  | Biblioteca                                                                    | Títulos  | Ejemplares |
++---------+-------------------------------------------------------------------------------+----------+------------+
+| AGRO    | Biblioteca de la Facultad de Ciencias Agrarias                                |    37226 |      37226 |
+| BCT     | Biblioteca Central. Trabajos de Fin de Grado y Tesis de Postgrado             |    19298 |      19298 |
+| BC      | Biblioteca Central de la Universidad Nacional de Asunción                     |    15997 |      15997 |
+| ING     | Biblioteca de la Facultad de Ingeniería                                       |    14893 |      14997 |
+| POL     | Centro de Información y Cultura de la Facultad Politécnica                    |    12467 |      12467 |
+| FIL     | Biblioteca "Abraham Lincoln" de la Facultad de Filosofía                      |    10350 |      10377 |
+| ECO     | Biblioteca de la Facultad de Ciencias Económicas                              |     9687 |       9687 |
+| VET     | Biblioteca y Centro de Documentación de la Facultad de Ciencias Veterinarias  |     9085 |       9085 |
+| FACEN   | Biblioteca e Internet (BIFACEN)                                               |     7054 |       7090 |
+| QUI     | Biblioteca de la Facultad de Ciencias Químicas                                |     6349 |       6364 |
+| MED     | Biblioteca de la Facultad de Ciencias Médicas                                 |     4767 |       4767 |
+| IAB     | Biblioteca de la Facultad de Enfermería y Obstetricia                         |     4400 |       4400 |
+| ARQ     | Biblioteca de la Facultad de Arquitectura, Diseño y Arte                      |     3609 |       3944 |
+| ODO     | Biblioteca de la Facultad de Odontología (BFO)                                |     1086 |       1212 |
+| FORA    | Biblioteca de la Ing. Forestal                                                |      272 |        272 |
++---------+-------------------------------------------------------------------------------+----------+------------+
+
+═══════════════════════════════════════════════════════════════════
+
+Logs completos: /home/mvillalba/migradatos/logs/maestro_20251104_111257.log
+Reportes individuales: /home/mvillalba/migradatos/reportes
+
+Universidad Nacional de Asunción - Sistema Koha
+════════════════════════════════════════════════════════════════════

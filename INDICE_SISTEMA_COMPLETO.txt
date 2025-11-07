@@ -1,0 +1,278 @@
+════════════════════════════════════════════════════════════════════════════
+  ÍNDICE COMPLETO DEL SISTEMA DE IMPORTACIÓN v3.0
+════════════════════════════════════════════════════════════════════════════
+
+Fecha: 25 de Octubre de 2025
+Ubicación: /home/mvillalba/migradatos/
+
+════════════════════════════════════════════════════════════════════════════
+  📁 SCRIPTS PRINCIPALES
+════════════════════════════════════════════════════════════════════════════
+
+1. validar_antes_importar.sh (v2.0)
+   → Valida calidad de CSV (scoring 0-100)
+   → ✅ NUEVO: Detecta duplicados internos en CSV
+   → ✅ NUEVO: Detecta duplicados CSV vs BD
+   → Uso: ./validar_antes_importar.sh archivo.csv
+
+2. importar_biblioteca.sh (v3.0)
+   → Importación simple para archivos pequeños/medianos
+   → ✅ NUEVO: Verifica duplicados antes de importar
+   → ✅ NUEVO: Modo inteligente (agrega ejemplares vs duplicar)
+   → Uso: ./importar_biblioteca.sh CODIGO_BIBLIOTECA
+
+3. importar_por_lotes.sh (v2.0)
+   → Importación por lotes para archivos grandes
+   → ✅ NUEVO: Verifica duplicados antes de dividir
+   → Divide en lotes pequeños (default 500 registros)
+   → Uso: ./importar_por_lotes.sh archivo.csv [tamaño_lote]
+
+4. prevenir_duplicados.sh ⭐ NUEVO
+   → Biblioteca de 9 funciones para prevención de duplicados
+   → Usado por todos los scripts de importación
+   → Funciones:
+     * barcode_existe_en_bd()
+     * isbn_existe_en_bd()
+     * titulo_autor_existe_en_bd()
+     * obtener_biblionumber_por_isbn()
+     * obtener_biblionumber_por_titulo_autor()
+     * verificar_duplicados_en_csv()
+     * verificar_duplicados_csv_vs_bd()
+     * importar_inteligente()
+     * generar_reporte_duplicados()
+   → Uso: source prevenir_duplicados.sh
+
+5. demo_prevencion_duplicados.sh ⭐ NUEVO
+   → Demostración interactiva del sistema
+   → Crea ejemplos de CSV con duplicados
+   → Muestra los 3 niveles de detección
+   → Uso: ./demo_prevencion_duplicados.sh
+
+════════════════════════════════════════════════════════════════════════════
+  📚 DOCUMENTACIÓN
+════════════════════════════════════════════════════════════════════════════
+
+docs/SISTEMA_IMPORTACION_COMPLETO.md ⭐ NUEVO
+  → Guía completa del sistema v3.0
+  → Niveles de protección
+  → Casos de uso
+  → Solución de problemas
+  → Checklist de importación
+
+docs/GUIA_PREVENCION_DUPLICADOS.md ⭐ NUEVO
+  → Guía detallada de prevención de duplicados
+  → 3 tipos de duplicados (Crítico, Real, Falso)
+  → 3 niveles de verificación
+  → Ejemplos prácticos
+  → Limpiar duplicados existentes
+
+docs/GUIA_IMPORTACION_LOTES.md
+  → Guía de importación por lotes
+  → Comparación normal vs lotes
+  → Recomendaciones de tamaño
+  → Monitoreo en tiempo real
+
+docs/GUIA_ESTRUCTURA_CSV_Y_SQL.md
+  → Estructura del catálogo Koha
+  → 22 columnas del CSV explicadas
+  → Catálogos de códigos válidos
+  → Ejemplos de datos
+
+docs/MEJORA_CONTINUA_CATALOGO.md
+  → Plan de mejora continua (6 meses)
+  → 4 niveles de calidad (Básico → Premium)
+  → KPIs mensuales
+  → Queries de auditoría
+
+docs/MEJORAS_AVANZADAS_IMPORTADOR.md
+  → 8 mejoras avanzadas del sistema
+  → Migración incremental
+  → Backup automático
+  → Notificaciones
+
+docs/ejemplo-catalogo-completo.csv
+  → Ejemplo con 15 libros completos
+  → Todos los campos llenos
+  → Datos realistas
+
+docs/estructura-catalogo-didactica.sql
+  → DDL didáctico con explicaciones
+  → Estructura de tablas Koha
+  → Comentarios por campo
+
+DIDACTICA_IMPORTACION_VISUAL.txt
+  → Tutorial visual con ASCII art
+  → 10 capítulos paso a paso
+  → Analogías y ejemplos
+
+IMPORTACION_CON_PROTECCION.txt ⭐ NUEVO
+  → Resumen ejecutivo de 1 página
+  → Cambios v2.0 → v3.0
+  → Uso rápido
+  → Casos de uso
+
+README_IMPORTACION_LOTES.txt
+  → Resumen de importación por lotes
+  → Ventajas y comparación
+  → Ejemplos de uso
+
+INDICE_SISTEMA_COMPLETO.txt (este archivo)
+  → Índice de todos los archivos
+  → Descripción de cada componente
+
+════════════════════════════════════════════════════════════════════════════
+  📂 DIRECTORIOS
+════════════════════════════════════════════════════════════════════════════
+
+importar_aqui/
+  → Colocar aquí los archivos CSV a importar
+  → Formato: CODIGO_BIBLIOTECA.csv (ej: ING.csv)
+
+exports/
+  → Archivos MARCXML generados (temporales)
+  → Se crean durante la importación
+
+logs/
+  → Logs de validación
+  → Logs de importación simple
+  → Logs de importación por lotes
+
+reportes/
+  → Reportes HTML de importación por lotes
+  → Estadísticas visuales
+
+procesados/
+  → CSV ya importados (respaldo)
+
+errores/
+  → CSV con errores durante importación
+
+demo/
+  → Archivos de ejemplo de la demo
+  → CSV con duplicados para pruebas
+
+docs/
+  → Toda la documentación
+
+scripts/
+  → Scripts auxiliares (opac_exportar.py, etc.)
+
+════════════════════════════════════════════════════════════════════════════
+  🔄 FLUJOS DE TRABAJO
+════════════════════════════════════════════════════════════════════════════
+
+FLUJO 1: Importación Simple (Archivo pequeño/mediano)
+───────────────────────────────────────────────────────
+1. Validar:  ./validar_antes_importar.sh importar_aqui/ING.csv
+2. Revisar:  Score > 70 y sin duplicados críticos
+3. Importar: ./importar_biblioteca.sh ING
+4. Verificar: firefox http://opac.una.edu.py/
+
+FLUJO 2: Importación por Lotes (Archivo grande)
+────────────────────────────────────────────────
+1. Validar:  ./validar_antes_importar.sh importar_aqui/GRANDE.csv
+2. Revisar:  Corregir errores si hay
+3. Importar: ./importar_por_lotes.sh importar_aqui/GRANDE.csv 500
+4. Monitorear: tail -f logs/batch_import_*.log
+5. Ver reporte: firefox reportes/batch_import_*.html
+
+FLUJO 3: Verificación Manual de Duplicados
+───────────────────────────────────────────
+1. Cargar funciones: source prevenir_duplicados.sh
+2. Verificar CSV: verificar_duplicados_en_csv archivo.csv
+3. Verificar BD: verificar_duplicados_csv_vs_bd archivo.csv
+4. Interpretar código de retorno:
+   → 0 = Sin duplicados (OK)
+   → 1 = Barcodes duplicados (ERROR)
+   → 2 = ISBNs/Títulos duplicados (ADVERTENCIA)
+
+════════════════════════════════════════════════════════════════════════════
+  🎯 ACCESO RÁPIDO
+════════════════════════════════════════════════════════════════════════════
+
+Ver guía completa:
+  less docs/SISTEMA_IMPORTACION_COMPLETO.md
+
+Ver guía de duplicados:
+  less docs/GUIA_PREVENCION_DUPLICADOS.md
+
+Ver resumen rápido:
+  cat IMPORTACION_CON_PROTECCION.txt
+
+Ejecutar demo:
+  ./demo_prevencion_duplicados.sh
+
+Validar CSV:
+  ./validar_antes_importar.sh importar_aqui/ARCHIVO.csv
+
+Importar:
+  ./importar_biblioteca.sh CODIGO
+
+Importar por lotes:
+  ./importar_por_lotes.sh importar_aqui/ARCHIVO.csv 500
+
+════════════════════════════════════════════════════════════════════════════
+  📊 ARCHIVOS POR CATEGORÍA
+════════════════════════════════════════════════════════════════════════════
+
+SCRIPTS EJECUTABLES (5):
+  - validar_antes_importar.sh
+  - importar_biblioteca.sh
+  - importar_por_lotes.sh
+  - prevenir_duplicados.sh (librería)
+  - demo_prevencion_duplicados.sh
+
+DOCUMENTACIÓN TÉCNICA (8):
+  - docs/SISTEMA_IMPORTACION_COMPLETO.md
+  - docs/GUIA_PREVENCION_DUPLICADOS.md
+  - docs/GUIA_IMPORTACION_LOTES.md
+  - docs/GUIA_ESTRUCTURA_CSV_Y_SQL.md
+  - docs/MEJORA_CONTINUA_CATALOGO.md
+  - docs/MEJORAS_AVANZADAS_IMPORTADOR.md
+  - docs/ejemplo-catalogo-completo.csv
+  - docs/estructura-catalogo-didactica.sql
+
+DOCUMENTACIÓN RÁPIDA (3):
+  - IMPORTACION_CON_PROTECCION.txt
+  - README_IMPORTACION_LOTES.txt
+  - DIDACTICA_IMPORTACION_VISUAL.txt
+
+ÍNDICES (1):
+  - INDICE_SISTEMA_COMPLETO.txt (este archivo)
+
+════════════════════════════════════════════════════════════════════════════
+  🚀 NUEVAS CARACTERÍSTICAS v3.0
+════════════════════════════════════════════════════════════════════════════
+
+✅ Prevención automática de duplicados en TODOS los flujos
+✅ 3 niveles de detección (CSV interno, CSV vs BD, Inteligente)
+✅ Modo inteligente: agrega ejemplares vs crear duplicados
+✅ Script de demostración interactiva
+✅ Documentación completa del sistema integrado
+✅ Validador con scoring de duplicados
+✅ Importador simple con verificación previa
+✅ Importador por lotes con verificación previa
+
+════════════════════════════════════════════════════════════════════════════
+  📞 SOPORTE
+════════════════════════════════════════════════════════════════════════════
+
+Dudas generales:
+  → Leer: docs/SISTEMA_IMPORTACION_COMPLETO.md
+
+Problemas con duplicados:
+  → Leer: docs/GUIA_PREVENCION_DUPLICADOS.md
+  → Ejecutar: ./demo_prevencion_duplicados.sh
+
+Archivos grandes:
+  → Leer: docs/GUIA_IMPORTACION_LOTES.md
+
+Estructura de datos:
+  → Leer: docs/GUIA_ESTRUCTURA_CSV_Y_SQL.md
+
+════════════════════════════════════════════════════════════════════════════
+
+Sistema completo de importación v3.0 con prevención de duplicados
+¡Todo listo para importar miles de registros sin problemas! 🎯
+
+Última actualización: 25 de Octubre de 2025

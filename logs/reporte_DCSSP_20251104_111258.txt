@@ -1,0 +1,46 @@
+
+════════════════════════════════════════════════════════════════════════════════
+REPORTE DE IMPORTACIÓN AUTOMÁTICA
+════════════════════════════════════════════════════════════════════════════════
+
+INFORMACIÓN GENERAL
+───────────────────
+Fecha y hora:        2025-11-04 11:12:59
+Código biblioteca:   DCSSP
+Nombre biblioteca:   Biblioteca de la Facultad de Derecho y Ciencias Sociales. Filial San Pedro del Ykuamandyjú
+
+ARCHIVO CSV
+───────────
+Ruta original:       importar_aqui/DCSSP.csv
+Nombre archivo:      DCSSP.csv
+Total registros:     398
+Duplicados:          0
+Corrección aplicada: No necesaria
+
+GENERACIÓN MARCXML
+──────────────────
+Archivos generados:  0
+Registros en XML:    0
+Validación XML:      N/A
+
+IMPORTACIÓN KOHA
+────────────────
+Items antes:         0
+Items después:       0
+Items importados:    0
+Estado importación:  N/A
+
+REINDEXACIÓN
+────────────
+Estado reindex:      N/A
+
+RESULTADO FINAL
+───────────────
+Estado:              ERROR: Generación MARCXML
+Tiempo total:        N/A segundos
+
+VERIFICACIÓN
+────────────
+URL OPAC: http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=DCSSP
+
+════════════════════════════════════════════════════════════════════════════════

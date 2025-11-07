@@ -1,0 +1,46 @@
+
+════════════════════════════════════════════════════════════════════════════════
+REPORTE DE IMPORTACIÓN AUTOMÁTICA
+════════════════════════════════════════════════════════════════════════════════
+
+INFORMACIÓN GENERAL
+───────────────────
+Fecha y hora:        2025-10-24 06:45:38
+Código biblioteca:   BCT
+Nombre biblioteca:   Biblioteca Central. Trabajos de Fin de Grado y Tesis de Postgrado
+
+ARCHIVO CSV
+───────────
+Ruta original:       /home/mvillalba/migradatos/importar_aqui/BCT.csv
+Nombre archivo:      BCT.csv
+Total registros:     19298
+Duplicados:          0
+Corrección aplicada: No necesaria
+
+GENERACIÓN MARCXML
+──────────────────
+Archivos generados:  4
+Registros en XML:    0
+Validación XML:      Válido
+
+IMPORTACIÓN KOHA
+────────────────
+Items antes:         0
+Items después:       19298
+Items importados:    19298
+Estado importación:  4 exitosos, 0 fallidos
+
+REINDEXACIÓN
+────────────
+Estado reindex:      Exitoso
+
+RESULTADO FINAL
+───────────────
+Estado:              EXITOSO
+Tiempo total:        1645 segundos
+
+VERIFICACIÓN
+────────────
+URL OPAC: http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=BCT
+
+════════════════════════════════════════════════════════════════════════════════

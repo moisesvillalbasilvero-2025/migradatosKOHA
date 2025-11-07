@@ -1,0 +1,46 @@
+
+════════════════════════════════════════════════════════════════════════════════
+REPORTE DE IMPORTACIÓN AUTOMÁTICA
+════════════════════════════════════════════════════════════════════════════════
+
+INFORMACIÓN GENERAL
+───────────────────
+Fecha y hora:        2025-10-30 09:44:01
+Código biblioteca:   FIL
+Nombre biblioteca:   Biblioteca "Abraham Lincoln" de la Facultad de Filosofía
+
+ARCHIVO CSV
+───────────
+Ruta original:       /home/mvillalba/migradatos/importar_aqui/FIL.csv
+Nombre archivo:      FIL.csv
+Total registros:     10398
+Duplicados:          0
+Corrección aplicada: No necesaria
+
+GENERACIÓN MARCXML
+──────────────────
+Archivos generados:  3
+Registros en XML:    0
+Validación XML:      Válido
+
+IMPORTACIÓN KOHA
+────────────────
+Items antes:         10377
+Items después:       10377
+Items importados:    0
+Estado importación:  3 exitosos, 0 fallidos
+
+REINDEXACIÓN
+────────────
+Estado reindex:      Exitoso (optimizado)
+
+RESULTADO FINAL
+───────────────
+Estado:              EXITOSO
+Tiempo total:        422 segundos
+
+VERIFICACIÓN
+────────────
+URL OPAC: http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=FIL
+
+════════════════════════════════════════════════════════════════════════════════

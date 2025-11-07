@@ -1,0 +1,226 @@
+════════════════════════════════════════════════════════════════════════════
+  SISTEMA DE IMPORTACIÓN v3.0 - CON PROTECCIÓN ANTI-DUPLICADOS
+════════════════════════════════════════════════════════════════════════════
+
+✅ IMPLEMENTADO: 25 de Octubre de 2025
+
+════════════════════════════════════════════════════════════════════════════
+  ¿QUÉ CAMBIÓ?
+════════════════════════════════════════════════════════════════════════════
+
+ANTES (v2.0):
+  - Importaba sin verificar duplicados
+  - Riesgo de crear registros repetidos
+  - Limpieza manual después
+
+AHORA (v3.0):
+  ✅ Verifica duplicados ANTES de importar
+  ✅ Detecta 3 tipos: Críticos, Advertencias, OK
+  ✅ Modo inteligente: agrega ejemplares vs duplicar
+  ✅ Protección en TODOS los scripts
+
+════════════════════════════════════════════════════════════════════════════
+  USO RÁPIDO
+════════════════════════════════════════════════════════════════════════════
+
+1. VALIDAR (recomendado):
+   ./validar_antes_importar.sh importar_aqui/ING.csv
+
+2. IMPORTAR:
+
+   Opción A - Archivo pequeño/mediano (< 2000 registros):
+   ./importar_biblioteca.sh ING
+
+   Opción B - Archivo grande (> 2000 registros):
+   ./importar_por_lotes.sh importar_aqui/ING.csv 500
+
+3. VERIFICAR:
+   firefox http://opac.una.edu.py/
+
+════════════════════════════════════════════════════════════════════════════
+  TIPOS DE DUPLICADOS DETECTADOS
+════════════════════════════════════════════════════════════════════════════
+
+🔴 CRÍTICO (Sistema DETIENE):
+   - Mismo código de barras 2 veces en CSV
+   - Código de barras ya existe en BD
+   → ACCIÓN: Cambiar código, no se puede continuar
+
+🟡 ADVERTENCIA (Sistema PREGUNTA):
+   - ISBN ya existe en BD
+   - Título+Autor ya existe en BD
+   → ACCIÓN: Sistema ofrece agregar ejemplar al registro existente
+
+🟢 PERMITIDO (Sistema CONTINÚA):
+   - Mismo título, ISBNs diferentes (ediciones diferentes)
+   → ACCIÓN: Crea registros separados
+
+════════════════════════════════════════════════════════════════════════════
+  EJEMPLO DE EJECUCIÓN
+════════════════════════════════════════════════════════════════════════════
+
+$ ./validar_antes_importar.sh importar_aqui/ING.csv
+
+════════════════════════════════════════════════════════════════════════════
+  7. DUPLICADOS vs BASE DE DATOS
+════════════════════════════════════════════════════════════════════════════
+
+[INFO] 7.1 - Duplicados DENTRO del CSV:
+✓ No hay duplicados internos en el CSV
+
+[INFO] 7.2 - Duplicados CSV vs BASE DE DATOS:
+⚠ POSIBLE DUPLICADO - ISBN: 978-84-376-0455-8
+  Título: Don Quijote de la Mancha
+  (Puede ser nuevo ejemplar de libro existente)
+
+════════════════════════════════════════════════════════════════════════════
+  PUNTUACIÓN DE CALIDAD: 85/100
+════════════════════════════════════════════════════════════════════════════
+
+✓ EXCELENTE - Catálogo de alta calidad
+  ➤ Listo para importar sin problemas
+
+ℹ️ INFO: Hay ISBNs/Títulos existentes, el sistema agregará
+         ejemplares automáticamente
+
+¿Desea proceder con la importación? (s/n) s
+
+────────────────────────────────────────────────────────────────────────────
+
+$ ./importar_biblioteca.sh ING
+
+════════════════════════════════════════════════════════════════════════════
+  IMPORTACIÓN AUTOMÁTICA DE BIBLIOTECA: ING
+════════════════════════════════════════════════════════════════════════════
+
+[INFO] Verificando duplicados antes de importar...
+[INFO]   1. Verificando duplicados internos en CSV...
+[OK]   No hay duplicados internos
+
+[INFO]   2. Verificando duplicados contra base de datos...
+[WARN] Se encontraron ISBNs/Títulos existentes
+[INFO]   El sistema agregará ejemplares automáticamente (no creará duplicados)
+
+¿Continuar con importación inteligente? (s/n): s
+
+[INFO] Generando archivos MARCXML...
+[OK] Archivos XML generados: 5
+
+[INFO] Iniciando importación a Koha...
+...
+
+════════════════════════════════════════════════════════════════════════════
+  ARCHIVOS CLAVE
+════════════════════════════════════════════════════════════════════════════
+
+Scripts actualizados (v3.0):
+  /home/mvillalba/migradatos/validar_antes_importar.sh
+  /home/mvillalba/migradatos/importar_biblioteca.sh
+  /home/mvillalba/migradatos/importar_por_lotes.sh
+
+Biblioteca de funciones:
+  /home/mvillalba/migradatos/prevenir_duplicados.sh
+
+Documentación:
+  docs/SISTEMA_IMPORTACION_COMPLETO.md      (Guía completa)
+  docs/GUIA_PREVENCION_DUPLICADOS.md        (Detalles técnicos)
+  docs/GUIA_IMPORTACION_LOTES.md            (Importación por lotes)
+
+════════════════════════════════════════════════════════════════════════════
+  CASOS DE USO
+════════════════════════════════════════════════════════════════════════════
+
+Caso 1: Primera importación de biblioteca nueva
+  → Sin duplicados esperados
+  → Sistema verifica y confirma automáticamente
+  → Importa sin problemas
+
+Caso 2: Agregar ejemplares a libros existentes
+  → Sistema detecta ISBNs existentes
+  → Pregunta confirmación al usuario
+  → Agrega ejemplares (NO crea registros duplicados)
+
+Caso 3: Archivo grande (10,000+ registros)
+  → Usar importación por lotes
+  → Verifica duplicados antes de dividir
+  → Importa por lotes con indexación incremental
+
+════════════════════════════════════════════════════════════════════════════
+  FUNCIONES DISPONIBLES
+════════════════════════════════════════════════════════════════════════════
+
+Para usar en scripts personalizados:
+
+source /home/mvillalba/migradatos/prevenir_duplicados.sh
+
+# Verificar si existe
+barcode_existe_en_bd "LIBRO001"
+isbn_existe_en_bd "978-84-376-0455-8"
+titulo_autor_existe_en_bd "Don Quijote" "Cervantes, Miguel de"
+
+# Obtener biblionumber existente
+biblionumber=$(obtener_biblionumber_por_isbn "978-84-376-0455-8")
+
+# Verificar archivos completos
+verificar_duplicados_en_csv "archivo.csv"
+verificar_duplicados_csv_vs_bd "archivo.csv"
+
+════════════════════════════════════════════════════════════════════════════
+  SOLUCIÓN RÁPIDA DE PROBLEMAS
+════════════════════════════════════════════════════════════════════════════
+
+Problema: "Códigos de barras duplicados en CSV"
+Solución:
+  1. Ver duplicados: verificar_duplicados_en_csv archivo.csv
+  2. Buscar línea: grep "CODIGO" archivo.csv
+  3. Editar CSV y cambiar códigos
+  4. Re-validar
+
+Problema: "Código de barras ya existe en BD"
+Solución:
+  1. Verificar: koha-mysql koha-cnc -e "SELECT * FROM items WHERE barcode='CODIGO'"
+  2. Cambiar código en CSV a uno nuevo
+  3. Re-importar
+
+Problema: "ISBNs ya existen"
+Solución:
+  ¡Esto NO es un error!
+  - Confirma con "s" cuando el sistema pregunte
+  - Sistema agregará ejemplares automáticamente
+  - NO creará registros duplicados
+
+════════════════════════════════════════════════════════════════════════════
+  COMPARACIÓN DE VERSIONES
+════════════════════════════════════════════════════════════════════════════
+
+                        v2.0              v3.0
+                     (Antes)          (Ahora)
+                     ───────          ───────
+Detecta duplicados     ❌               ✅
+Verifica CSV           ❌               ✅
+Verifica vs BD         ❌               ✅
+Modo inteligente       ❌               ✅
+Agrega ejemplares      ❌               ✅
+Prevención auto        ❌               ✅
+Logs detallados        ✅               ✅
+Reportes HTML          ✅               ✅
+
+════════════════════════════════════════════════════════════════════════════
+  GARANTÍA DE CALIDAD
+════════════════════════════════════════════════════════════════════════════
+
+Con el sistema v3.0:
+
+✅ CERO duplicados de códigos de barras
+✅ Detección automática de libros existentes
+✅ Agregado inteligente de ejemplares
+✅ Catálogo limpio y bien organizado
+✅ Búsquedas eficientes en el OPAC
+
+════════════════════════════════════════════════════════════════════════════
+
+Para más información:
+  less docs/SISTEMA_IMPORTACION_COMPLETO.md
+  less docs/GUIA_PREVENCION_DUPLICADOS.md
+
+¡Sistema listo para importar con CERO duplicados! 🎯

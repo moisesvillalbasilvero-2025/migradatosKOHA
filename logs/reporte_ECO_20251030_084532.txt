@@ -1,0 +1,46 @@
+
+════════════════════════════════════════════════════════════════════════════════
+REPORTE DE IMPORTACIÓN AUTOMÁTICA
+════════════════════════════════════════════════════════════════════════════════
+
+INFORMACIÓN GENERAL
+───────────────────
+Fecha y hora:        2025-10-30 08:54:15
+Código biblioteca:   ECO
+Nombre biblioteca:   Biblioteca de la Facultad de Ciencias Económicas
+
+ARCHIVO CSV
+───────────
+Ruta original:       /home/mvillalba/migradatos/importar_aqui/ECO.csv
+Nombre archivo:      ECO.csv
+Total registros:     10084
+Duplicados:          254
+Corrección aplicada: No
+
+GENERACIÓN MARCXML
+──────────────────
+Archivos generados:  3
+Registros en XML:    0
+Validación XML:      Válido
+
+IMPORTACIÓN KOHA
+────────────────
+Items antes:         0
+Items después:       9687
+Items importados:    9687
+Estado importación:  3 exitosos, 0 fallidos
+
+REINDEXACIÓN
+────────────
+Estado reindex:      Exitoso (optimizado)
+
+RESULTADO FINAL
+───────────────
+Estado:              EXITOSO
+Tiempo total:        522 segundos
+
+VERIFICACIÓN
+────────────
+URL OPAC: http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=ECO
+
+════════════════════════════════════════════════════════════════════════════════

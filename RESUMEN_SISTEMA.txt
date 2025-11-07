@@ -1,0 +1,309 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║   ██████╗ ██╗███████╗████████╗███████╗███╗   ███╗ █████╗                     ║
+║  ██╔════╝██║██╔════╝╚══██╔══╝██╔════╝████╗ ████║██╔══██╗                    ║
+║  ╚█████╗ ██║███████╗   ██║   █████╗  ██╔████╔██║███████║                    ║
+║   ╚═══██╗██║╚════██║   ██║   ██╔══╝  ██║╚██╔╝██║██╔══██║                    ║
+║  ██████╔╝██║███████║   ██║   ███████╗██║ ╚═╝ ██║██║  ██║                    ║
+║  ╚═════╝ ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝                    ║
+║                                                                               ║
+║              IMPORTACIÓN PERSISTENTE CON TMUX - KOHA UNA                     ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+
+📋 RESUMEN DEL SISTEMA IMPLEMENTADO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ COMPLETADO: Sistema de importación optimizado con tmux para persistencia total
+
+
+📦 COMPONENTES INSTALADOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. importar_tmux.sh
+   ✓ Script principal de importación con sesiones tmux persistentes
+   ✓ Soporta importación individual o masiva (--all)
+   ✓ Logs automáticos en tiempo real
+   ✓ Reconexión a sesiones existentes
+   ✓ Control completo de sesiones
+
+2. monitor_tmux.sh
+   ✓ Dashboard interactivo en tiempo real
+   ✓ Actualización automática cada N segundos
+   ✓ Visualización de progreso y estadísticas
+   ✓ Controles interactivos (q, r, l, c)
+   ✓ Salida JSON para integración con scripts
+
+3. gestionar_importaciones.sh
+   ✓ Interfaz de menú completo e intuitivo
+   ✓ Gestión centralizada de todas las operaciones
+   ✓ Visualización de estado del sistema
+   ✓ Reportes y estadísticas detalladas
+   ✓ Control de sesiones (iniciar, detener, conectar)
+
+4. test_sistema_tmux.sh
+   ✓ Suite de tests automáticos
+   ✓ Verificación de dependencias
+   ✓ Validación de estructura
+   ✓ Tests de funcionalidad
+
+5. GUIA_SISTEMA_TMUX.md
+   ✓ Documentación completa del sistema
+   ✓ Guía de uso paso a paso
+   ✓ Casos de uso comunes
+   ✓ Solución de problemas
+   ✓ Preguntas frecuentes
+
+
+🎯 CARACTERÍSTICAS PRINCIPALES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ PERSISTENCIA TOTAL
+   • Las sesiones sobreviven desconexiones SSH
+   • Las importaciones continúan en background
+   • Reconexión instantánea desde cualquier lugar
+   • No se pierde ningún progreso
+
+✅ LOGS EN TIEMPO REAL
+   • Cada sesión genera su propio log automáticamente
+   • Logs permanentes incluso después de finalizar
+   • Seguimiento en tiempo real con tail -f
+   • Acceso desde múltiples terminales simultáneas
+
+✅ RECUPERACIÓN AUTOMÁTICA
+   • Detecta sesiones interrumpidas
+   • Permite reconexión sin perder estado
+   • Historial completo de cada ejecución
+   • Información detallada de progreso
+
+✅ MÚLTIPLES SESIONES SIMULTÁNEAS
+   • Ejecuta varias importaciones en paralelo
+   • Cada sesión es independiente
+   • Gestión centralizada de todas las sesiones
+   • Sin conflictos entre procesos
+
+✅ MONITOREO CENTRALIZADO
+   • Dashboard en tiempo real con actualización automática
+   • Vista consolidada de todas las importaciones
+   • Estadísticas de duración, progreso y estado
+   • Controles interactivos sin salir del monitor
+
+✅ CONTROL COMPLETO
+   • Iniciar, detener, conectar a sesiones
+   • Ver logs históricos
+   • Limpiar sesiones finalizadas
+   • Exportar estadísticas del sistema
+
+
+🚀 INICIO RÁPIDO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPCIÓN 1: Menú Interactivo (RECOMENDADO)
+──────────────────────────────────────────
+  ./gestionar_importaciones.sh
+
+  → Te muestra un menú completo con todas las opciones disponibles
+  → Ideal para principiantes
+
+
+OPCIÓN 2: Línea de Comandos (Avanzado)
+───────────────────────────────────────
+
+  # Importar un archivo
+  ./importar_tmux.sh importar_aqui/ARCHIVO.csv
+
+  # Importar todos los archivos pendientes
+  ./importar_tmux.sh --all
+
+  # Ver estado de sesiones
+  ./importar_tmux.sh --status
+
+  # Monitor en tiempo real
+  ./monitor_tmux.sh
+
+  # Conectar a sesión existente
+  tmux attach-session -t NOMBRE_SESION
+
+  # Desconectar sin detener (desde dentro de tmux)
+  Ctrl+B luego D
+
+
+📚 COMANDOS ESENCIALES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ver ayuda completa:
+  ./importar_tmux.sh --help
+  ./monitor_tmux.sh --help
+  ./gestionar_importaciones.sh
+
+Listar sesiones tmux activas:
+  tmux list-sessions
+  tmux ls
+
+Conectar a sesión:
+  tmux attach-session -t NOMBRE_SESION
+  tmux a -t NOMBRE_SESION
+
+Desconectar de sesión (SIN detenerla):
+  Ctrl+B luego D
+
+Detener sesión específica:
+  ./importar_tmux.sh --kill NOMBRE_SESION
+
+Ver log en tiempo real:
+  tail -f logs/tmux/NOMBRE_SESION.log
+
+Ver estado del sistema:
+  ./importar_tmux.sh --status
+
+Limpiar sesiones finalizadas:
+  ./importar_tmux.sh --cleanup
+
+
+💡 CASOS DE USO TÍPICOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CASO 1: Importación con desconexión programada
+───────────────────────────────────────────────
+  1. Inicia la importación
+     ./importar_tmux.sh importar_aqui/ARCHIVO.csv
+
+  2. Cierra tu laptop / desconéctate de SSH
+     La importación SIGUE ejecutándose en el servidor
+
+  3. Reconéctate más tarde
+     ssh usuario@servidor
+     ./importar_tmux.sh --status
+
+  4. Revisa los resultados o reconéctate
+     tmux attach-session -t NOMBRE_SESION
+
+
+CASO 2: Importación masiva de múltiples bibliotecas
+────────────────────────────────────────────────────
+  1. Copia todos los archivos CSV a importar_aqui/
+
+  2. Inicia importación de todos
+     ./importar_tmux.sh --all
+
+  3. Monitorea en tiempo real
+     ./monitor_tmux.sh
+
+  4. Desconéctate si quieres
+     Las importaciones continúan en background
+
+
+CASO 3: Monitoreo desde otro dispositivo
+─────────────────────────────────────────
+  Terminal 1 (tu laptop):
+    ./importar_tmux.sh importar_aqui/ARCHIVO.csv
+
+  Terminal 2 (desde casa):
+    ssh usuario@servidor
+    ./monitor_tmux.sh
+    # o
+    tail -f logs/tmux/NOMBRE_SESION.log
+
+
+CASO 4: Recuperación tras error de red
+───────────────────────────────────────
+  Si se corta tu conexión SSH:
+
+  1. No te preocupes, la importación SIGUE ejecutándose
+
+  2. Reconéctate al servidor
+     ssh usuario@servidor
+
+  3. Verifica sesiones activas
+     ./importar_tmux.sh --status
+
+  4. Reconéctate donde lo dejaste
+     tmux attach-session -t NOMBRE_SESION
+
+
+📁 ESTRUCTURA DE ARCHIVOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+/home/mvillalba/migradatos/
+├── importar_aqui/              ← Coloca aquí los archivos CSV a importar
+├── procesados/                 ← Archivos ya importados (OK)
+├── errores/                    ← Archivos con errores
+├── exports/                    ← Archivos MARCXML generados
+├── logs/
+│   └── tmux/                   ← Logs de cada sesión tmux
+├── .sessions/                  ← Información de estado (interno)
+├── .cache/                     ← Cache de recuperación (interno)
+│
+├── importar_tmux.sh            ← Script principal de importación
+├── monitor_tmux.sh             ← Monitor en tiempo real
+├── gestionar_importaciones.sh  ← Gestor interactivo completo
+├── test_sistema_tmux.sh        ← Tests del sistema
+├── GUIA_SISTEMA_TMUX.md        ← Documentación completa
+└── RESUMEN_SISTEMA.txt         ← Este archivo
+
+
+🔧 VENTAJAS SOBRE EL SISTEMA ANTERIOR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌────────────────────────────┬─────────────────┬─────────────────────────────┐
+│ Característica             │ Sin tmux        │ Con tmux (NUEVO)            │
+├────────────────────────────┼─────────────────┼─────────────────────────────┤
+│ Persistencia               │ ❌ Se pierde    │ ✅ Sigue ejecutándose       │
+│ Recuperación tras error    │ ❌ Reiniciar    │ ✅ Reconectar donde quedaste│
+│ Monitoreo remoto           │ ❌ Solo local   │ ✅ Desde cualquier lugar    │
+│ Múltiples importaciones    │ ⚠️  Complejo    │ ✅ Sesiones independientes  │
+│ Logs permanentes           │ ⚠️  Limitados   │ ✅ Automáticos y completos  │
+│ Trabajo en background      │ ⚠️  nohup/&     │ ✅ Nativo con tmux          │
+│ Reconexión a sesión        │ ❌ No soportado │ ✅ En cualquier momento     │
+│ Dashboard de monitoreo     │ ❌ No disponible│ ✅ Monitor en tiempo real   │
+└────────────────────────────┴─────────────────┴─────────────────────────────┘
+
+
+✅ VERIFICACIÓN DEL SISTEMA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Para verificar que todo está funcionando correctamente:
+
+  ./test_sistema_tmux.sh
+
+Este script ejecuta una suite completa de tests y te indica si hay algún problema.
+
+
+📖 DOCUMENTACIÓN ADICIONAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Para consultar la documentación completa:
+
+  cat GUIA_SISTEMA_TMUX.md
+  # o
+  less GUIA_SISTEMA_TMUX.md
+
+La guía incluye:
+  • Descripción detallada de cada componente
+  • Guía paso a paso de uso
+  • Casos de uso prácticos completos
+  • Comandos esenciales de tmux
+  • Preguntas frecuentes
+  • Solución de problemas
+
+
+🎉 ¡SISTEMA LISTO PARA USAR!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+El sistema está completamente instalado, configurado y testeado.
+
+Para comenzar inmediatamente:
+
+  ./gestionar_importaciones.sh
+
+O si prefieres línea de comandos:
+
+  ./importar_tmux.sh importar_aqui/TU_ARCHIVO.csv
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Universidad Nacional de Asunción
+Sistema de Importación con TMUX - Versión 1.0
+Fecha: 2025-11-05
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

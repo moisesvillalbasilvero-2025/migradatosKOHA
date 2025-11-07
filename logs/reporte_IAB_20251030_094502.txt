@@ -1,0 +1,46 @@
+
+════════════════════════════════════════════════════════════════════════════════
+REPORTE DE IMPORTACIÓN AUTOMÁTICA
+════════════════════════════════════════════════════════════════════════════════
+
+INFORMACIÓN GENERAL
+───────────────────
+Fecha y hora:        2025-10-30 09:48:43
+Código biblioteca:   IAB
+Nombre biblioteca:   Biblioteca de la Facultad de Enfermería y Obstetricia
+
+ARCHIVO CSV
+───────────
+Ruta original:       /home/mvillalba/migradatos/importar_aqui/IAB.csv
+Nombre archivo:      IAB.csv
+Total registros:     4400
+Duplicados:          0
+Corrección aplicada: No necesaria
+
+GENERACIÓN MARCXML
+──────────────────
+Archivos generados:  1
+Registros en XML:    0
+Validación XML:      Válido
+
+IMPORTACIÓN KOHA
+────────────────
+Items antes:         1
+Items después:       4400
+Items importados:    4399
+Estado importación:  1 exitosos, 0 fallidos
+
+REINDEXACIÓN
+────────────
+Estado reindex:      Exitoso (optimizado)
+
+RESULTADO FINAL
+───────────────
+Estado:              EXITOSO
+Tiempo total:        220 segundos
+
+VERIFICACIÓN
+────────────
+URL OPAC: http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=IAB
+
+════════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,215 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║                 🚀 INICIO RÁPIDO - SISTEMA OPTIMIZADO 🚀              ║
+║                                                                      ║
+║              Universidad Nacional de Asunción - Koha OPAC            ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════
+  ⭐ NOVEDAD: AHORA CON PERSISTENCIA SSH (TMUX)
+═══════════════════════════════════════════════════════════════════════
+
+¡Ya no perderás el trabajo si te desconectas de SSH!
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  🎯 IMPORTAR UN ARCHIVO CSV (FORMA SEGURA - RECOMENDADA)             │
+└──────────────────────────────────────────────────────────────────────┘
+
+  1️⃣  Validar el archivo (opcional pero recomendado)
+      ./validador_csv.py MED.csv
+
+  2️⃣  Subir el archivo
+      ./subir_csv.sh MED.csv MED
+
+  3️⃣  IMPORTAR CON PERSISTENCIA ⭐
+      ./importar_con_tmux.sh
+
+  4️⃣  Desconectarse de tmux (sin detener la importación)
+      Presiona:  Ctrl+b  luego  d
+
+      ¡IMPORTANTE! La importación continúa en segundo plano
+      Puedes cerrar SSH sin problemas
+
+  5️⃣  Reconectar cuando quieras ver el progreso
+      ./importar_con_tmux.sh --attach
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  📊 VER PROGRESO EN TIEMPO REAL                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+  En otra terminal SSH:
+  ./monitor_importacion.sh --watch
+
+  Muestra:
+  ✓ Sesiones activas
+  ✓ Procesos en curso
+  ✓ Estadísticas de Koha
+  ✓ Uso de recursos
+  ✓ Últimos logs
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  🔄 MODO VIGILANCIA AUTOMÁTICA (para múltiples archivos)             │
+└──────────────────────────────────────────────────────────────────────┘
+
+  1️⃣  Iniciar vigilancia en tmux
+      ./importar_con_tmux.sh --watch
+
+  2️⃣  Desconectarse (Ctrl+b d)
+
+  3️⃣  Colocar archivos CSV en importar_aqui/
+      Se procesarán automáticamente
+
+  4️⃣  Reconectar para ver progreso
+      ./importar_con_tmux.sh --attach
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  🛠️  COMANDOS TMUX ESENCIALES                                        │
+└──────────────────────────────────────────────────────────────────────┘
+
+  DENTRO de sesión tmux:
+    Ctrl+b d          Desconectar (sigue corriendo) ⭐
+    Ctrl+b [          Modo scroll/ver historial
+    q                 Salir del modo scroll
+
+  FUERA de sesión tmux:
+    ./importar_con_tmux.sh --attach    Reconectar
+    ./importar_con_tmux.sh --status    Ver sesiones activas
+    ./importar_con_tmux.sh --kill      Detener importación
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ✅ VALIDAR ARCHIVOS CSV ANTES DE IMPORTAR                           │
+└──────────────────────────────────────────────────────────────────────┘
+
+  Un archivo:
+    ./validador_csv.py archivo.csv
+
+  Directorio completo:
+    ./validador_csv.py --dir importar_aqui/
+
+  Modo estricto:
+    ./validador_csv.py --strict archivo.csv
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  📋 VERIFICAR ESTADO DEL SISTEMA                                     │
+└──────────────────────────────────────────────────────────────────────┘
+
+  Monitor completo:
+    ./monitor_importacion.sh
+
+  Ver sesiones tmux activas:
+    tmux ls
+
+  Ver logs en tiempo real:
+    tail -f logs/importacion_*.log
+
+  Estadísticas de Koha:
+    sudo koha-mysql koha-cnc -e "
+      SELECT homebranch, COUNT(*) as items
+      FROM items
+      GROUP BY homebranch
+      ORDER BY items DESC"
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  🚨 SOLUCIÓN DE PROBLEMAS                                            │
+└──────────────────────────────────────────────────────────────────────┘
+
+  ❓ Me desconecté y perdí la sesión:
+     ✓ NO HAY PROBLEMA: ./importar_con_tmux.sh --attach
+
+  ❓ ¿La importación sigue corriendo?
+     ✓ Verificar: ps aux | grep bulkmarcimport
+     ✓ O usar: ./monitor_importacion.sh
+
+  ❓ ¿Cómo detengo una importación?
+     ✓ ./importar_con_tmux.sh --kill
+     ✓ O: tmux kill-session -t importacion-koha
+
+  ❓ Error en archivo CSV:
+     ✓ Validar: ./validador_csv.py archivo.csv
+     ✓ Ver errores: cat logs/importacion_*.log | grep ERROR
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  📚 DOCUMENTACIÓN COMPLETA                                           │
+└──────────────────────────────────────────────────────────────────────┘
+
+  Guía rápida:
+    less GUIA_RAPIDA_OPTIMIZACION.md
+
+  Análisis técnico completo:
+    less docs/ANALISIS_OPTIMIZACION_IMPORTACION.md
+
+  Resumen del sistema:
+    cat RESUMEN_OPTIMIZACION.txt
+
+  Ayuda de comandos:
+    ./importar_con_tmux.sh --help
+    ./monitor_importacion.sh --help
+    ./validador_csv.py --help
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  ⚡ EJEMPLO COMPLETO DE IMPORTACIÓN SEGURA                           │
+└──────────────────────────────────────────────────────────────────────┘
+
+  # 1. Validar
+  ./validador_csv.py FACEN.csv
+
+  # 2. Subir
+  ./subir_csv.sh FACEN.csv FACEN
+
+  # 3. Importar en tmux (CON PERSISTENCIA)
+  ./importar_con_tmux.sh
+
+  # 4. Desconectar (Ctrl+b d) - ¡sigue importando!
+
+  # 5. Ver progreso desde otra terminal
+  ./monitor_importacion.sh --watch
+
+  # 6. Reconectar cuando quieras
+  ./importar_con_tmux.sh --attach
+
+  # 7. Cuando termine, desconectar o salir
+  Ctrl+b d  (o exit para cerrar sesión)
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  🎯 MEJORAS IMPLEMENTADAS                                            │
+└──────────────────────────────────────────────────────────────────────┘
+
+  ✅ Persistencia SSH con tmux
+  ✅ Monitor en tiempo real
+  ✅ Validador preventivo de CSV
+  ✅ Documentación completa
+  ✅ Guías de uso paso a paso
+
+  RIESGO DE PÉRDIDA DE TRABAJO: MINIMIZADO ✅
+
+
+┌──────────────────────────────────────────────────────────────────────┐
+│  📊 ESTADO ACTUAL                                                    │
+└──────────────────────────────────────────────────────────────────────┘
+
+  Total en Koha:     128,110 biblios | 109,451 items
+  Bibliotecas:       14 activas
+  Espacio libre:     156 GB
+  Sistema:           ✅ OPTIMIZADO Y LISTO
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎉 ¡SISTEMA LISTO PARA IMPORTACIONES SEGURAS!
+═══════════════════════════════════════════════════════════════════════
+
+Universidad Nacional de Asunción
+Sistema Koha OPAC - 2025-10-24
+
+Para más información: less GUIA_RAPIDA_OPTIMIZACION.md

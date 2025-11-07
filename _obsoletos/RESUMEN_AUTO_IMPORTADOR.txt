@@ -1,0 +1,297 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║          ✅ SISTEMA AUTO-IMPORTADOR CREADO EXITOSAMENTE              ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+📦 ARCHIVOS CREADOS
+═══════════════════
+
+✓ auto_importar.py              → Script principal del agente
+✓ importar_aqui/                → Carpeta para colocar CSVs
+✓ importar_aqui/LEEME.txt       → Instrucciones en la carpeta
+✓ COMO_USAR_AUTO_IMPORTAR.txt  → Guía completa de uso
+✓ procesados/                   → Archivos procesados exitosamente
+✓ errores/                      → Archivos con errores
+
+
+🎯 CONCEPTO DEL SISTEMA
+═══════════════════════
+
+SIMPLE: Colocas CSV → Se analiza → Se importa automáticamente
+
+1. Detecta código de biblioteca del NOMBRE del archivo
+2. Verifica que biblioteca existe en Koha
+3. Analiza formato CSV
+4. Corrige duplicados automáticamente
+5. Genera MARCXML
+6. Importa a Koha
+7. Reindexa
+8. Mueve archivo a procesados/ o errores/
+
+
+🚀 FORMAS DE USO
+════════════════
+
+┌─────────────────────────────────────────────────────────────────┐
+│ OPCIÓN 1: Procesar un archivo directamente                     │
+└─────────────────────────────────────────────────────────────────┘
+
+  cd /home/mvillalba/migradatos
+  ./auto_importar.py MED.csv
+
+  o
+
+  ./auto_importar.py importar_aqui/VET.csv
+
+
+┌─────────────────────────────────────────────────────────────────┐
+│ OPCIÓN 2: Modo vigilancia (Automático 24/7)                    │
+└─────────────────────────────────────────────────────────────────┘
+
+  cd /home/mvillalba/migradatos
+  ./auto_importar.py
+
+  Esto deja el sistema vigilando la carpeta importar_aqui/
+  Cualquier CSV que coloques ahí se procesa automáticamente
+
+
+┌─────────────────────────────────────────────────────────────────┐
+│ OPCIÓN 3: Múltiples archivos                                   │
+└─────────────────────────────────────────────────────────────────┘
+
+  ./auto_importar.py MED.csv VET.csv POL.csv
+
+
+📋 EJEMPLOS PRÁCTICOS
+═════════════════════
+
+Ejemplo 1: Importar Medicina
+────────────────────────────
+
+  # Copiar archivo
+  cp /tmp/medicina_datos.csv /home/mvillalba/migradatos/importar_aqui/MED.csv
+
+  # Activar importador
+  cd /home/mvillalba/migradatos
+  ./auto_importar.py
+
+  # Ya está procesándose automáticamente!
+
+
+Ejemplo 2: Importar Veterinaria directamente
+─────────────────────────────────────────────
+
+  cd /home/mvillalba/migradatos
+  ./auto_importar.py /tmp/VET_octubre.csv
+
+
+Ejemplo 3: Dejar sistema corriendo 24/7
+────────────────────────────────────────
+
+  cd /home/mvillalba/migradatos
+  nohup ./auto_importar.py > auto_importar.log 2>&1 &
+
+  # Ahora puedes colocar CSVs en importar_aqui/
+  # y se procesan automáticamente en segundo plano
+
+
+📂 FLUJO DE ARCHIVOS
+════════════════════
+
+                      ┌─────────────────┐
+                      │  importar_aqui/ │
+                      │                 │
+                      │  MED.csv        │
+                      │  VET.csv        │
+                      └────────┬────────┘
+                               │
+                               │ auto_importar.py
+                               │ detecta y procesa
+                               │
+                ┌──────────────┴──────────────┐
+                │                             │
+                ▼                             ▼
+        ┌───────────────┐           ┌─────────────────┐
+        │  procesados/  │           │    errores/     │
+        │               │           │                 │
+        │  MED_OK_*.csv │           │  BAD_ERROR_*.csv│
+        └───────────────┘           └─────────────────┘
+
+
+🔍 DETECCIÓN AUTOMÁTICA
+═══════════════════════
+
+El sistema detecta el código de biblioteca del NOMBRE del archivo:
+
+Archivo             Detecta      Estado
+─────────────────  ───────────  ──────────────────────────
+MED.csv            MED          ✓ Correcto
+VET_2025.csv       VET          ✓ Correcto
+ING_datos.csv      ING          ✓ Correcto
+FACAGR.csv         FACAGR       ✓ Correcto
+POL_oct.csv        POL          ✓ Correcto
+datos.csv          (ninguno)    ✗ No detecta - va a errores
+biblioteca.csv     (ninguno)    ✗ No detecta - va a errores
+
+
+⚙️  PROCESO AUTOMÁTICO COMPLETO
+═══════════════════════════════
+
+Para cada CSV:
+
+  1. 📌 Detectar código de biblioteca
+     ↓
+  2. ✓ Verificar que existe en Koha
+     ↓
+  3. 📊 Analizar formato CSV
+     ↓
+  4. 🔧 Corregir duplicados (si es necesario)
+     ↓
+  5. 📝 Generar MARCXML
+     ↓
+  6. ⬆️ Importar a Koha
+     ↓
+  7. 🔄 Reindexar catálogo
+     ↓
+  8. ✅ Mover a procesados/
+
+
+📊 SALIDA TÍPICA
+════════════════
+
+======================================================================
+📄 ARCHIVO: MED.csv
+======================================================================
+
+1. DETECTAR BIBLIOTECA
+✓ Código detectado: MED
+
+2. VERIFICAR EN KOHA
+✓ Biblioteca: Facultad de Ciencias Médicas
+
+3. ANALIZAR FORMATO
+✓ Registros: 3847
+⚠ Duplicados: 127
+
+4. CORREGIR DUPLICADOS
+→ Corrigiendo duplicados...
+✓ Corregido: MED_corregido.csv
+
+5. GENERAR MARCXML
+→ Generando MARCXML...
+✓ MARCXML: MED_20251022_143025_marcxml.xml (3847 registros)
+
+6. IMPORTAR A KOHA
+→ Importando a Koha...
+  3847 biblios imported
+  3847 items imported
+✓ Importación completada
+
+7. REINDEXAR
+→ Reindexando...
+✓ Reindexación completada
+
+======================================================================
+✓✓✓ IMPORTACIÓN COMPLETADA EXITOSAMENTE ✓✓✓
+======================================================================
+
+→ Movido a: MED_OK_20251022_143025.csv
+
+
+🛡️ MANEJO DE ERRORES
+═════════════════════
+
+El sistema es robusto y maneja errores automáticamente:
+
+Error                          Acción
+─────────────────────────────  ─────────────────────────────────
+No detecta código              → Mueve a errores/_SIN_CODIGO
+Biblioteca no existe en Koha   → Mueve a errores/_NO_EXISTE
+Formato CSV inválido           → Mueve a errores/_FORMATO_INVALIDO
+Error generando MARCXML        → Mueve a errores/_ERROR_MARCXML
+Error en importación           → Mueve a errores/_ERROR_IMPORT
+
+
+✅ REQUISITOS
+═════════════
+
+1. ✓ Nombre del archivo DEBE contener código de biblioteca
+2. ✓ Biblioteca DEBE existir en Koha (créala antes si no existe)
+3. ✓ CSV debe tener campos: titulo, nroacceso
+4. ✓ Permisos de ejecución en auto_importar.py
+
+
+📚 DEPENDENCIAS
+═══════════════
+
+El sistema usa los scripts existentes:
+
+• opac_exportar.py           → Para generar MARCXML
+• corregir_codigos_vet.py    → Para corregir duplicados
+• bulkmarcimport.pl          → Para importar a Koha (nativo)
+• koha-rebuild-zebra         → Para reindexar (nativo)
+
+
+🔧 MANTENIMIENTO
+════════════════
+
+Archivos a revisar periódicamente:
+
+/home/mvillalba/migradatos/
+├── procesados/      ← Archivos exitosos (puedes archivar/eliminar)
+├── errores/         ← Revisar y corregir archivos con error
+└── exports/         ← XMLs generados (puedes limpiar periódicamente)
+
+
+💡 CONSEJOS
+═══════════
+
+✓ Usa nombres claros: MED.csv, VET.csv, ING.csv
+
+✓ Para producción, ejecuta en background:
+  nohup ./auto_importar.py > /dev/null 2>&1 &
+
+✓ Revisa carpeta errores/ si algo falla
+
+✓ Mantén backup de CSVs originales antes de procesar
+
+✓ Verifica en OPAC después de cada importación
+
+
+📞 VERIFICACIÓN
+═══════════════
+
+Después de importar, verificar en MySQL:
+
+  sudo koha-mysql koha-cnc -e "
+  SELECT homebranch, COUNT(*) as items
+  FROM items
+  GROUP BY homebranch
+  ORDER BY items DESC"
+
+O en OPAC:
+
+  http://tu-servidor:8080/cgi-bin/koha/opac-search.pl?branch=MED
+
+
+🎉 VENTAJAS DEL SISTEMA
+═══════════════════════
+
+✅ AUTOMÁTICO      Todo el proceso sin intervención
+✅ INTELIGENTE     Auto-detección y auto-corrección
+✅ ROBUSTO         Manejo de errores completo
+✅ SIMPLE          Solo coloca el CSV
+✅ RÁPIDO          Procesa miles de registros
+✅ SEGURO          No pierde datos, mueve a carpetas
+✅ TRAZABLE        Logs y archivos organizados
+
+
+═══════════════════════════════════════════════════════════════════
+
+Universidad Nacional de Asunción
+Sistema de Migración Bibliográfica Automatizada
+Versión 3.0 - Octubre 2025
+
+Creado: 2025-10-22

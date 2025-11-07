@@ -1,0 +1,274 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║              📤 CÓMO SUBIR ARCHIVOS CSV PARA IMPORTAR                ║
+║              Universidad Nacional de Asunción                        ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+Los permisos ya están configurados. Ahora puedes subir archivos de 3 formas:
+
+
+═══════════════════════════════════════════════════════════════════════
+OPCIÓN 1: SCRIPT AUTOMÁTICO (Recomendado)
+═══════════════════════════════════════════════════════════════════════
+
+Usar el script helper que hace todo por ti:
+
+    ./subir_csv.sh archivo.csv CODIGO
+
+Ejemplos:
+
+    # Subir archivo y renombrar a MED.csv
+    ./subir_csv.sh medicina_2025.csv MED
+
+    # Subir archivo desde otra ubicación
+    ./subir_csv.sh /tmp/datos.csv VET
+
+    # Subir con nombre original (debe tener código en el nombre)
+    ./subir_csv.sh QUI_octubre.csv
+
+
+═══════════════════════════════════════════════════════════════════════
+OPCIÓN 2: COPIAR MANUALMENTE
+═══════════════════════════════════════════════════════════════════════
+
+Copiar directamente a la carpeta de importación:
+
+    cp tu_archivo.csv /home/mvillalba/migradatos/importar_aqui/CODIGO.csv
+
+Ejemplos:
+
+    cp medicina.csv /home/mvillalba/migradatos/importar_aqui/MED.csv
+    cp veterinaria.csv /home/mvillalba/migradatos/importar_aqui/VET.csv
+    cp quimica.csv /home/mvillalba/migradatos/importar_aqui/QUI.csv
+
+
+═══════════════════════════════════════════════════════════════════════
+OPCIÓN 3: DESDE OTRO SERVIDOR (SCP/SFTP)
+═══════════════════════════════════════════════════════════════════════
+
+Si estás en otra máquina, puedes usar SCP:
+
+    scp archivo.csv mvillalba@servidor:/home/mvillalba/migradatos/importar_aqui/CODIGO.csv
+
+Ejemplo:
+
+    scp medicina.csv mvillalba@192.168.1.100:/home/mvillalba/migradatos/importar_aqui/MED.csv
+
+
+═══════════════════════════════════════════════════════════════════════
+PERMISOS YA CONFIGURADOS
+═══════════════════════════════════════════════════════════════════════
+
+✅ Usuario:     mvillalba
+✅ Grupo:       mvillalba
+✅ Permisos:    775 (rwxrwxr-x)
+
+Carpetas con permisos correctos:
+  • /home/mvillalba/migradatos/importar_aqui/
+  • /home/mvillalba/migradatos/procesados/
+  • /home/mvillalba/migradatos/errores/
+  • /home/mvillalba/migradatos/logs/
+
+
+═══════════════════════════════════════════════════════════════════════
+REQUISITOS DEL NOMBRE
+═══════════════════════════════════════════════════════════════════════
+
+El nombre del archivo DEBE contener el código de biblioteca (3-6 letras):
+
+✅ CORRECTO:
+   MED.csv
+   VET_2025.csv
+   QUI_octubre.csv
+   FACAGR_completo.csv
+   ING.csv
+
+❌ INCORRECTO:
+   datos.csv              (sin código)
+   biblioteca.csv         (sin código)
+   registros_2025.csv     (sin código)
+
+
+═══════════════════════════════════════════════════════════════════════
+DESPUÉS DE SUBIR
+═══════════════════════════════════════════════════════════════════════
+
+Una vez que el archivo está en importar_aqui/, tienes 3 opciones:
+
+
+🔹 OPCIÓN A: Procesar automáticamente todos los archivos
+
+    cd /home/mvillalba/migradatos
+    ./importar_automatico.sh
+
+
+🔹 OPCIÓN B: Procesar un archivo específico
+
+    ./agente_importador_v2.py importar_aqui/CODIGO.csv
+
+
+🔹 OPCIÓN C: Modo vigilancia (automático continuo)
+
+    ./importar_automatico.sh --watch
+
+    Luego solo sube archivos y se procesan solos cada 10 segundos.
+
+
+═══════════════════════════════════════════════════════════════════════
+EJEMPLO COMPLETO
+═══════════════════════════════════════════════════════════════════════
+
+# Situación: Tienes un archivo llamado "datos_medicina.csv" en /tmp
+
+# Paso 1: Subir con el script helper
+cd /home/mvillalba/migradatos
+./subir_csv.sh /tmp/datos_medicina.csv MED
+
+# Salida:
+# Copiando archivo...
+#   Origen:  /tmp/datos_medicina.csv
+#   Destino: /home/mvillalba/migradatos/importar_aqui/MED.csv
+#
+# ✓ Archivo copiado exitosamente
+#
+# INFORMACIÓN:
+#   Archivo: MED.csv
+#   Tamaño:  5.2M
+#   Líneas:  3847
+#   Código:  MED
+#
+# ¿Procesar ahora?
+#   Opción 1: ./importar_automatico.sh
+#   Opción 2: ./agente_importador_v2.py importar_aqui/MED.csv
+
+# Paso 2: Procesar
+./importar_automatico.sh
+
+# El sistema procesa automáticamente y muestra:
+# ✓✓✓ IMPORTACIÓN COMPLETADA EXITOSAMENTE ✓✓✓
+
+
+═══════════════════════════════════════════════════════════════════════
+VERIFICAR ARCHIVOS PENDIENTES
+═══════════════════════════════════════════════════════════════════════
+
+Ver qué archivos están listos para procesar:
+
+    ls -lh importar_aqui/
+
+Ver archivos ya procesados:
+
+    ls -lht procesados/ | head
+
+Ver archivos con errores:
+
+    ls -lht errores/ | head
+
+
+═══════════════════════════════════════════════════════════════════════
+SOLUCIÓN DE PROBLEMAS
+═══════════════════════════════════════════════════════════════════════
+
+❌ "Permission denied"
+   → Verificar permisos:
+     ls -ld importar_aqui/
+
+   → Si no tienes permisos:
+     sudo chown mvillalba:mvillalba importar_aqui/
+     sudo chmod 775 importar_aqui/
+
+
+❌ "No such file or directory"
+   → Verificar que la ruta es correcta:
+     pwd
+     ls -la
+
+   → Crear carpeta si no existe:
+     mkdir -p /home/mvillalba/migradatos/importar_aqui
+
+
+❌ Archivo no se procesa
+   → Verificar nombre tiene código de biblioteca:
+     ls importar_aqui/
+
+   → Renombrar si es necesario:
+     mv importar_aqui/datos.csv importar_aqui/MED.csv
+
+
+═══════════════════════════════════════════════════════════════════════
+FLUJO COMPLETO DE TRABAJO
+═══════════════════════════════════════════════════════════════════════
+
+1. PREPARAR CSV
+   ↓
+   Verificar que tiene: titulo, nroacceso
+
+2. SUBIR ARCHIVO
+   ↓
+   ./subir_csv.sh archivo.csv CODIGO
+   o
+   cp archivo.csv importar_aqui/CODIGO.csv
+
+3. PROCESAR
+   ↓
+   ./importar_automatico.sh
+
+4. VERIFICAR
+   ↓
+   - Ver logs en: logs/
+   - Ver reporte: logs/reporte_CODIGO_*.txt
+   - Verificar en OPAC: http://servidor:8080
+
+
+═══════════════════════════════════════════════════════════════════════
+COMANDOS ÚTILES
+═══════════════════════════════════════════════════════════════════════
+
+# Ver ayuda del script de subida
+./subir_csv.sh --help
+
+# Subir archivo
+./subir_csv.sh archivo.csv CODIGO
+
+# Ver archivos en carpeta de importación
+ls -lh importar_aqui/
+
+# Procesar todos los archivos
+./importar_automatico.sh
+
+# Procesar solo una biblioteca
+./importar_automatico.sh --biblioteca MED
+
+# Ver estadísticas
+./importar_automatico.sh --stats
+
+# Modo vigilancia
+./importar_automatico.sh --watch
+
+
+═══════════════════════════════════════════════════════════════════════
+ATAJOS RÁPIDOS
+═══════════════════════════════════════════════════════════════════════
+
+# Crear alias para facilitar el uso
+echo 'alias subir="cd /home/mvillalba/migradatos && ./subir_csv.sh"' >> ~/.bashrc
+echo 'alias importar="cd /home/mvillalba/migradatos && ./importar_automatico.sh"' >> ~/.bashrc
+source ~/.bashrc
+
+# Ahora puedes usar:
+subir archivo.csv MED
+importar
+
+
+═══════════════════════════════════════════════════════════════════════
+
+✅ PERMISOS CONFIGURADOS - LISTO PARA USAR
+
+Ya puedes subir archivos sin problemas.
+
+Universidad Nacional de Asunción
+Sistema de Importación Automática v2.0
+
+═══════════════════════════════════════════════════════════════════════

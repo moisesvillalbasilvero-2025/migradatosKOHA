@@ -1,0 +1,365 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║           🚀 GUÍA RÁPIDA - SISTEMA OPTIMIZADO V3.0 🚀                ║
+║                                                                      ║
+║              Universidad Nacional de Asunción - Koha OPAC            ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎯 IMPORTACIÓN RÁPIDA (3 PASOS)
+═══════════════════════════════════════════════════════════════════════
+
+  1️⃣  Colocar archivo CSV en importar_aqui/
+      Nombre del archivo debe contener código: MED.csv, FACEN.csv, etc.
+
+  2️⃣  Ejecutar importador
+      ./importar_optimizado.sh
+
+  3️⃣  ¡Listo! Ver reporte en reportes/
+
+
+═══════════════════════════════════════════════════════════════════════
+  📋 COMANDOS PRINCIPALES
+═══════════════════════════════════════════════════════════════════════
+
+IMPORTACIÓN:
+  ./importar_optimizado.sh                 # Procesar importar_aqui/
+  ./importar_optimizado.sh archivo.csv     # Archivo específico
+  ./importar_optimizado.sh --watch         # Modo vigilancia continua
+
+VALIDACIÓN:
+  ./validador_csv.py archivo.csv           # Validar un archivo
+  ./validador_csv.py --dir importar_aqui/  # Validar directorio
+
+DASHBOARD:
+  ./dashboard.py                           # Iniciar dashboard web
+  Luego abrir: http://localhost:5000
+
+MONITOREO:
+  tail -f logs/maestro_*.log              # Ver logs en tiempo real
+  ./monitor_importacion.sh                # Monitor completo
+
+
+═══════════════════════════════════════════════════════════════════════
+  🔄 RECUPERACIÓN AUTOMÁTICA
+═══════════════════════════════════════════════════════════════════════
+
+Si una importación se interrumpe (corte de luz, cierre accidental):
+
+  1. Volver a ejecutar:
+     ./importar_optimizado.sh archivo.csv
+
+  2. El sistema detectará automáticamente el estado guardado
+     y continuará desde donde se quedó
+
+  ¡No se perderá el progreso!
+
+
+═══════════════════════════════════════════════════════════════════════
+  📊 ESTRUCTURA DE ARCHIVOS CSV
+═══════════════════════════════════════════════════════════════════════
+
+NOMBRE DEL ARCHIVO:
+  ✓ MED.csv              ✓ FACEN_2025.csv      ✓ ING_octubre.csv
+  ✗ datos.csv            ✗ export.csv          ✗ archivo.csv
+
+  👉 El nombre DEBE contener el código de la biblioteca (3-6 letras)
+
+CONTENIDO (columnas obligatorias):
+  titulo;nroacceso;autor;editorial;publicacion;...
+
+  - Delimitador: ; (punto y coma) o , (coma)
+  - Encoding: UTF-8
+  - Primera línea: encabezados
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎨 DASHBOARD WEB
+═══════════════════════════════════════════════════════════════════════
+
+Iniciar:
+  ./dashboard.py
+
+Acceder:
+  http://localhost:5000
+
+Características:
+  • Estadísticas en tiempo real
+  • Top bibliotecas
+  • Últimas importaciones
+  • Estado del sistema
+  • Actualización automática cada 30s
+
+Dejar corriendo en segundo plano:
+  nohup ./dashboard.py > /dev/null 2>&1 &
+
+
+═══════════════════════════════════════════════════════════════════════
+  🔧 MODOS DE OPERACIÓN
+═══════════════════════════════════════════════════════════════════════
+
+1. MODO NORMAL (archivo único)
+   ./importar_optimizado.sh MED.csv
+
+   ✓ Valida archivo
+   ✓ Genera MARCXML
+   ✓ Importa a Koha
+   ✓ Reindexa
+   ✓ Genera reporte
+
+2. MODO BATCH (múltiples archivos)
+   ./importar_optimizado.sh --batch /ruta/directorio/
+
+   ✓ Procesa todos los CSV del directorio
+   ✓ Reporte consolidado
+   ✓ Continúa aunque alguno falle
+
+3. MODO VIGILANCIA (continuo)
+   ./importar_optimizado.sh --watch
+
+   ✓ Monitorea importar_aqui/ cada 10 segundos
+   ✓ Procesa automáticamente archivos nuevos
+   ✓ No duplica procesamiento
+
+4. MODO SOLO-VALIDACIÓN (prueba)
+   ./importar_optimizado.sh --validate-only
+
+   ✓ Valida sin importar
+   ✓ Útil para pruebas previas
+
+
+═══════════════════════════════════════════════════════════════════════
+  🛠️ SOLUCIÓN RÁPIDA DE PROBLEMAS
+═══════════════════════════════════════════════════════════════════════
+
+PROBLEMA: "No se detectó código de biblioteca"
+  → Renombrar archivo: datos.csv → MED.csv
+
+PROBLEMA: "La biblioteca no existe en Koha"
+  → Ver bibliotecas: sudo koha-mysql koha-cnc -e "SELECT * FROM branches"
+  → Crear en Staff Interface → Administración → Bibliotecas
+
+PROBLEMA: "Faltan columnas obligatorias"
+  → Verificar CSV tiene: titulo, nroacceso
+  → Validar: ./validador_csv.py archivo.csv
+
+PROBLEMA: "Duplicados en códigos de acceso"
+  → Ver duplicados: awk -F';' '{print $2}' archivo.csv | sort | uniq -d
+  → Corregir manualmente o usar script de corrección
+
+PROBLEMA: "Error de memoria"
+  → Dividir archivo en partes más pequeñas
+  → split -l 5000 archivo.csv parte_
+
+PROBLEMA: "Timeout en reindexación"
+  → No crítico, reindexar después:
+    sudo koha-rebuild-zebra -v koha-cnc
+
+
+═══════════════════════════════════════════════════════════════════════
+  📈 VERIFICAR RESULTADOS
+═══════════════════════════════════════════════════════════════════════
+
+VER ESTADÍSTICAS:
+  # Desde línea de comando
+  sudo koha-mysql koha-cnc -e "
+    SELECT homebranch, COUNT(*) as items
+    FROM items
+    GROUP BY homebranch
+    ORDER BY items DESC"
+
+  # O desde dashboard
+  http://localhost:5000
+
+VER OPAC:
+  http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=CODIGO
+
+VER LOGS:
+  cat logs/maestro_*.log | tail -50
+
+VER REPORTES:
+  cat reportes/reporte_CODIGO_*.txt
+
+
+═══════════════════════════════════════════════════════════════════════
+  💾 ARCHIVOS GENERADOS
+═══════════════════════════════════════════════════════════════════════
+
+logs/
+  └── maestro_YYYYMMDD_HHMMSS.log     # Log de ejecución completo
+
+reportes/
+  ├── reporte_MED_YYYYMMDD.txt         # Reporte por biblioteca
+  └── resumen_YYYYMMDD.txt             # Resumen general
+
+procesados/
+  └── MED_YYYYMMDD_HHMMSS.csv         # CSVs exitosos
+
+errores/
+  └── VET_ERROR_YYYYMMDD.csv          # CSVs con problemas
+
+exports/
+  └── MED_YYYYMMDD_marcxml_*.xml      # Archivos MARCXML generados
+
+
+═══════════════════════════════════════════════════════════════════════
+  🔐 PERMISOS Y ACCESO
+═══════════════════════════════════════════════════════════════════════
+
+Si hay problemas de permisos:
+
+  # Dar permisos de ejecución
+  chmod +x importar_optimizado.sh
+  chmod +x agente_importador_v3.py
+  chmod +x validador_csv.py
+  chmod +x dashboard.py
+
+  # Si necesitas acceso sudo
+  sudo -v  # Renovar credenciales
+
+  # Dashboard accesible desde red
+  ./dashboard.py --host 0.0.0.0 --port 5000
+
+
+═══════════════════════════════════════════════════════════════════════
+  ⚡ AUTOMATIZACIÓN
+═══════════════════════════════════════════════════════════════════════
+
+EJECUTAR AUTOMÁTICAMENTE CADA HORA:
+  # Editar crontab
+  crontab -e
+
+  # Agregar línea:
+  0 * * * * cd /home/mvillalba/migradatos && ./importar_optimizado.sh
+
+EJECUTAR EN HORARIO NOCTURNO:
+  # A las 2 AM todos los días
+  0 2 * * * cd /home/mvillalba/migradatos && ./importar_optimizado.sh
+
+
+═══════════════════════════════════════════════════════════════════════
+  📚 EJEMPLOS COMPLETOS
+═══════════════════════════════════════════════════════════════════════
+
+EJEMPLO 1: Importación simple
+  $ cp /origen/MED.csv importar_aqui/
+  $ ./importar_optimizado.sh
+  ✓ Procesados: 1
+  ✓ Exitosos: 1
+
+EJEMPLO 2: Con validación previa
+  $ ./validador_csv.py importar_aqui/FACEN.csv
+  ✓ Archivo válido
+  $ ./importar_optimizado.sh importar_aqui/FACEN.csv
+  ✓ Importación completada
+
+EJEMPLO 3: Múltiples archivos
+  $ ls importar_aqui/
+  MED.csv  FACEN.csv  ING.csv
+  $ ./importar_optimizado.sh --batch importar_aqui/
+  ✓ Procesados: 3
+  ✓ Exitosos: 3
+
+EJEMPLO 4: Con dashboard
+  # Terminal 1: Iniciar dashboard
+  $ ./dashboard.py
+  Dashboard en http://localhost:5000
+
+  # Terminal 2: Importar
+  $ ./importar_optimizado.sh --watch
+
+  # Ver progreso en navegador
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎯 MEJORES PRÁCTICAS
+═══════════════════════════════════════════════════════════════════════
+
+1. SIEMPRE validar antes de importar:
+   ./validador_csv.py archivo.csv
+
+2. Respaldar archivos originales:
+   cp archivo.csv archivo.csv.backup
+
+3. Usar nombres descriptivos:
+   MED_2025_octubre.csv (no datos.csv)
+
+4. Monitorear durante importaciones grandes:
+   ./dashboard.py &
+   ./importar_optimizado.sh archivo_grande.csv
+
+5. Revisar logs después de importar:
+   cat logs/maestro_*.log | grep ERROR
+
+6. Mantener sistema limpio:
+   # Borrar logs antiguos (>30 días)
+   find logs/ -name "*.log" -mtime +30 -delete
+
+
+═══════════════════════════════════════════════════════════════════════
+  📖 DOCUMENTACIÓN COMPLETA
+═══════════════════════════════════════════════════════════════════════
+
+Ver guía detallada:
+  less GUIA_COMPLETA_OPTIMIZADA.md
+
+Ver ayuda de comandos:
+  ./importar_optimizado.sh --help
+  ./agente_importador_v3.py --help
+  ./validador_csv.py --help
+
+
+═══════════════════════════════════════════════════════════════════════
+  ✅ CHECKLIST DE IMPORTACIÓN
+═══════════════════════════════════════════════════════════════════════
+
+Antes de importar:
+  ☐ Archivo CSV tiene nombre con código (MED.csv)
+  ☐ Biblioteca existe en Koha
+  ☐ Archivo tiene columnas obligatorias (titulo, nroacceso)
+  ☐ Validación exitosa (./validador_csv.py)
+  ☐ Backup del archivo original
+  ☐ Espacio suficiente en disco (df -h)
+
+Durante importación:
+  ☐ Monitorear logs (tail -f logs/...)
+  ☐ Dashboard activo para estadísticas
+  ☐ No interrumpir proceso
+
+Después de importar:
+  ☐ Revisar reporte generado
+  ☐ Verificar en OPAC
+  ☐ Comprobar totales en base de datos
+  ☐ Archivar logs importantes
+
+
+═══════════════════════════════════════════════════════════════════════
+  📞 SOPORTE
+═══════════════════════════════════════════════════════════════════════
+
+Ubicación de archivos:
+  /home/mvillalba/migradatos/
+
+Logs del sistema:
+  /home/mvillalba/migradatos/logs/
+
+Documentación:
+  /home/mvillalba/migradatos/GUIA_COMPLETA_OPTIMIZADA.md
+
+
+═══════════════════════════════════════════════════════════════════════
+  🎉 ¡SISTEMA LISTO PARA USO!
+═══════════════════════════════════════════════════════════════════════
+
+Universidad Nacional de Asunción
+Sistema Koha OPAC - Versión 3.0 Optimizada
+Octubre 2025
+
+Para empezar:
+  1. Coloca tu CSV en importar_aqui/
+  2. Ejecuta: ./importar_optimizado.sh
+  3. ¡Listo!
+
+═══════════════════════════════════════════════════════════════════════

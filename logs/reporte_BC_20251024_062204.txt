@@ -1,0 +1,46 @@
+
+════════════════════════════════════════════════════════════════════════════════
+REPORTE DE IMPORTACIÓN AUTOMÁTICA
+════════════════════════════════════════════════════════════════════════════════
+
+INFORMACIÓN GENERAL
+───────────────────
+Fecha y hora:        2025-10-24 06:22:04
+Código biblioteca:   N/A
+Nombre biblioteca:   N/A
+
+ARCHIVO CSV
+───────────
+Ruta original:       importar_aqui/BC.csv
+Nombre archivo:      BC.csv
+Total registros:     0
+Duplicados:          0
+Corrección aplicada: No
+
+GENERACIÓN MARCXML
+──────────────────
+Archivos generados:  0
+Registros en XML:    0
+Validación XML:      N/A
+
+IMPORTACIÓN KOHA
+────────────────
+Items antes:         0
+Items después:       0
+Items importados:    0
+Estado importación:  N/A
+
+REINDEXACIÓN
+────────────
+Estado reindex:      N/A
+
+RESULTADO FINAL
+───────────────
+Estado:              ERROR: Sin código
+Tiempo total:        N/A segundos
+
+VERIFICACIÓN
+────────────
+URL OPAC: http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=
+
+════════════════════════════════════════════════════════════════════════════════

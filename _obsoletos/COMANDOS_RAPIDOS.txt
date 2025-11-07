@@ -1,0 +1,36 @@
+# ============================================================
+# COMANDOS RÁPIDOS - MIGRACIÓN KOHA
+# ============================================================
+
+# 1. GENERAR MARCXML DE POL
+cd /home/mvillalba/migradatos
+python3 opac_exportar.py -i POL.csv --codbiblio POL --loc-default SALA --stream --split-by 5000
+
+# 2. VALIDAR MARCXML
+for f in POL_*_marcxml_*.xml; do xmllint --noout "$f" && echo "✓ $f OK"; done
+
+# 3. IMPORTAR A KOHA (primer lote)
+sudo koha-shell koha-cnc -c "perl bulkmarcimport.pl -b -m MARCXML -file /home/mvillalba/migradatos/POL_*_marcxml_01.xml -commit 1000"
+
+# 4. IMPORTAR TODO
+for f in POL_*_marcxml_*.xml; do
+  sudo koha-shell koha-cnc -c "perl bulkmarcimport.pl -b -m MARCXML -file /home/mvillalba/migradatos/$f -commit 1000"
+done
+
+# 5. REBUILD ÍNDICES
+sudo koha-rebuild-zebra -f -v koha-cnc
+
+# 6. VERIFICAR IMPORTACIÓN
+sudo koha-mysql koha-cnc -e "SELECT COUNT(*) FROM biblio"
+sudo koha-mysql koha-cnc -e "SELECT homebranch, COUNT(*) FROM items GROUP BY homebranch"
+
+# 7. ANALIZAR BASE FIREBIRD (si tienes acceso local)
+python3 firebird_structure_analyzer.py --database /ruta/base.fdb --detailed
+
+# 8. EXPORTAR DESDE FIREBIRD REMOTO
+python3 firebird_exporter.py --biblioteca FACAGR --output FACAGR.csv
+
+# 9. VER LOGS
+tail -f /var/log/koha/koha-cnc/*.log
+
+# ============================================================

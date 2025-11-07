@@ -1,0 +1,107 @@
+═══════════════════════════════════════════════════════════════════════
+    CHEATSHEET RÁPIDO - IMPORTACIÓN DE BIBLIOTECAS KOHA
+═══════════════════════════════════════════════════════════════════════
+
+📌 COMANDO PRINCIPAL (USAR SIEMPRE QUE SEA POSIBLE)
+───────────────────────────────────────────────────────────────────────
+cd /home/mvillalba/migradatos
+./importar_nueva_biblioteca.sh CODIGO /ruta/archivo.csv
+
+Ejemplo:
+  ./importar_nueva_biblioteca.sh FACEN /tmp/FACEN.csv
+
+
+🔧 COMANDOS MANUALES (Si el script falla)
+───────────────────────────────────────────────────────────────────────
+
+1. GENERAR XML:
+   cd exports
+   python3 ../opac_exportar.py -i ../CODIGO.csv --codbiblio CODIGO \
+     --loc-default SALA --stream --split-by 5000
+
+2. IMPORTAR XML:
+   sudo koha-shell koha-cnc -c "perl /usr/share/koha/bin/migration_tools/bulkmarcimport.pl \
+     -b -m MARCXML -file /home/mvillalba/migradatos/exports/CODIGO_*.xml -commit 1000"
+
+3. REINDEXAR:
+   sudo koha-rebuild-zebra -f -v koha-cnc
+
+
+📊 COMANDOS DE CONSULTA
+───────────────────────────────────────────────────────────────────────
+
+Ver todas las bibliotecas con items:
+  sudo koha-mysql koha-cnc -e "SELECT homebranch, COUNT(*) FROM items GROUP BY homebranch"
+
+Contar items de una biblioteca:
+  sudo koha-mysql koha-cnc -e "SELECT COUNT(*) FROM items WHERE homebranch = 'CODIGO'"
+
+Ver si biblioteca existe:
+  sudo koha-mysql koha-cnc -e "SELECT * FROM branches WHERE branchcode = 'CODIGO'"
+
+
+🗑️ COMANDOS DE LIMPIEZA (CUIDADO)
+───────────────────────────────────────────────────────────────────────
+
+Eliminar items de una biblioteca:
+  sudo koha-mysql koha-cnc -e "DELETE FROM items WHERE homebranch = 'CODIGO'"
+
+
+🔄 COMANDOS DE MANTENIMIENTO
+───────────────────────────────────────────────────────────────────────
+
+Reindexar todo:
+  sudo koha-rebuild-zebra -f -v koha-cnc
+
+Reiniciar Koha:
+  sudo koha-plack --restart koha-cnc
+  sudo systemctl restart apache2
+
+Estado de Koha:
+  sudo koha-list
+
+
+📁 UBICACIONES
+───────────────────────────────────────────────────────────────────────
+CSV:    /home/mvillalba/migradatos/*.csv
+XML:    /home/mvillalba/migradatos/exports/*.xml
+Logs:   /home/mvillalba/migradatos/logs/*.log
+Scripts: /home/mvillalba/migradatos/*.sh
+
+
+🆘 TROUBLESHOOTING
+───────────────────────────────────────────────────────────────────────
+
+Problema: Biblioteca no existe
+Solución: Crear en Staff Interface → Administración → Bibliotecas
+
+Problema: No aparecen registros en OPAC
+Solución: sudo koha-rebuild-zebra -f -v koha-cnc
+
+Problema: Importación lenta
+Solución: Normal. Esperar. 10,000 registros = ~30-40 minutos
+
+
+✅ PROCESO COMPLETO DE EMERGENCIA
+───────────────────────────────────────────────────────────────────────
+
+1. cd /home/mvillalba/migradatos
+2. Copiar CSV: cp /origen/CODIGO.csv ./CODIGO_20251021.csv
+3. Verificar biblioteca existe: sudo koha-mysql koha-cnc -e "SELECT * FROM branches WHERE branchcode = 'CODIGO'"
+4. Si no existe → Crear en Staff Interface
+5. ./importar_nueva_biblioteca.sh CODIGO ./CODIGO_20251021.csv
+6. Esperar...
+7. Verificar: sudo koha-mysql koha-cnc -e "SELECT COUNT(*) FROM items WHERE homebranch = 'CODIGO'"
+8. ✓ Listo
+
+
+📚 DOCUMENTACIÓN COMPLETA
+───────────────────────────────────────────────────────────────────────
+cat IMPORTAR_FACIL.md                  # Guía ultra rápida
+cat GUIA_EMERGENCIA_SIN_IA.md         # Guía completa sin IA
+cat COMO_IMPORTAR_NUEVA_BIBLIOTECA.md # Guía detallada paso a paso
+
+
+═══════════════════════════════════════════════════════════════════════
+Versión: 1.0 | Fecha: 2025-10-21 | Sistema: UNA → Koha
+═══════════════════════════════════════════════════════════════════════

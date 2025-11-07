@@ -1,0 +1,182 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║              📚 BIBLIOTECAS PENDIENTES DE IMPORTACIÓN                ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+✅ BIBLIOTECAS YA CARGADAS (Con items)
+═══════════════════════════════════════
+
+✓ AGRO     Ciencias Agrarias                        37,226 items
+✓ ARQ      Arquitectura                              3,944 items
+✓ FACEN    BIFACEN                                      37 items
+✓ FIL      Filosofía "Abraham Lincoln"                  28 items
+✓ IAB      Enfermería y Obstetricia                      1 item
+✓ ING      Ingeniería                               14,997 items
+✓ ISL      Instituto Superior de Lenguas                 8 items
+✓ MED      Ciencias Médicas                          4,767 items
+✓ ODO      Odontología                               1,212 items
+✓ POL      Politécnica                              12,467 items
+✓ DER      Derecho y Ciencias Sociales                  17 items
+✓ QUI      Ciencias Químicas                            16 items
+✓ VET      Veterinaria                               9,085 items
+
+
+⏳ BIBLIOTECAS PENDIENTES (Sin items - Listas para importar)
+═════════════════════════════════════════════════════════════
+
+📍 FACULTADES PRINCIPALES
+─────────────────────────
+
+❑ BC       Biblioteca Central UNA
+❑ BCT      Biblioteca Central - Tesis y Trabajos
+❑ ECO      Ciencias Económicas
+❑ DESCP    Escuela de Ciencias Sociales y Políticas
+❑ FORA     Ingeniería Forestal
+❑ IICS     Instituto de Investigaciones en Ciencias de la Salud
+❑ ISA      Instituto Superior de Arte (FADA)
+❑ DGICT    Dirección General de Investigación Científica
+❑ REC      Postgrado Asunción
+❑ QGY      Ciencias Químicas Guayaiby
+
+
+📍 FILIALES DE CIENCIAS AGRARIAS
+────────────────────────────────
+
+❑ AGRC     Agrarias Filial Chaco
+❑ CAAZP    Agrarias Filial Caazapá
+❑ CAPJC    Agrarias Filial Pedro Juan Caballero
+❑ CASPY    Agrarias Filial San Pedro de Ykuamandyjú
+❑ CASR     Agrarias Filial Santa Rosa
+
+
+📍 FILIALES DE VETERINARIA
+──────────────────────────
+
+❑ CVCA     Veterinaria Caazapá
+❑ CVCON    Veterinaria Concepción
+❑ CVSJB    Veterinaria San Juan Bautista
+❑ VETSE    Veterinaria San Estanislao
+
+
+📍 FILIALES DE DERECHO Y CIENCIAS SOCIALES
+──────────────────────────────────────────
+
+❑ DCSBA    Derecho Sede Benjamín Aceval
+❑ DCSC     Derecho Sede Caacupé
+❑ DCSCA    Derecho Filial Caaguazú
+❑ DCSCO    Derecho Filial Coronel Oviedo
+❑ DCSPJ    Derecho Sede Pedro Juan Caballero
+❑ DCSQ     Derecho Filial Quiindy
+❑ DCSSE    Derecho Filial San Estanislao
+❑ DCSSJ    Derecho Filial San Juan Bautista
+❑ DCSSP    Derecho Filial San Pedro del Ykuamandyjú
+
+
+📍 FILIALES DE INGENIERÍA
+─────────────────────────
+
+❑ BFIA     Ingeniería Filial Ayolas
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+🚀 CÓMO IMPORTAR NUEVAS BIBLIOTECAS
+═══════════════════════════════════
+
+Cuando recibas un CSV de cualquiera de estas bibliotecas:
+
+
+1️⃣  RENOMBRAR el archivo con el código correspondiente:
+
+    Ejemplos:
+    • datos_economia.csv      → ECO.csv
+    • biblioteca_central.csv  → BC.csv
+    • filial_chaco.csv        → AGRC.csv
+
+
+2️⃣  COLOCAR en la carpeta de importación:
+
+    cp archivo.csv /home/mvillalba/migradatos/importar_aqui/ECO.csv
+
+
+3️⃣  PROCESAR automáticamente:
+
+    cd /home/mvillalba/migradatos
+    ./auto_importar.py
+
+    o directamente:
+
+    ./auto_importar.py ECO.csv
+
+
+4️⃣  ¡LISTO! El sistema:
+    ✓ Detecta el código "ECO"
+    ✓ Verifica que existe en Koha
+    ✓ Analiza y corrige el CSV
+    ✓ Importa a Koha
+    ✓ Reindexa
+    ✓ Mueve a procesados/
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+💡 EJEMPLOS DE NOMBRES DE ARCHIVO
+═══════════════════════════════════
+
+Para que el sistema detecte automáticamente:
+
+✅ BC.csv
+✅ ECO.csv
+✅ ECO_2025.csv
+✅ ECO_octubre.csv
+✅ AGRC.csv
+✅ AGRC_filial_chaco.csv
+✅ CVCON.csv
+✅ CVCON_concepcion.csv
+✅ DCSBA_benjamin_aceval.csv
+
+❌ economia.csv              (no detecta código)
+❌ central.csv               (no detecta código)
+❌ datos_biblioteca.csv      (no detecta código)
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+📊 RESUMEN
+══════════
+
+Total bibliotecas en Koha:      42
+✓ Ya cargadas:                  13
+⏳ Pendientes:                  29
+
+Las 29 bibliotecas pendientes están LISTAS para recibir datos.
+Solo necesitas los archivos CSV con el formato correcto.
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+🎯 PRÓXIMOS PASOS
+═════════════════
+
+1. Identificar qué bibliotecas tienen datos disponibles
+2. Obtener los archivos CSV de esas bibliotecas
+3. Renombrar con el código correcto (BC.csv, ECO.csv, etc.)
+4. Usar el auto-importador:
+
+   ./auto_importador.py CODIGO.csv
+
+5. Verificar en OPAC
+
+
+═══════════════════════════════════════════════════════════════════
+
+
+Universidad Nacional de Asunción
+Sistema de Migración Bibliográfica
+Estado: Actualizado 2025-10-22

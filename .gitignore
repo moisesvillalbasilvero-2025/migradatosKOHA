@@ -1,0 +1,176 @@
+# ============================================================================
+# .gitignore para Sistema de Importación Koha
+# ============================================================================
+
+# Archivos de datos sensibles y temporales
+# ============================================================================
+
+# Archivos CSV (pueden contener datos sensibles)
+*.csv
+
+# Archivos MARCXML generados
+*.xml
+exports/*.xml
+
+# Directorios de datos procesados
+procesados/
+errores/
+importar_aqui/*.csv
+
+# Mantener estructura de directorios pero no archivos
+importar_aqui/*
+!importar_aqui/.gitkeep
+procesados/*
+!procesados/.gitkeep
+errores/*
+!errores/.gitkeep
+exports/*
+!exports/.gitkeep
+
+
+# Logs y archivos temporales
+# ============================================================================
+
+# Logs
+*.log
+logs/*.log
+logs/**/*.log
+
+# Pero mantener estructura
+logs/*
+!logs/.gitkeep
+logs/tmux/*
+!logs/tmux/.gitkeep
+logs/vigilante/*
+!logs/vigilante/.gitkeep
+
+
+# Cache y archivos de estado
+# ============================================================================
+
+# Cache del sistema
+.cache/
+.cache/**
+
+# Archivos de estado del vigilante
+.vigilante.pid
+.vigilante.state
+
+# Información de sesiones tmux
+.sessions/
+.sessions/**
+
+
+# Backups y archivos temporales del sistema
+# ============================================================================
+
+# Backups
+*.bak
+*.backup
+*.old
+*~
+
+# Archivos temporales
+*.tmp
+*.temp
+*.swp
+*.swo
+.*.swp
+.*.swo
+
+# Archivos de sistema macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Archivos de sistema Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Archivos de sistema Linux
+.directory
+.Trash-*
+
+
+# Configuraciones locales específicas
+# ============================================================================
+
+# Configuraciones de editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Variables de entorno locales
+.env
+.env.local
+.env.*.local
+
+# Configuraciones específicas del usuario
+config.local.sh
+*.local
+
+
+# Python
+# ============================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+
+# Datos de prueba
+# ============================================================================
+
+# Archivos de prueba
+test_data/
+pruebas/
+temporal/
+
+
+# Excluir archivos muy grandes
+# ============================================================================
+
+# Archivos grandes (más de 100MB no deberían ir a Git)
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+
+# ============================================================================
+# MANTENER ARCHIVOS IMPORTANTES
+# ============================================================================
+
+# Asegurar que estos archivos SÍ se incluyan
+!README.md
+!*.sh
+!*.py
+!*.md
+!*.txt
+!.gitkeep
+!.gitignore
+
+
+# ============================================================================
+# NOTAS IMPORTANTES
+# ============================================================================
+#
+# Este .gitignore está diseñado para:
+# 1. NO subir datos sensibles (CSV, archivos procesados)
+# 2. NO subir logs (pueden ser muy grandes)
+# 3. NO subir cache y archivos temporales
+# 4. SÍ subir todo el código (scripts .sh y .py)
+# 5. SÍ subir toda la documentación (*.md, *.txt)
+# 6. Mantener estructura de directorios con .gitkeep
+#
+# ============================================================================
