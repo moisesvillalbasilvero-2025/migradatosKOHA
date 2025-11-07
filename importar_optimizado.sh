@@ -3,37 +3,52 @@
 # IMPORTADOR AUTOMÁTICO OPTIMIZADO KOHA - VERSIÓN 3.0
 ################################################################################
 # Universidad Nacional de Asunción
-# Sistema de importación automática optimizado con:
-# - Detección inteligente de archivos
-# - Validación preventiva automática
-# - Importación con control de errores
-# - Notificaciones y reportes
-# - Modo batch y modo watch
-# - Recuperación ante fallos
-# - Estadísticas en tiempo real
+#
+# DESCRIPCIÓN:
+#   Sistema profesional de importación automática a Koha con:
+#   - Detección inteligente de códigos de biblioteca
+#   - Validación preventiva automática de archivos CSV
+#   - Importación con control exhaustivo de errores
+#   - Generación de reportes detallados
+#   - Múltiples modos de operación (batch, watch, validate-only)
+#   - Recuperación automática ante fallos
+#   - Estadísticas en tiempo real
 #
 # USO:
-#   ./importar_optimizado.sh                    # Procesar todos los CSV en importar_aqui/
-#   ./importar_optimizado.sh archivo.csv        # Procesar archivo específico
-#   ./importar_optimizado.sh --watch            # Modo vigilancia continua
-#   ./importar_optimizado.sh --batch DIR        # Procesar directorio completo
-#   ./importar_optimizado.sh --validate-only    # Solo validar sin importar
+#   ./importar_optimizado.sh                    # Procesar importar_aqui/
+#   ./importar_optimizado.sh archivo.csv        # Archivo específico
+#   ./importar_optimizado.sh --watch            # Vigilancia continua
+#   ./importar_optimizado.sh --batch DIR        # Procesar directorio
+#   ./importar_optimizado.sh --validate-only    # Solo validar
+#   ./importar_optimizado.sh --help             # Mostrar ayuda
 #
-# VERSIÓN: 3.0
-# FECHA: 2025-10-31
+# REQUISITOS:
+#   - Koha instalado y configurado
+#   - Python 3.6+
+#   - Permisos sudo para koha-shell y koha-mysql
+#
+# AUTORES: Universidad Nacional de Asunción
+# VERSIÓN: 3.0.0
+# FECHA: 2025-11-07
 ################################################################################
 
+# ══════════════════════════════════════════════════════════════════════════
+# CONFIGURACIÓN DE MODO ESTRICTO
+# ══════════════════════════════════════════════════════════════════════════
+set -o errexit   # Salir si algún comando falla (desactivado en funciones críticas)
 set -o pipefail  # Capturar errores en pipes
+set -o nounset   # Error si se usa variable no definida
 
-# ============================================================================
-# CONFIGURACIÓN GLOBAL
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
+# CONFIGURACIÓN GLOBAL - CONSTANTES
+# ══════════════════════════════════════════════════════════════════════════
 
+# Directorios base
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly BASE_DIR="${SCRIPT_DIR}"
 readonly INSTANCIA_KOHA="koha-cnc"
 
-# Directorios
+# Estructura de directorios del sistema
 readonly DIR_IMPORTAR="${BASE_DIR}/importar_aqui"
 readonly DIR_PROCESADOS="${BASE_DIR}/procesados"
 readonly DIR_ERRORES="${BASE_DIR}/errores"
@@ -41,11 +56,11 @@ readonly DIR_LOGS="${BASE_DIR}/logs"
 readonly DIR_EXPORTS="${BASE_DIR}/exports"
 readonly DIR_REPORTES="${BASE_DIR}/reportes"
 
-# Scripts
-readonly AGENTE_PYTHON="${BASE_DIR}/agente_importador_v2.py"
+# Scripts auxiliares
+readonly AGENTE_PYTHON="${BASE_DIR}/agente_importador_v3.py"
 readonly VALIDADOR="${BASE_DIR}/validador_csv.py"
 
-# Colores
+# Paleta de colores ANSI para output legible
 readonly C_RED='\033[0;31m'
 readonly C_GREEN='\033[0;32m'
 readonly C_YELLOW='\033[1;33m'
@@ -53,36 +68,53 @@ readonly C_BLUE='\033[0;34m'
 readonly C_CYAN='\033[0;36m'
 readonly C_MAGENTA='\033[0;35m'
 readonly C_BOLD='\033[1m'
-readonly C_NC='\033[0m'
+readonly C_NC='\033[0m'  # No Color - reset
 
-# Variables globales
+# ══════════════════════════════════════════════════════════════════════════
+# VARIABLES GLOBALES - Estado del programa
+# ══════════════════════════════════════════════════════════════════════════
+
+# Modos de operación (se configuran según argumentos)
 MODO_WATCH=false
 MODO_BATCH=false
 MODO_VALIDAR_SOLO=false
 DIR_BATCH=""
 ARCHIVO_ESPECIFICO=""
+
+# Timestamps y archivos de log
 TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
 LOG_GENERAL="${DIR_LOGS}/maestro_${TIMESTAMP}.log"
 
-# Estadísticas
+# Contadores estadísticos
 TOTAL_PROCESADOS=0
 TOTAL_EXITOSOS=0
 TOTAL_FALLIDOS=0
 TOTAL_VALIDADOS=0
 TOTAL_INVALIDOS=0
 
-# ============================================================================
-# FUNCIONES DE LOGGING
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
+# FUNCIONES AUXILIARES - Logging y UI
+# ══════════════════════════════════════════════════════════════════════════
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: log
+# Descripción: Sistema unificado de logging con niveles y colores
+# Parámetros:
+#   $1 - Nivel (INFO|SUCCESS|WARNING|ERROR|HEADER)
+#   $@ - Mensaje a registrar
+# Salida: Escribe en consola (con color) y en archivo de log
+#───────────────────────────────────────────────────────────────────────────
 log() {
     local nivel="$1"
     shift
     local mensaje="$*"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local timestamp
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
+    # Escribir a archivo de log (sin colores)
     echo "[${timestamp}] [${nivel}] ${mensaje}" >> "$LOG_GENERAL"
 
+    # Escribir a consola con formato según nivel
     case "$nivel" in
         INFO)
             echo -e "${C_CYAN}ℹ ${mensaje}${C_NC}"
@@ -105,114 +137,173 @@ log() {
     esac
 }
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: banner
+# Descripción: Muestra un banner visual atractivo con el mensaje
+# Parámetros:
+#   $1 - Mensaje a mostrar en el banner
+#───────────────────────────────────────────────────────────────────────────
 banner() {
     local mensaje="$1"
+    local padding=$((64 - ${#mensaje}))
+
     echo ""
     echo -e "${C_BOLD}${C_CYAN}╔════════════════════════════════════════════════════════════════════╗${C_NC}"
     echo -e "${C_BOLD}${C_CYAN}║$(printf '%68s' | tr ' ' ' ')║${C_NC}"
-    echo -e "${C_BOLD}${C_CYAN}║  ${mensaje}$(printf '%*s' $((64 - ${#mensaje})) '')║${C_NC}"
+    echo -e "${C_BOLD}${C_CYAN}║  ${mensaje}$(printf "%${padding}s")║${C_NC}"
     echo -e "${C_BOLD}${C_CYAN}║$(printf '%68s' | tr ' ' ' ')║${C_NC}"
     echo -e "${C_BOLD}${C_CYAN}╚════════════════════════════════════════════════════════════════════╝${C_NC}"
     echo ""
 }
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: separador
+# Descripción: Imprime una línea separadora visual
+#───────────────────────────────────────────────────────────────────────────
 separador() {
     echo -e "${C_CYAN}────────────────────────────────────────────────────────────────────${C_NC}"
 }
 
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
 # FUNCIONES DE INICIALIZACIÓN
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: crear_directorios
+# Descripción: Crea la estructura de directorios necesaria para el sistema
+# Nota: mkdir -p no falla si el directorio ya existe
+#───────────────────────────────────────────────────────────────────────────
 crear_directorios() {
     mkdir -p "$DIR_IMPORTAR" "$DIR_PROCESADOS" "$DIR_ERRORES" \
              "$DIR_LOGS" "$DIR_EXPORTS" "$DIR_REPORTES"
 }
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: verificar_dependencias
+# Descripción: Verifica que todas las dependencias estén disponibles
+# Return: 0 si todas las dependencias están OK, 1 si falta alguna
+#───────────────────────────────────────────────────────────────────────────
 verificar_dependencias() {
     log HEADER "Verificando dependencias del sistema..."
 
     local dependencias_ok=true
 
-    # Python 3
+    # Verificar Python 3
     if ! command -v python3 &> /dev/null; then
         log ERROR "Python3 no está instalado"
+        log INFO "Instalar con: sudo apt install python3"
         dependencias_ok=false
+    else
+        local py_version
+        py_version=$(python3 --version 2>&1 | awk '{print $2}')
+        log SUCCESS "Python3 detectado: v${py_version}"
     fi
 
-    # Scripts requeridos
+    # Verificar agente Python principal
     if [ ! -f "$AGENTE_PYTHON" ]; then
         log ERROR "Agente Python no encontrado: $AGENTE_PYTHON"
         dependencias_ok=false
+    elif [ ! -x "$AGENTE_PYTHON" ]; then
+        log WARNING "Agente Python no es ejecutable, corrigiendo permisos..."
+        chmod +x "$AGENTE_PYTHON" 2>/dev/null || {
+            log ERROR "No se pudo dar permisos de ejecución a $AGENTE_PYTHON"
+            dependencias_ok=false
+        }
+    else
+        log SUCCESS "Agente Python v3 disponible"
     fi
 
-    if [ ! -x "$AGENTE_PYTHON" ]; then
-        log WARNING "Agente Python no es ejecutable, corrigiendo..."
-        chmod +x "$AGENTE_PYTHON"
-    fi
-
-    # Koha
+    # Verificar Koha
     if ! command -v koha-shell &> /dev/null; then
-        log ERROR "Koha no está instalado o no accesible"
+        log ERROR "Koha no está instalado o no es accesible"
+        log INFO "Verificar instalación de Koha"
         dependencias_ok=false
+    else
+        log SUCCESS "koha-shell disponible"
     fi
 
-    # MySQL
-    if ! sudo koha-mysql ${INSTANCIA_KOHA} -e "SELECT 1" &>/dev/null; then
-        log ERROR "No se puede conectar a MySQL de Koha"
+    # Verificar conexión a MySQL de Koha
+    if ! sudo koha-mysql "${INSTANCIA_KOHA}" -e "SELECT 1" &>/dev/null; then
+        log ERROR "No se puede conectar a MySQL de Koha (instancia: ${INSTANCIA_KOHA})"
+        log INFO "Verificar que la instancia esté activa: sudo koha-list"
         dependencias_ok=false
+    else
+        log SUCCESS "Conexión a MySQL Koha OK"
     fi
 
+    # Retornar resultado
     if [ "$dependencias_ok" = true ]; then
-        log SUCCESS "Todas las dependencias están disponibles"
+        log SUCCESS "✓ Todas las dependencias están disponibles"
         return 0
     else
-        log ERROR "Faltan dependencias críticas"
+        log ERROR "✗ Faltan dependencias críticas"
         return 1
     fi
 }
 
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
 # FUNCIONES DE VALIDACIÓN
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: validar_archivo
+# Descripción: Valida un archivo CSV antes de importarlo
+# Parámetros:
+#   $1 - Ruta al archivo CSV
+# Return: 0 si válido, 1 si inválido
+#───────────────────────────────────────────────────────────────────────────
 validar_archivo() {
     local archivo="$1"
+    local nombre
+    nombre=$(basename "$archivo")
 
-    log INFO "Validando: $(basename "$archivo")"
+    log INFO "Validando: ${nombre}"
 
+    # Verificar que el validador existe
     if [ ! -f "$VALIDADOR" ]; then
-        log WARNING "Validador no disponible, saltando validación preventiva"
+        log WARNING "Validador no disponible, omitiendo validación preventiva"
         return 0
     fi
 
+    # Ejecutar validador Python
     if python3 "$VALIDADOR" "$archivo" &>> "$LOG_GENERAL"; then
-        log SUCCESS "Validación exitosa: $(basename "$archivo")"
+        log SUCCESS "✓ Validación exitosa: ${nombre}"
         ((TOTAL_VALIDADOS++))
         return 0
     else
-        log ERROR "Validación fallida: $(basename "$archivo")"
+        log ERROR "✗ Validación fallida: ${nombre}"
         ((TOTAL_INVALIDOS++))
 
-        # Mover a errores
-        local dest="${DIR_ERRORES}/$(basename "$archivo" .csv)_INVALIDO_${TIMESTAMP}.csv"
-        mv "$archivo" "$dest" 2>/dev/null || true
-        log INFO "Archivo movido a: $dest"
+        # Mover archivo a directorio de errores con timestamp
+        local destino="${DIR_ERRORES}/${nombre%.csv}_INVALIDO_${TIMESTAMP}.csv"
+        if mv "$archivo" "$destino" 2>/dev/null; then
+            log INFO "Archivo movido a: ${destino}"
+        fi
 
         return 1
     fi
 }
 
-# ============================================================================
-# FUNCIONES DE DETECCIÓN
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
+# FUNCIONES DE DETECCIÓN Y VERIFICACIÓN
+# ══════════════════════════════════════════════════════════════════════════
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: detectar_codigo_biblioteca
+# Descripción: Extrae el código de biblioteca del nombre del archivo
+# Parámetros:
+#   $1 - Ruta al archivo
+# Output: Código de biblioteca (3-6 letras mayúsculas) o cadena vacía
+# Ejemplo: "MED.csv" → "MED", "FACEN_2025.csv" → "FACEN"
+#───────────────────────────────────────────────────────────────────────────
 detectar_codigo_biblioteca() {
     local archivo="$1"
-    local nombre=$(basename "$archivo" .csv)
+    local nombre
+    nombre=$(basename "$archivo" .csv)
 
-    # Extraer código de biblioteca (3-6 letras mayúsculas)
-    local codigo=$(echo "$nombre" | grep -oE '[A-Z]{3,6}' | head -1)
+    # Buscar secuencia de 3-6 letras mayúsculas
+    local codigo
+    codigo=$(echo "$nombre" | grep -oE '[A-Z]{3,6}' | head -1)
 
     if [ -n "$codigo" ]; then
         echo "$codigo"
@@ -222,60 +313,95 @@ detectar_codigo_biblioteca() {
     return 1
 }
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: verificar_biblioteca_existe
+# Descripción: Verifica que la biblioteca exista en Koha
+# Parámetros:
+#   $1 - Código de biblioteca
+# Return: 0 si existe, 1 si no existe
+#───────────────────────────────────────────────────────────────────────────
 verificar_biblioteca_existe() {
     local codigo="$1"
 
-    local existe=$(sudo koha-mysql ${INSTANCIA_KOHA} -N -e \
+    local existe
+    existe=$(sudo koha-mysql "${INSTANCIA_KOHA}" -N -e \
         "SELECT COUNT(*) FROM branches WHERE branchcode = '${codigo}'" 2>/dev/null)
 
     [ "$existe" = "1" ]
 }
 
-# ============================================================================
-# FUNCIONES DE PROCESAMIENTO
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
+# FUNCIONES DE PROCESAMIENTO - Lógica principal
+# ══════════════════════════════════════════════════════════════════════════
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: procesar_archivo
+# Descripción: Procesa un archivo CSV completo (validación + importación)
+# Parámetros:
+#   $1 - Ruta al archivo CSV
+# Return: 0 si exitoso, 1 si falló
+#
+# Flujo:
+#   1. Detectar código de biblioteca
+#   2. Verificar que exista en Koha
+#   3. Validar formato CSV
+#   4. Importar mediante agente Python
+#   5. Generar reporte
+#───────────────────────────────────────────────────────────────────────────
 procesar_archivo() {
     local archivo="$1"
-    local nombre=$(basename "$archivo")
+    local nombre
+    nombre=$(basename "$archivo")
 
     ((TOTAL_PROCESADOS++))
 
-    banner "PROCESANDO: $nombre"
+    banner "PROCESANDO: ${nombre}"
 
-    # Paso 1: Detectar código
+    # ─────────────────────────────────────────────────────────────────────
+    # PASO 1: Detección de código de biblioteca
+    # ─────────────────────────────────────────────────────────────────────
     log HEADER "1. Detección de biblioteca"
     separador
 
-    local codigo=$(detectar_codigo_biblioteca "$archivo")
+    local codigo
+    codigo=$(detectar_codigo_biblioteca "$archivo")
+
     if [ -z "$codigo" ]; then
-        log ERROR "No se detectó código de biblioteca en: $nombre"
-        log INFO "El nombre debe contener 3-6 letras mayúsculas (ej: MED.csv)"
+        log ERROR "No se detectó código de biblioteca en: ${nombre}"
+        log INFO "El nombre debe contener 3-6 letras mayúsculas (ej: MED.csv, FACEN.csv)"
         ((TOTAL_FALLIDOS++))
         return 1
     fi
 
-    log SUCCESS "Código detectado: $codigo"
+    log SUCCESS "Código detectado: ${codigo}"
 
-    # Paso 2: Verificar que existe en Koha
+    # ─────────────────────────────────────────────────────────────────────
+    # PASO 2: Verificación en Koha
+    # ─────────────────────────────────────────────────────────────────────
     log HEADER "2. Verificación en Koha"
     separador
 
     if ! verificar_biblioteca_existe "$codigo"; then
-        log ERROR "La biblioteca '$codigo' NO existe en Koha"
-        log INFO "Créela en: Staff Interface → Administración → Bibliotecas"
+        log ERROR "La biblioteca '${codigo}' NO existe en Koha"
+        log INFO "Crear en: Staff Interface → Administración → Bibliotecas"
         ((TOTAL_FALLIDOS++))
 
-        local dest="${DIR_ERRORES}/${nombre%.csv}_NO_EXISTE_${TIMESTAMP}.csv"
-        mv "$archivo" "$dest" 2>/dev/null || true
+        # Mover a errores
+        local destino="${DIR_ERRORES}/${nombre%.csv}_NO_EXISTE_${TIMESTAMP}.csv"
+        mv "$archivo" "$destino" 2>/dev/null || true
+        log INFO "Archivo movido a: ${destino}"
         return 1
     fi
 
-    local nombre_bib=$(sudo koha-mysql ${INSTANCIA_KOHA} -N -e \
+    # Obtener nombre completo de la biblioteca
+    local nombre_bib
+    nombre_bib=$(sudo koha-mysql "${INSTANCIA_KOHA}" -N -e \
         "SELECT branchname FROM branches WHERE branchcode = '${codigo}'" 2>/dev/null)
-    log SUCCESS "Biblioteca verificada: $nombre_bib"
+    log SUCCESS "Biblioteca verificada: ${nombre_bib}"
 
-    # Paso 3: Validar archivo (si no es modo validar solo)
+    # ─────────────────────────────────────────────────────────────────────
+    # PASO 3: Validación del archivo
+    # ─────────────────────────────────────────────────────────────────────
     if [ "$MODO_VALIDAR_SOLO" = false ]; then
         log HEADER "3. Validación del archivo"
         separador
@@ -287,7 +413,9 @@ procesar_archivo() {
         fi
     fi
 
-    # Paso 4: Importar con agente Python
+    # ─────────────────────────────────────────────────────────────────────
+    # PASO 4: Importación a Koha
+    # ─────────────────────────────────────────────────────────────────────
     if [ "$MODO_VALIDAR_SOLO" = false ]; then
         log HEADER "4. Importación a Koha"
         separador
@@ -295,15 +423,16 @@ procesar_archivo() {
         log INFO "Ejecutando agente de importación..."
         echo ""
 
+        # Ejecutar agente Python v3
         if python3 "$AGENTE_PYTHON" "$archivo"; then
-            log SUCCESS "Importación completada: $codigo"
+            log SUCCESS "✓ Importación completada: ${codigo}"
             ((TOTAL_EXITOSOS++))
 
-            # Generar reporte
+            # Generar reporte de éxito
             generar_reporte_exitoso "$codigo" "$archivo"
             return 0
         else
-            log ERROR "Error durante importación de: $nombre"
+            log ERROR "✗ Error durante importación de: ${nombre}"
             ((TOTAL_FALLIDOS++))
             return 1
         fi
@@ -313,74 +442,78 @@ procesar_archivo() {
     fi
 }
 
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
 # FUNCIONES DE REPORTES
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: generar_reporte_exitoso
+# Descripción: Genera un reporte detallado de una importación exitosa
+# Parámetros:
+#   $1 - Código de biblioteca
+#   $2 - Ruta al archivo procesado
+#───────────────────────────────────────────────────────────────────────────
 generar_reporte_exitoso() {
     local codigo="$1"
     local archivo="$2"
-
     local reporte="${DIR_REPORTES}/reporte_${codigo}_${TIMESTAMP}.txt"
 
+    # Obtener estadísticas actuales de la biblioteca
+    local stats
+    stats=$(sudo koha-mysql "${INSTANCIA_KOHA}" -t -e "
+        SELECT
+            COUNT(DISTINCT biblionumber) as Titulos,
+            COUNT(*) as Ejemplares
+        FROM items
+        WHERE homebranch = '$codigo'
+    " 2>/dev/null)
+
+    # Generar reporte estructurado
     cat > "$reporte" << EOF
 ╔════════════════════════════════════════════════════════════════════╗
 ║           REPORTE DE IMPORTACIÓN EXITOSA                           ║
 ╚════════════════════════════════════════════════════════════════════╝
 
 Fecha y hora:        $(date '+%Y-%m-%d %H:%M:%S')
-Código biblioteca:   $codigo
+Código biblioteca:   ${codigo}
 Archivo procesado:   $(basename "$archivo")
 
-Items en Koha:
-$(sudo koha-mysql ${INSTANCIA_KOHA} -t -e "
-    SELECT
-        COUNT(DISTINCT biblionumber) as Titulos,
-        COUNT(*) as Ejemplares
-    FROM items
-    WHERE homebranch = '$codigo'
-")
+════════════════════════════════════════════════════════════════════
 
-URL de verificación:
-http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=$codigo
+ESTADÍSTICAS POST-IMPORTACIÓN:
 
-Estado: ✅ EXITOSO
+${stats}
 
+════════════════════════════════════════════════════════════════════
+
+URL VERIFICACIÓN OPAC:
+http://[servidor]:8080/cgi-bin/koha/opac-search.pl?branch=${codigo}
+
+ESTADO: ✅ IMPORTACIÓN EXITOSA
+
+════════════════════════════════════════════════════════════════════
+Universidad Nacional de Asunción - Sistema Koha
+Generado: $(date '+%Y-%m-%d %H:%M:%S')
 ════════════════════════════════════════════════════════════════════
 EOF
 
-    log SUCCESS "Reporte guardado: $reporte"
+    log SUCCESS "Reporte guardado: ${reporte}"
 }
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: generar_reporte_final
+# Descripción: Genera reporte consolidado de la sesión completa
+# Parámetros:
+#   $1 - Duración total en segundos
+#───────────────────────────────────────────────────────────────────────────
 generar_reporte_final() {
     local duracion=$1
-
+    local minutos=$((duracion / 60))
     local reporte="${DIR_REPORTES}/resumen_${TIMESTAMP}.txt"
 
-    cat > "$reporte" << EOF
-╔════════════════════════════════════════════════════════════════════╗
-║              RESUMEN DE EJECUCIÓN - IMPORTADOR OPTIMIZADO          ║
-╚════════════════════════════════════════════════════════════════════╝
-
-Fecha y hora inicio:    $(date '+%Y-%m-%d %H:%M:%S' -d @$(($(date +%s) - duracion)))
-Fecha y hora fin:       $(date '+%Y-%m-%d %H:%M:%S')
-Duración total:         ${duracion} segundos ($(($duracion / 60)) minutos)
-
-═══════════════════════════════════════════════════════════════════
-
-ESTADÍSTICAS:
-
-  Archivos procesados:    $TOTAL_PROCESADOS
-  Importaciones exitosas: $TOTAL_EXITOSOS
-  Importaciones fallidas: $TOTAL_FALLIDOS
-  Archivos validados:     $TOTAL_VALIDADOS
-  Archivos inválidos:     $TOTAL_INVALIDOS
-
-═══════════════════════════════════════════════════════════════════
-
-ESTADO DEL SISTEMA KOHA:
-
-$(sudo koha-mysql ${INSTANCIA_KOHA} -t -e "
+    # Obtener estadísticas globales del sistema
+    local estadisticas_globales
+    estadisticas_globales=$(sudo koha-mysql "${INSTANCIA_KOHA}" -t -e "
 SELECT
     b.branchcode AS 'Código',
     b.branchname AS 'Biblioteca',
@@ -392,68 +525,117 @@ GROUP BY b.branchcode, b.branchname
 HAVING COUNT(i.itemnumber) > 0
 ORDER BY COUNT(i.itemnumber) DESC
 LIMIT 15
-")
+" 2>/dev/null)
 
-═══════════════════════════════════════════════════════════════════
+    # Generar reporte
+    cat > "$reporte" << EOF
+╔════════════════════════════════════════════════════════════════════╗
+║          RESUMEN DE EJECUCIÓN - IMPORTADOR OPTIMIZADO V3.0         ║
+╚════════════════════════════════════════════════════════════════════╝
 
-Logs completos: $LOG_GENERAL
-Reportes individuales: $DIR_REPORTES
+Fecha inicio:    $(date '+%Y-%m-%d %H:%M:%S' -d "@$(($(date +%s) - duracion))")
+Fecha fin:       $(date '+%Y-%m-%d %H:%M:%S')
+Duración total:  ${duracion}s (${minutos} minutos)
 
+════════════════════════════════════════════════════════════════════
+
+ESTADÍSTICAS DE PROCESAMIENTO:
+
+  Archivos procesados:    ${TOTAL_PROCESADOS}
+  Importaciones exitosas: ${TOTAL_EXITOSOS}
+  Importaciones fallidas: ${TOTAL_FALLIDOS}
+  Archivos validados:     ${TOTAL_VALIDADOS}
+  Archivos inválidos:     ${TOTAL_INVALIDOS}
+
+════════════════════════════════════════════════════════════════════
+
+ESTADO DEL SISTEMA KOHA (Top 15 bibliotecas):
+
+${estadisticas_globales}
+
+════════════════════════════════════════════════════════════════════
+
+ARCHIVOS GENERADOS:
+
+  Logs completos:         ${LOG_GENERAL}
+  Reportes individuales:  ${DIR_REPORTES}
+  Archivos procesados:    ${DIR_PROCESADOS}
+  Archivos con errores:   ${DIR_ERRORES}
+
+════════════════════════════════════════════════════════════════════
 Universidad Nacional de Asunción - Sistema Koha
+Generado: $(date '+%Y-%m-%d %H:%M:%S')
 ════════════════════════════════════════════════════════════════════
 EOF
 
     echo ""
-    log SUCCESS "Reporte final generado: $reporte"
+    log SUCCESS "Reporte final generado: ${reporte}"
     echo ""
     cat "$reporte"
 }
 
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
 # MODOS DE OPERACIÓN
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: modo_archivo_unico
+# Descripción: Procesa un único archivo CSV
+# Parámetros:
+#   $1 - Ruta al archivo
+#───────────────────────────────────────────────────────────────────────────
 modo_archivo_unico() {
     local archivo="$1"
 
     if [ ! -f "$archivo" ]; then
-        log ERROR "Archivo no existe: $archivo"
+        log ERROR "Archivo no existe: ${archivo}"
         return 1
     fi
 
     procesar_archivo "$archivo"
 }
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: modo_batch
+# Descripción: Procesa todos los CSV en un directorio
+# Parámetros:
+#   $1 - Ruta al directorio
+#───────────────────────────────────────────────────────────────────────────
 modo_batch() {
     local directorio="$1"
 
     if [ ! -d "$directorio" ]; then
-        log ERROR "Directorio no existe: $directorio"
+        log ERROR "Directorio no existe: ${directorio}"
         return 1
     fi
 
-    log INFO "Buscando archivos CSV en: $directorio"
+    log INFO "Buscando archivos CSV en: ${directorio}"
 
-    local archivos=($(find "$directorio" -maxdepth 1 -type f -name "*.csv" 2>/dev/null))
+    # Buscar todos los archivos CSV
+    local archivos=()
+    while IFS= read -r -d '' archivo; do
+        archivos+=("$archivo")
+    done < <(find "$directorio" -maxdepth 1 -type f -name "*.csv" -print0 2>/dev/null)
 
     if [ ${#archivos[@]} -eq 0 ]; then
-        log WARNING "No se encontraron archivos CSV en: $directorio"
+        log WARNING "No se encontraron archivos CSV en: ${directorio}"
         return 1
     fi
 
     log SUCCESS "Archivos encontrados: ${#archivos[@]}"
     echo ""
 
-    # Mostrar lista
+    # Mostrar lista de archivos
     for i in "${!archivos[@]}"; do
         echo "  $((i+1)). $(basename "${archivos[$i]}")"
     done
 
+    # Confirmación del usuario
     echo ""
     read -p "¿Procesar estos archivos? (SI/no): " -r respuesta
 
     if [[ ! $respuesta =~ ^(SI|si|S|s|YES|yes|Y|y|)$ ]]; then
-        log INFO "Procesamiento cancelado"
+        log INFO "Procesamiento cancelado por el usuario"
         return 0
     fi
 
@@ -466,30 +648,45 @@ modo_batch() {
     done
 }
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: modo_watch
+# Descripción: Vigila un directorio y procesa automáticamente archivos nuevos
+# Nota: Este modo corre indefinidamente hasta Ctrl+C
+#───────────────────────────────────────────────────────────────────────────
 modo_watch() {
     log INFO "🔄 MODO VIGILANCIA ACTIVADO"
-    log INFO "Directorio: $DIR_IMPORTAR"
+    log INFO "Directorio: ${DIR_IMPORTAR}"
     log INFO "Intervalo: 10 segundos"
     echo ""
-    echo -e "${C_YELLOW}Coloca archivos CSV en: $DIR_IMPORTAR${C_NC}"
+    echo -e "${C_YELLOW}Coloca archivos CSV en: ${DIR_IMPORTAR}${C_NC}"
     echo -e "${C_YELLOW}Presiona Ctrl+C para detener${C_NC}"
     echo ""
 
+    # Hash map para rastrear archivos ya procesados
     declare -A procesados
 
     while true; do
-        local archivos=($(find "$DIR_IMPORTAR" -maxdepth 1 -type f -name "*.csv" 2>/dev/null))
+        # Buscar archivos CSV
+        local archivos=()
+        while IFS= read -r -d '' archivo; do
+            archivos+=("$archivo")
+        done < <(find "$DIR_IMPORTAR" -maxdepth 1 -type f -name "*.csv" -print0 2>/dev/null)
 
+        # Procesar archivos nuevos
         for archivo in "${archivos[@]}"; do
-            local hash=$(md5sum "$archivo" 2>/dev/null | cut -d' ' -f1)
-            local key="$archivo:$hash"
+            # Calcular hash del archivo para detectar cambios
+            local hash
+            hash=$(md5sum "$archivo" 2>/dev/null | cut -d' ' -f1)
+            local key="${archivo}:${hash}"
 
-            if [ -z "${procesados[$key]}" ]; then
+            # Si no está en el registro, procesarlo
+            if [ -z "${procesados[$key]:-}" ]; then
                 echo ""
                 log INFO "🔔 NUEVO ARCHIVO DETECTADO: $(basename "$archivo")"
                 echo ""
 
-                sleep 2  # Esperar estabilidad
+                # Esperar 2 segundos para asegurar que el archivo esté completo
+                sleep 2
 
                 procesar_archivo "$archivo"
                 procesados[$key]=1
@@ -499,25 +696,33 @@ modo_watch() {
             fi
         done
 
+        # Esperar antes del próximo ciclo
         sleep 10
     done
 }
 
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
 # FUNCIÓN PRINCIPAL
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: main
+# Descripción: Punto de entrada principal del programa
+# Orquesta todo el flujo de ejecución según el modo seleccionado
+#───────────────────────────────────────────────────────────────────────────
 main() {
-    local inicio=$(date +%s)
+    local inicio
+    inicio=$(date +%s)
 
-    # Banner inicial
-    banner "IMPORTADOR AUTOMÁTICO OPTIMIZADO - KOHA UNA"
+    # Banner de bienvenida
+    banner "IMPORTADOR AUTOMÁTICO OPTIMIZADO - KOHA UNA V3.0"
 
-    # Inicialización
+    # Crear estructura de directorios
     crear_directorios
 
+    # Verificar dependencias críticas
     if ! verificar_dependencias; then
-        log ERROR "No se puede continuar sin dependencias"
+        log ERROR "No se puede continuar sin dependencias críticas"
         exit 1
     fi
 
@@ -525,7 +730,7 @@ main() {
     separador
     echo ""
 
-    # Ejecutar modo correspondiente
+    # Ejecutar modo de operación correspondiente
     if [ "$MODO_WATCH" = true ]; then
         modo_watch
     elif [ "$MODO_BATCH" = true ]; then
@@ -537,28 +742,30 @@ main() {
         modo_batch "$DIR_IMPORTAR"
     fi
 
-    # Reporte final
-    local fin=$(date +%s)
+    # Calcular duración total
+    local fin
+    fin=$(date +%s)
     local duracion=$((fin - inicio))
 
     echo ""
     separador
     echo ""
 
+    # Generar reporte final
     generar_reporte_final "$duracion"
 
     # Resumen en consola
     echo ""
     banner "PROCESO COMPLETADO"
     echo ""
-    echo -e "  ${C_BOLD}Procesados:${C_NC}  $TOTAL_PROCESADOS"
-    echo -e "  ${C_GREEN}${C_BOLD}Exitosos:${C_NC}    $TOTAL_EXITOSOS"
+    echo -e "  ${C_BOLD}Procesados:${C_NC}  ${TOTAL_PROCESADOS}"
+    echo -e "  ${C_GREEN}${C_BOLD}Exitosos:${C_NC}    ${TOTAL_EXITOSOS}"
 
     if [ $TOTAL_FALLIDOS -gt 0 ]; then
-        echo -e "  ${C_RED}${C_BOLD}Fallidos:${C_NC}     $TOTAL_FALLIDOS"
+        echo -e "  ${C_RED}${C_BOLD}Fallidos:${C_NC}     ${TOTAL_FALLIDOS}"
     fi
 
-    echo -e "  ${C_CYAN}Duración:${C_NC}    ${duracion}s"
+    echo -e "  ${C_CYAN}Duración:${C_NC}    ${duracion}s ($(($duracion / 60))m)"
     echo ""
 
     # Código de salida
@@ -569,40 +776,49 @@ main() {
     fi
 }
 
-# ============================================================================
-# PROCESAR ARGUMENTOS
-# ============================================================================
+# ══════════════════════════════════════════════════════════════════════════
+# PROCESAMIENTO DE ARGUMENTOS DE LÍNEA DE COMANDOS
+# ══════════════════════════════════════════════════════════════════════════
 
+#───────────────────────────────────────────────────────────────────────────
+# Función: mostrar_ayuda
+# Descripción: Muestra la ayuda completa del programa
+#───────────────────────────────────────────────────────────────────────────
 mostrar_ayuda() {
     cat << EOF
-${C_BOLD}${C_CYAN}IMPORTADOR AUTOMÁTICO OPTIMIZADO - KOHA UNA${C_NC}
+${C_BOLD}${C_CYAN}═══════════════════════════════════════════════════════════════════════${C_NC}
+${C_BOLD}${C_CYAN}   IMPORTADOR AUTOMÁTICO OPTIMIZADO KOHA - UNIVERSIDAD NACIONAL DE ASUNCIÓN${C_NC}
+${C_BOLD}${C_CYAN}═══════════════════════════════════════════════════════════════════════${C_NC}
 
-Sistema de importación automática optimizado con validación,
-control de errores, reportes y múltiples modos de operación.
+Sistema profesional de importación automática con validación, control de
+errores, reportes detallados y múltiples modos de operación.
 
 ${C_BOLD}USO:${C_NC}
     $0 [OPCIONES] [ARCHIVO]
 
 ${C_BOLD}OPCIONES:${C_NC}
-    --watch, -w              Modo vigilancia continua
-    --batch DIR, -b DIR      Procesar todos los CSV en directorio
-    --validate-only, -v      Solo validar sin importar
-    --help, -h               Mostrar esta ayuda
+    ${C_GREEN}--watch, -w${C_NC}              Modo vigilancia continua (detecta archivos nuevos)
+    ${C_GREEN}--batch DIR, -b DIR${C_NC}      Procesar todos los CSV en directorio
+    ${C_GREEN}--validate-only, -v${C_NC}      Solo validar sin importar
+    ${C_GREEN}--help, -h${C_NC}               Mostrar esta ayuda
+    ${C_GREEN}--version${C_NC}                Mostrar versión
 
-${C_BOLD}EJEMPLOS:${C_NC}
-    # Procesar archivo específico
+${C_BOLD}EJEMPLOS DE USO:${C_NC}
+
+    ${C_CYAN}# Procesar archivo específico${C_NC}
     $0 MED.csv
+    $0 /ruta/completa/FACEN_2025.csv
 
-    # Procesar todos los CSV en importar_aqui/
+    ${C_CYAN}# Procesar todos los CSV en importar_aqui/${C_NC}
     $0
 
-    # Modo vigilancia
+    ${C_CYAN}# Modo vigilancia automática${C_NC}
     $0 --watch
 
-    # Procesar directorio específico
+    ${C_CYAN}# Procesar directorio específico${C_NC}
     $0 --batch /ruta/a/directorio
 
-    # Solo validar archivos
+    ${C_CYAN}# Solo validar archivos sin importar${C_NC}
     $0 --validate-only --batch importar_aqui/
 
 ${C_BOLD}CARACTERÍSTICAS:${C_NC}
@@ -612,20 +828,36 @@ ${C_BOLD}CARACTERÍSTICAS:${C_NC}
     ✓ Generación de reportes detallados
     ✓ Modo batch para múltiples archivos
     ✓ Modo vigilancia para importación continua
-    ✓ Recuperación ante errores
-    ✓ Logs detallados
+    ✓ Recuperación automática ante errores
+    ✓ Logs detallados con timestamps
 
 ${C_BOLD}ARCHIVOS GENERADOS:${C_NC}
-    logs/       - Logs de ejecución
-    reportes/   - Reportes de importación
-    procesados/ - CSV procesados exitosamente
-    errores/    - CSV con errores
+    ${C_CYAN}logs/${C_NC}       - Logs de ejecución detallados
+    ${C_CYAN}reportes/${C_NC}   - Reportes de importación
+    ${C_CYAN}procesados/${C_NC} - CSV procesados exitosamente
+    ${C_CYAN}errores/${C_NC}    - CSV con errores
 
-Universidad Nacional de Asunción - 2025
+${C_BOLD}REQUISITOS DEL NOMBRE DE ARCHIVO:${C_NC}
+    El nombre del archivo CSV debe contener el código de la biblioteca:
+
+    ${C_GREEN}✓${C_NC} MED.csv              → Código: MED
+    ${C_GREEN}✓${C_NC} FACEN_2025.csv       → Código: FACEN
+    ${C_GREEN}✓${C_NC} VET_octubre.csv      → Código: VET
+    ${C_RED}✗${C_NC} datos.csv            → Sin código (error)
+
+${C_BOLD}SOPORTE:${C_NC}
+    Universidad Nacional de Asunción
+    Sistema de Bibliotecas - Koha OPAC
+    Versión: 3.0.0
+    Fecha: 2025-11-07
+
+═══════════════════════════════════════════════════════════════════════
 EOF
 }
 
-# Procesar argumentos
+# ──────────────────────────────────────────────────────────────────────────
+# Parser de argumentos
+# ──────────────────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
     case $1 in
         --watch|-w)
@@ -645,11 +877,16 @@ while [[ $# -gt 0 ]]; do
             mostrar_ayuda
             exit 0
             ;;
+        --version)
+            echo "Importador Automático Optimizado Koha - Versión 3.0.0"
+            exit 0
+            ;;
         *)
             if [ -f "$1" ]; then
                 ARCHIVO_ESPECIFICO="$1"
             else
                 log ERROR "Opción desconocida o archivo no existe: $1"
+                echo ""
                 echo "Use --help para ver opciones disponibles"
                 exit 1
             fi
@@ -658,5 +895,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Ejecutar
+# ══════════════════════════════════════════════════════════════════════════
+# EJECUCIÓN PRINCIPAL
+# ══════════════════════════════════════════════════════════════════════════
 main
