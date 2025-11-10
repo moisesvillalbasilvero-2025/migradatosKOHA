@@ -21,15 +21,10 @@
     "pausar_entre_bibliotecas": 5,
     "reintentos_en_error": 2
   },
+  "_nota_email": "IMPORTANTE: Configurar credenciales de email en .env (no aquí por seguridad)",
   "email": {
     "activado": false,
-    "smtp_server": "smtp.una.py",
-    "smtp_port": 587,
-    "usuario": "biblioteca@una.py",
-    "password": "",
-    "destinatarios": [
-      "admin@una.py"
-    ]
+    "_mensaje": "Ver variables EMAIL_* en .env.example para configurar"
   },
   "bibliotecas": {
     "POL": {
@@ -64,12 +59,14 @@
     "FACAGR": {
       "nombre": "Facultad de Ciencias Agrarias",
       "tipo_fuente": "firebird_remoto",
+      "_nota": "IMPORTANTE: Configurar credenciales Firebird en .env (variables FIREBIRD_FACAGR_*)",
       "firebird": {
+        "_mensaje": "Metadatos de conexión aquí, credenciales en .env",
         "host": "192.168.1.10",
         "port": 3050,
         "database": "/datos/biblio.fdb",
         "user": "SYSDBA",
-        "password": "masterkey"
+        "_password_nota": "Configurar FIREBIRD_FACAGR_PASSWORD en archivo .env"
       },
       "codigo_koha": "FACAGR",
       "loc_default": "SALA",

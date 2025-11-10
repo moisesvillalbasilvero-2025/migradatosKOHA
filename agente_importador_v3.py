@@ -44,44 +44,33 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, asdict
 
+# Importar gestor de configuración centralizado
+try:
+    from config_manager import get_config
+    config = get_config()
+except ImportError:
+    print("⚠ Error: No se pudo importar config_manager.py")
+    print("  Asegúrate de que config_manager.py esté en el mismo directorio")
+    print("  O instala las dependencias: pip install -r requirements.txt")
+    sys.exit(1)
+
 
 # ==================== CONFIGURACIÓN ====================
+# NOTA: La configuración ahora se carga desde config_manager.py
+# que lee variables de entorno (.env) y config/migracion_config.json
+#
+# Para migración backward-compatible, creamos alias Config
 class Config:
-    """Configuración global del sistema"""
-    DIR_TRABAJO = Path("/home/mvillalba/migradatos")
-    DIR_VIGILAR = DIR_TRABAJO / "importar_aqui"
-    DIR_PROCESADOS = DIR_TRABAJO / "procesados"
-    DIR_ERRORES = DIR_TRABAJO / "errores"
-    DIR_EXPORTS = DIR_TRABAJO / "exports"
-    DIR_LOGS = DIR_TRABAJO / "logs"
-    DIR_CACHE = DIR_TRABAJO / ".cache"
+    """Wrapper de compatibilidad para configuración (usa config_manager)"""
+    def __init__(self):
+        self._config = config
 
-    INSTANCIA_KOHA = "koha-cnc"
-    LOC_DEFAULT = "SALA"
+    def __getattr__(self, name):
+        return getattr(self._config, name)
 
-    # Tamaños de commit/batch optimizados
-    COMMIT_SIZE = 500  # Reducido para mejor manejo de memoria
-    MAX_RECORDS_PER_FILE = 2000  # Archivos más pequeños
 
-    # Timeouts
-    TIMEOUT_CORRECCION = 300
-    TIMEOUT_MARCXML = 600
-    TIMEOUT_IMPORT = 1800
-    TIMEOUT_REINDEX = 900
-
-    # Reintentos
-    MAX_REINTENTOS = 3
-    REINTENTO_DELAY = 5  # segundos
-
-    # Colores ANSI
-    G = '\033[92m'
-    Y = '\033[93m'
-    R = '\033[91m'
-    B = '\033[94m'
-    C = '\033[96m'
-    M = '\033[95m'
-    BOLD = '\033[1m'
-    END = '\033[0m'
+# Instancia global para compatibilidad
+Config = config  # Ahora Config ES la configuración cargada
 
 
 # ==================== CLASES DE DATOS ====================

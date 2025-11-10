@@ -1,0 +1,79 @@
+# ============================================================================
+# DEPENDENCIAS PYTHON - Sistema de Importación Koha UNA
+# ============================================================================
+# Universidad Nacional de Asunción
+# Sistema de migración de datos bibliográficos a Koha OPAC
+#
+# INSTALACIÓN:
+#   pip install -r requirements.txt
+#   # o
+#   pip3 install -r requirements.txt --user
+#
+# NOTA: Algunos paquetes pueden requerir permisos de administrador
+# ============================================================================
+
+# -------------------- Dependencias principales --------------------
+
+# Conector Firebird - Para importación directa desde bases de datos Firebird
+# Usado en: firebird_directo_koha.py
+fdb>=2.0.0
+
+# Python-dotenv - Para carga de variables de entorno desde archivo .env
+# Usado en: config_manager.py (nuevo)
+python-dotenv>=0.19.0
+
+# -------------------- Bibliotecas estándar (no requieren instalación) ----
+# Las siguientes son parte de la biblioteca estándar de Python 3.7+:
+# - csv
+# - subprocess
+# - pathlib
+# - json
+# - argparse
+# - datetime
+# - collections
+# - dataclasses
+# - multiprocessing
+# - http.server
+# - urllib
+
+# -------------------- Dependencias opcionales --------------------
+
+# Para mejorar el rendimiento en procesamiento paralelo (opcional)
+# psutil>=5.8.0  # Monitoreo de recursos del sistema
+
+# Para notificaciones por email (opcional, actualmente no usado)
+# smtplib es parte de stdlib, no requiere instalación
+
+# -------------------- Dependencias de desarrollo (opcional) -------
+
+# Para testing (descomentando cuando se agreguen tests)
+# pytest>=7.0.0
+# pytest-cov>=3.0.0
+
+# Para linting y formateo de código
+# pylint>=2.12.0
+# black>=22.0.0
+# mypy>=0.930
+
+# ============================================================================
+# NOTAS DE INSTALACIÓN POR SISTEMA OPERATIVO
+# ============================================================================
+#
+# UBUNTU/DEBIAN:
+#   sudo apt-get update
+#   sudo apt-get install python3-pip python3-dev libfbclient2
+#   pip3 install -r requirements.txt
+#
+# CENTOS/RHEL:
+#   sudo yum install python3-pip python3-devel firebird-devel
+#   pip3 install -r requirements.txt
+#
+# FEDORA:
+#   sudo dnf install python3-pip python3-devel firebird-devel
+#   pip3 install -r requirements.txt
+#
+# VERIFICACIÓN DE INSTALACIÓN:
+#   python3 -c "import fdb; print('fdb version:', fdb.__version__)"
+#   python3 -c "import dotenv; print('python-dotenv instalado correctamente')"
+#
+# ============================================================================

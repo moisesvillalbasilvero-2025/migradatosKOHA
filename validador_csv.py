@@ -32,6 +32,15 @@ from typing import Dict, List, Tuple, Optional
 from collections import Counter
 from datetime import datetime
 
+# Importar gestor de configuración centralizado (opcional para este script)
+# validador_csv.py es standalone pero puede usar config si está disponible
+try:
+    from config_manager import get_config
+    _config = get_config()
+    _has_config = True
+except ImportError:
+    _has_config = False
+
 
 # Colores ANSI
 class Colors:
@@ -42,6 +51,11 @@ class Colors:
     C = '\033[96m'   # Cyan
     BOLD = '\033[1m'
     END = '\033[0m'
+
+
+# NOTA: Este script es independiente y no requiere configuración centralizada
+# ya que trabaja directamente con archivos CSV proporcionados como argumentos.
+# La importación de config_manager es opcional para futuras integraciones.
 
 
 class ValidadorCSV:

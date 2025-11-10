@@ -51,72 +51,78 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, asdict
 
+# Importar gestor de configuración centralizado
+try:
+    from config_manager import get_config
+    config = get_config()
+except ImportError:
+    print("⚠ Error: No se pudo importar config_manager.py")
+    print("  Asegúrate de que config_manager.py esté en el mismo directorio")
+    print("  O instala las dependencias: pip install -r requirements.txt")
+    sys.exit(1)
+
 
 # ===========================================================================
 # CONFIGURACIÓN
 # ===========================================================================
-
-class Config:
-    """Configuración global"""
-    DIR_TRABAJO = Path("/home/mvillalba/migradatos")
-    DIR_CACHE = DIR_TRABAJO / ".firebird_sync"
-    DIR_LOGS = DIR_TRABAJO / "logs"
-    DIR_EXPORTS = DIR_TRABAJO / "exports"
-
-    INSTANCIA_KOHA = "koha-cnc"
-    LOC_DEFAULT = "SALA"
-
-    # Colores
-    G = '\033[92m'
-    Y = '\033[93m'
-    R = '\033[91m'
-    B = '\033[94m'
-    C = '\033[96m'
-    BOLD = '\033[1m'
-    END = '\033[0m'
+# NOTA: La configuración ahora se carga desde config_manager.py
+# que lee variables de entorno (.env) y config/migracion_config.json
+#
+# Wrapper de compatibilidad
+Config = config
 
 
 # ===========================================================================
 # CONFIGURACIÓN DE SERVIDORES FIREBIRD
 # ===========================================================================
-# IMPORTANTE: Configurar con datos reales de tus servidores
+# NOTA: Las configuraciones de Firebird ahora se leen desde:
+# 1. Variables de entorno (FIREBIRD_<CODIGO>_HOST, etc.) - RECOMENDADO
+# 2. config/migracion_config.json (solo metadatos, NO passwords)
+#
+# Ver .env.example para configurar credenciales de forma segura
 
-FIREBIRD_SERVERS = {
-    # EJEMPLO - Reemplazar con tus datos reales
-    'EJEMPLO_LOCAL': {
-        'nombre': 'Biblioteca de Ejemplo (Local)',
-        'host': 'localhost',
-        'port': 3050,
-        'database': '/var/lib/firebird/data/biblio.fdb',
-        'user': 'SYSDBA',
-        'password': 'masterkey',
-        'charset': 'UTF8',
-        'activo': False,  # Cambiar a True cuando esté configurado
-    },
+def get_firebird_servers() -> Dict:
+    """
+    Obtiene configuraciones de servidores Firebird desde config_manager.
 
-    'EJEMPLO_REMOTO': {
-        'nombre': 'Biblioteca de Ejemplo (Remoto)',
-        'host': '192.168.1.100',  # IP del servidor
-        'port': 3050,
-        'database': '/datos/biblioteca.fdb',
-        'user': 'SYSDBA',
-        'password': 'tu_password_aqui',
-        'charset': 'UTF8',
-        'activo': False,  # Cambiar a True cuando esté configurado
-    },
+    Las credenciales deben estar en variables de entorno (.env) para seguridad.
+    """
+    servers = {}
 
-    # Agregar tus bibliotecas reales:
-    # 'FACAGR': {
-    #     'nombre': 'Facultad de Ciencias Agrarias',
-    #     'host': '192.168.x.x',
-    #     'port': 3050,
-    #     'database': '/ruta/a/base.fdb',
-    #     'user': 'SYSDBA',
-    #     'password': 'password_real',
-    #     'charset': 'UTF8',
-    #     'activo': True,
-    # },
-}
+    # Cargar desde bibliotecas configuradas
+    if hasattr(config, 'bibliotecas') and config.bibliotecas:
+        for codigo, bib_info in config.bibliotecas.items():
+            # Solo incluir bibliotecas con configuración Firebird
+            if bib_info.get('tipo_fuente') in ['firebird', 'firebird_remoto']:
+                # Intentar obtener configuración de Firebird
+                fb_config = config.get_firebird_config(codigo)
+
+                if fb_config:
+                    servers[codigo] = {
+                        'nombre': bib_info.get('nombre', codigo),
+                        'host': fb_config.get('host'),
+                        'port': fb_config.get('port', 3050),
+                        'database': fb_config.get('database'),
+                        'user': fb_config.get('user', 'SYSDBA'),
+                        'password': fb_config.get('password', ''),
+                        'charset': fb_config.get('charset', 'UTF8'),
+                        'activo': bib_info.get('activa', False),
+                    }
+
+    # Si no hay ninguna configurada, mostrar mensaje de ayuda
+    if not servers:
+        print(f"{Config.Y}⚠ No hay servidores Firebird configurados{Config.END}")
+        print(f"\n{Config.C}Para configurar servidores Firebird:{Config.END}")
+        print("  1. Copiar .env.example a .env")
+        print("  2. Configurar variables FIREBIRD_<CODIGO>_* en .env")
+        print("  3. O editar config/migracion_config.json\n")
+        print(f"{Config.C}Ver MIGRACION_CONFIG.md para más detalles{Config.END}\n")
+
+    return servers
+
+
+# Cargar servidores al inicio
+FIREBIRD_SERVERS = get_firebird_servers()
 
 
 # ===========================================================================

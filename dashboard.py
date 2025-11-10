@@ -36,13 +36,28 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.parse
 import argparse
 
+# Importar gestor de configuración centralizado
+try:
+    from config_manager import get_config
+    config = get_config()
+except ImportError:
+    print("⚠ Error: No se pudo importar config_manager.py")
+    print("  Asegúrate de que config_manager.py esté en el mismo directorio")
+    print("  Dashboard funcionará con configuración por defecto limitada")
+    # Configuración mínima de fallback
+    from pathlib import Path
+    class _FallbackConfig:
+        DIR_TRABAJO = Path.cwd()
+        DIR_LOGS = DIR_TRABAJO / "logs"
+        DIR_REPORTES = DIR_TRABAJO / "reportes"
+        INSTANCIA_KOHA = "koha-cnc"
+    config = _FallbackConfig()
+
 
 # ==================== CONFIGURACIÓN ====================
-class Config:
-    DIR_TRABAJO = Path("/home/mvillalba/migradatos")
-    DIR_LOGS = DIR_TRABAJO / "logs"
-    DIR_REPORTES = DIR_TRABAJO / "reportes"
-    INSTANCIA_KOHA = "koha-cnc"
+# NOTA: La configuración ahora se carga desde config_manager.py
+# Wrapper de compatibilidad
+Config = config
 
 
 # ==================== RECOLECTOR DE DATOS ====================

@@ -47,44 +47,98 @@ from dataclasses import dataclass, field
 from collections import Counter
 from contextlib import contextmanager
 
+# Importar gestor de configuración centralizado
+try:
+    from config_manager import get_config as _get_config
+    _global_config = _get_config()
+except ImportError:
+    print("⚠ Error: No se pudo importar config_manager.py")
+    print("  Asegúrate de que config_manager.py esté en el mismo directorio")
+    print("  O instala las dependencias: pip install -r requirements.txt")
+    sys.exit(1)
+
+
 # ==================== CONFIGURACIÓN ====================
+# NOTA: La configuración ahora se carga desde config_manager.py
+# Para backward compatibility, mantenemos la estructura de dataclass
+# pero los valores se obtienen del config_manager
+
 @dataclass
 class Config:
-    """Configuración optimizada del sistema"""
-    DIR_TRABAJO: Path = Path("/home/mvillalba/migradatos")
-    DIR_EXPORTS: Path = Path("/home/mvillalba/migradatos/exports")
-    DIR_LOGS: Path = Path("/home/mvillalba/migradatos/logs")
-    DIR_CACHE: Path = Path("/home/mvillalba/migradatos/.cache")
+    """
+    Configuración optimizada del sistema (ahora usa config_manager).
 
-    INSTANCIA_KOHA: str = "koha-cnc"
-    LOC_DEFAULT: str = "SALA"
+    Esta clase mantiene compatibilidad con código antiguo pero obtiene
+    los valores desde config_manager que lee .env y migracion_config.json
+    """
+    DIR_TRABAJO: Path = None
+    DIR_EXPORTS: Path = None
+    DIR_LOGS: Path = None
+    DIR_CACHE: Path = None
 
-    # Tamaños optimizados (más agresivos)
-    CHUNK_SIZE: int = 2000  # Registros por chunk (antes: 500)
-    COMMIT_SIZE: int = 1000  # Commit más grande (antes: 500)
-    MAX_RECORDS_PER_FILE: int = 5000  # Archivos más grandes (antes: 2000)
+    INSTANCIA_KOHA: str = None
+    LOC_DEFAULT: str = None
 
-    # Workers paralelos
-    NUM_WORKERS: int = mp.cpu_count() - 1 or 1  # Dejar 1 CPU libre
+    CHUNK_SIZE: int = None
+    COMMIT_SIZE: int = None
+    MAX_RECORDS_PER_FILE: int = None
 
-    # Timeouts más agresivos
-    TIMEOUT_MARCXML: int = 900  # 15 min (antes: 10 min)
-    TIMEOUT_IMPORT: int = 2400  # 40 min (antes: 30 min)
-    TIMEOUT_REINDEX: int = 1200  # 20 min (antes: 15 min)
+    NUM_WORKERS: int = None
 
-    # Cache
-    CACHE_VERIFICACIONES: bool = True
-    CACHE_TTL: int = 3600  # 1 hora
+    TIMEOUT_MARCXML: int = None
+    TIMEOUT_IMPORT: int = None
+    TIMEOUT_REINDEX: int = None
 
-    # Colores
-    G = '\033[92m'
-    Y = '\033[93m'
-    R = '\033[91m'
-    B = '\033[94m'
-    C = '\033[96m'
-    M = '\033[95m'
-    BOLD = '\033[1m'
-    END = '\033[0m'
+    CACHE_VERIFICACIONES: bool = None
+    CACHE_TTL: int = None
+
+    # Colores (copiados del config global)
+    G: str = '\033[92m'
+    Y: str = '\033[93m'
+    R: str = '\033[91m'
+    B: str = '\033[94m'
+    C: str = '\033[96m'
+    M: str = '\033[95m'
+    BOLD: str = '\033[1m'
+    END: str = '\033[0m'
+
+    def __post_init__(self):
+        """Inicializar con valores del config_manager si son None"""
+        if self.DIR_TRABAJO is None:
+            self.DIR_TRABAJO = _global_config.DIR_TRABAJO
+        if self.DIR_EXPORTS is None:
+            self.DIR_EXPORTS = _global_config.DIR_EXPORTS
+        if self.DIR_LOGS is None:
+            self.DIR_LOGS = _global_config.DIR_LOGS
+        if self.DIR_CACHE is None:
+            self.DIR_CACHE = _global_config.DIR_CACHE
+
+        if self.INSTANCIA_KOHA is None:
+            self.INSTANCIA_KOHA = _global_config.INSTANCIA_KOHA
+        if self.LOC_DEFAULT is None:
+            self.LOC_DEFAULT = _global_config.LOC_DEFAULT
+
+        if self.CHUNK_SIZE is None:
+            self.CHUNK_SIZE = _global_config.CHUNK_SIZE
+        if self.COMMIT_SIZE is None:
+            self.COMMIT_SIZE = _global_config.COMMIT_SIZE
+        if self.MAX_RECORDS_PER_FILE is None:
+            self.MAX_RECORDS_PER_FILE = _global_config.MAX_RECORDS_PER_FILE
+
+        if self.NUM_WORKERS is None:
+            self.NUM_WORKERS = _global_config.NUM_WORKERS
+
+        if self.TIMEOUT_MARCXML is None:
+            self.TIMEOUT_MARCXML = _global_config.TIMEOUT_MARCXML
+        if self.TIMEOUT_IMPORT is None:
+            self.TIMEOUT_IMPORT = _global_config.TIMEOUT_IMPORT
+        if self.TIMEOUT_REINDEX is None:
+            self.TIMEOUT_REINDEX = _global_config.TIMEOUT_REINDEX
+
+        if self.CACHE_VERIFICACIONES is None:
+            self.CACHE_VERIFICACIONES = _global_config.CACHE_VERIFICACIONES
+        if self.CACHE_TTL is None:
+            self.CACHE_TTL = _global_config.CACHE_TTL
 
 
 # ==================== ESTADÍSTICAS ====================
